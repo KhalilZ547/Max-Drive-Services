@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useState, useRef, ChangeEvent } from "react";
 
 const ProfileFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -27,6 +28,9 @@ const ProfileFormSchema = z.object({
 export default function ProfilePage() {
     const { t } = useTranslation();
     const { toast } = useToast();
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
 
     // Mock user data
     const user = {
@@ -42,6 +46,22 @@ export default function ProfilePage() {
             email: user.email,
         },
     });
+
+    const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setAvatarPreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleButtonClick = () => {
+        fileInputRef.current?.click();
+    };
+
 
     function onSubmit(data: z.infer<typeof ProfileFormSchema>) {
         console.log(data);
@@ -63,10 +83,17 @@ export default function ProfilePage() {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <div className="flex items-center space-x-4">
                                 <Avatar className="h-20 w-20">
-                                    <AvatarImage src={`https://placehold.co/80x80.png?text=${user.avatar}`} />
+                                    <AvatarImage src={avatarPreview || `https://placehold.co/80x80.png?text=${user.avatar}`} />
                                     <AvatarFallback>{user.avatar}</AvatarFallback>
                                 </Avatar>
-                                <Button type="button" variant="outline">Change Photo</Button>
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleAvatarChange}
+                                    className="hidden"
+                                    accept="image/*"
+                                />
+                                <Button type="button" variant="outline" onClick={handleButtonClick}>{t('change_photo_button')}</Button>
                             </div>
                              <FormField
                                 control={form.control}
