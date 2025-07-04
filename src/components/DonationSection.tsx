@@ -7,14 +7,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Heart, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-function PayPalIcon() {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" className="fill-current">
-            <path d="M9.5,4.5h5.36c2.4,0,3.91,1.5,3.91,3.65,0,1.92-1.2,3.18-2.9,3.52v.09c1.61,.34,3.22,1.52,3.22,3.9,0,2.57-1.8,4.2-4.48,4.2H9.5V4.5ZM12,6.79h2c.9,0,1.4-.53,1.4-1.28s-.5-1.27-1.4-1.27h-2v2.55Zm.06,5.3h2.29c1,0,1.64-.6,1.64-1.46,0-1.09-.7-1.5-1.7-1.5H12.06v2.96Z" />
-        </svg>
-    );
-}
-
 export function DonationSection() {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -50,8 +42,7 @@ export function DonationSection() {
                 <div className="space-y-4">
                     <p className="text-muted-foreground">{t('donation_paypal_desc')}</p>
                     <Button size="lg" className="w-full max-w-xs mx-auto bg-[#00457C] hover:bg-[#003057]">
-                        <PayPalIcon />
-                        <span className="ml-2">{t('donation_paypal_button')}</span>
+                        <span>{t('donation_paypal_button')}</span>
                     </Button>
                 </div>
               </TabsContent>
