@@ -42,7 +42,7 @@ export function LogoSpinner({ className, ...props }: React.SVGProps<SVGSVGElemen
       </g>
 
       {/* Dashboard background */}
-      <circle cx="60" cy="60" r="35" fill="hsl(var(--muted))" />
+      <circle cx="60" cy="60" r="35" fill="transparent" />
 
       {/* Needle */}
       <g
