@@ -39,10 +39,10 @@ export function DashboardClient() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => setIsLoading(false), 2000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   if (isLoading) {
     return (
