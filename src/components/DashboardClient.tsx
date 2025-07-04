@@ -24,11 +24,12 @@ const vehicles: { make: string; model: string; year: number; vin: string; }[] = 
     { make: 'Honda', model: 'Civic', year: 2019, vin: 'GFEDCBA0987654321' },
 ];
 
-const serviceHistory: { vehicle: string; service: string; date: string; cost: string; }[] = [
-    { vehicle: 'Toyota Camry 2021', service: 'Oil Change', date: '2023-10-26', cost: '$50.00' },
-    { vehicle: 'Honda Civic 2019', service: 'Brake Repair', date: '2023-09-15', cost: '$250.00' },
-    { vehicle: 'Toyota Camry 2021', service: 'Engine Diagnostic', date: '2023-11-05', cost: '$100.00' },
+const serviceHistory: { vehicle: string; service: string; date: string; cost: number; }[] = [
+    { vehicle: 'Toyota Camry 2021', service: 'Oil Change', date: '2023-10-26', cost: 50.00 },
+    { vehicle: 'Honda Civic 2019', service: 'Brake Repair', date: '2023-09-15', cost: 250.00 },
+    { vehicle: 'Toyota Camry 2021', service: 'Engine Diagnostic', date: '2023-11-05', cost: 100.00 },
 ];
+const TND_TO_EUR_RATE = 0.3; // Approximate conversion rate
 
 const reminders: { title: string; date: string; details: string; }[] = [
     { title: 'Oil Change due', date: '2024-08-15', details: 'Your Toyota Camry is due for an oil change.'}
@@ -159,7 +160,7 @@ export function DashboardClient() {
                                     <p className="font-semibold">{item.service} for {item.vehicle}</p>
                                     <p className="text-sm text-muted-foreground">on {item.date}</p>
                                 </div>
-                                <span className="text-sm font-medium">{item.cost}</span>
+                                <span className="text-sm font-medium whitespace-nowrap">{item.cost.toFixed(2)} TND (€{(item.cost * TND_TO_EUR_RATE).toFixed(2)})</span>
                             </li>
                         ))}
                     </ul>

@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -19,11 +18,13 @@ import {
 import { useTranslation } from "@/hooks/use-translation";
 
 const serviceHistory = [
-    { vehicle: 'Toyota Camry 2021', service: 'Oil Change', date: '2023-10-26', cost: '$50.00' },
-    { vehicle: 'Honda Civic 2019', service: 'Brake Repair', date: '2023-09-15', cost: '$250.00' },
-    { vehicle: 'Toyota Camry 2021', service: 'Engine Diagnostic', date: '2023-11-05', cost: '$100.00' },
-    { vehicle: 'Ford F-150 2022', service: 'Tire Rotation', date: '2023-08-01', cost: '$40.00' },
+    { vehicle: 'Toyota Camry 2021', service: 'Oil Change', date: '2023-10-26', cost: 50.00 },
+    { vehicle: 'Honda Civic 2019', service: 'Brake Repair', date: '2023-09-15', cost: 250.00 },
+    { vehicle: 'Toyota Camry 2021', service: 'Engine Diagnostic', date: '2023-11-05', cost: 100.00 },
+    { vehicle: 'Ford F-150 2022', service: 'Tire Rotation', date: '2023-08-01', cost: 40.00 },
 ];
+
+const TND_TO_EUR_RATE = 0.3; // Approximate conversion rate
 
 export default function HistoryPage() {
     const { t } = useTranslation();
@@ -43,7 +44,7 @@ export default function HistoryPage() {
                                     <TableHead>{t('service_history_vehicle')}</TableHead>
                                     <TableHead>{t('service_history_service')}</TableHead>
                                     <TableHead>{t('service_history_date')}</TableHead>
-                                    <TableHead>{t('service_history_cost')}</TableHead>
+                                    <TableHead>{t('service_history_cost')} (TND / EUR)</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -52,7 +53,7 @@ export default function HistoryPage() {
                                         <TableCell>{item.vehicle}</TableCell>
                                         <TableCell>{item.service}</TableCell>
                                         <TableCell>{item.date}</TableCell>
-                                        <TableCell>{item.cost}</TableCell>
+                                        <TableCell className="whitespace-nowrap">{item.cost.toFixed(2)} TND (€{(item.cost * TND_TO_EUR_RATE).toFixed(2)})</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
