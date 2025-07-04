@@ -1,0 +1,242 @@
+export const translations = {
+  en: {
+    // Header
+    nav_services: "Services",
+    nav_testimonials: "Testimonials",
+    nav_contact: "Contact",
+    nav_login: "Log In",
+    nav_signup: "Sign Up",
+    nav_dashboard: "Dashboard",
+
+    // Hero Section
+    hero_title: "Your Trusted Partner for Complete Car Care",
+    hero_subtitle: "Max-Drive-Services offers top-quality maintenance and repair services to keep your vehicle running smoothly. Book an appointment today and experience the difference.",
+    hero_cta: "Book a Service",
+
+    // Services Section
+    services_title: "Our Services",
+    service_oil_change_title: "Oil Change",
+    service_oil_change_desc: "Keep your engine healthy with our quick and reliable oil change service.",
+    service_tire_rotation_title: "Tire Services",
+    service_tire_rotation_desc: "Tire rotation, balancing, and replacement to ensure your safety on the road.",
+    service_brake_repair_title: "Brake Repair",
+    service_brake_repair_desc: "Expert brake inspections and repairs for optimal stopping power.",
+    service_engine_diagnostic_title: "Engine Diagnostics",
+    service_engine_diagnostic_desc: "Advanced diagnostics to identify and fix any engine issues.",
+
+    // Testimonials Section
+    testimonials_title: "What Our Clients Say",
+    testimonial_1_text: "Incredible service and very professional staff. My car feels brand new!",
+    testimonial_1_author: "Ahmed Ben Ali",
+    testimonial_2_text: "Fast, reliable, and fair pricing. I highly recommend Max-Drive-Services for any car troubles.",
+    testimonial_2_author: "Fatima Dubois",
+    testimonial_3_text: "The AI assistant helped me figure out the issue before I even came in. Very innovative!",
+    testimonial_3_author: "John Smith",
+
+    // Contact Section
+    contact_title: "Get In Touch",
+    contact_subtitle: "Have a question? Fill out the form below and we'll get back to you shortly.",
+    contact_form_name: "Name",
+    contact_form_email: "Email",
+    contact_form_message: "Message",
+    contact_form_submit: "Send Message",
+    contact_info_address: "123 Auto Street, Tunis, Tunisia",
+    contact_info_phone: "+216 12 345 678",
+    contact_info_email: "contact@maxdrive.com",
+
+    // AI Chat
+    ai_chat_title: "AI Assistant",
+    ai_chat_placeholder: "Ask about our services...",
+    ai_chat_welcome: "Hello! How can I help you with your car today?",
+
+    // Auth
+    login_title: "Welcome Back!",
+    login_subtitle: "Log in to access your dashboard.",
+    signup_title: "Create Account",
+    signup_subtitle: "Join us to manage your vehicle's health.",
+    email_label: "Email",
+    password_label: "Password",
+    confirm_password_label: "Confirm Password",
+    
+    // Dashboard
+    dashboard_title: "Client Dashboard",
+    tab_vehicles: "My Vehicles",
+    tab_history: "Service History",
+    tab_reminders: "Reminders",
+    add_vehicle_button: "Add New Vehicle",
+    vehicle_make: "Make",
+    vehicle_model: "Model",
+    vehicle_year: "Year",
+    vehicle_vin: "VIN",
+    add_vehicle_title: "Register a New Vehicle",
+    add_vehicle_desc: "Add your car's details to track its service history.",
+    submit_button: "Submit",
+    service_history_vehicle: "Vehicle",
+    service_history_service: "Service",
+    service_history_date: "Date",
+    service_history_cost: "Cost",
+    reminders_title: "Upcoming Maintenance",
+    logout: "Logout",
+  },
+  fr: {
+    // Header
+    nav_services: "Services",
+    nav_testimonials: "Témoignages",
+    nav_contact: "Contact",
+    nav_login: "Connexion",
+    nav_signup: "Inscription",
+    nav_dashboard: "Tableau de bord",
+
+    // Hero Section
+    hero_title: "Votre Partenaire de Confiance pour l'Entretien Complet de votre Voiture",
+    hero_subtitle: "Max-Drive-Services offre des services d'entretien et de réparation de haute qualité pour que votre véhicule fonctionne parfaitement. Prenez rendez-vous dès aujourd'hui et découvrez la différence.",
+    hero_cta: "Réserver un Service",
+
+    // Services Section
+    services_title: "Nos Services",
+    service_oil_change_title: "Vidange d'huile",
+    service_oil_change_desc: "Gardez votre moteur en bonne santé avec notre service de vidange rapide et fiable.",
+    service_tire_rotation_title: "Services de Pneus",
+    service_tire_rotation_desc: "Permutation, équilibrage et remplacement des pneus pour garantir votre sécurité.",
+    service_brake_repair_title: "Réparation de Freins",
+    service_brake_repair_desc: "Inspections et réparations expertes des freins pour une puissance de freinage optimale.",
+    service_engine_diagnostic_title: "Diagnostic Moteur",
+    service_engine_diagnostic_desc: "Diagnostics avancés pour identifier et résoudre tout problème moteur.",
+    
+    // Testimonials Section
+    testimonials_title: "Ce que disent nos clients",
+    testimonial_1_text: "Service incroyable et personnel très professionnel. Ma voiture est comme neuve !",
+    testimonial_1_author: "Ahmed Ben Ali",
+    testimonial_2_text: "Rapide, fiable et à un prix juste. Je recommande vivement Max-Drive-Services.",
+    testimonial_2_author: "Fatima Dubois",
+    testimonial_3_text: "L'assistant IA m'a aidé à identifier le problème avant même ma visite. Très innovant !",
+    testimonial_3_author: "John Smith",
+
+    // Contact Section
+    contact_title: "Nous Contacter",
+    contact_subtitle: "Une question ? Remplissez le formulaire ci-dessous et nous vous répondrons.",
+    contact_form_name: "Nom",
+    contact_form_email: "Email",
+    contact_form_message: "Message",
+    contact_form_submit: "Envoyer le Message",
+    contact_info_address: "123 Rue de l'Auto, Tunis, Tunisie",
+    contact_info_phone: "+216 12 345 678",
+    contact_info_email: "contact@maxdrive.com",
+
+    // AI Chat
+    ai_chat_title: "Assistant IA",
+    ai_chat_placeholder: "Posez une question sur nos services...",
+    ai_chat_welcome: "Bonjour ! Comment puis-je vous aider avec votre voiture aujourd'hui ?",
+    
+    // Auth
+    login_title: "Content de vous revoir !",
+    login_subtitle: "Connectez-vous pour accéder à votre tableau de bord.",
+    signup_title: "Créer un Compte",
+    signup_subtitle: "Rejoignez-nous pour gérer la santé de votre véhicule.",
+    email_label: "Email",
+    password_label: "Mot de passe",
+    confirm_password_label: "Confirmez le mot de passe",
+
+    // Dashboard
+    dashboard_title: "Tableau de Bord Client",
+    tab_vehicles: "Mes Véhicules",
+    tab_history: "Historique des Services",
+    tab_reminders: "Rappels",
+    add_vehicle_button: "Ajouter un Véhicule",
+    vehicle_make: "Marque",
+    vehicle_model: "Modèle",
+    vehicle_year: "Année",
+    vehicle_vin: "NIV",
+    add_vehicle_title: "Enregistrer un Nouveau Véhicule",
+    add_vehicle_desc: "Ajoutez les détails de votre voiture pour suivre son historique.",
+    submit_button: "Soumettre",
+    service_history_vehicle: "Véhicule",
+    service_history_service: "Service",
+    service_history_date: "Date",
+    service_history_cost: "Coût",
+    reminders_title: "Entretien à Venir",
+    logout: "Déconnexion",
+  },
+  ar: {
+    // Header
+    nav_services: "الخدمات",
+    nav_testimonials: "الشهادات",
+    nav_contact: "اتصل بنا",
+    nav_login: "تسجيل الدخول",
+    nav_signup: "التسجيل",
+    nav_dashboard: "لوحة التحكم",
+
+    // Hero Section
+    hero_title: "شريكك الموثوق به للعناية الكاملة بالسيارات",
+    hero_subtitle: "تقدم ماكس-درايف-سيرفيسز خدمات صيانة وإصلاح عالية الجودة للحفاظ على سيارتك تعمل بسلاسة. احجز موعدًا اليوم واختبر الفرق.",
+    hero_cta: "احجز خدمة",
+    
+    // Services Section
+    services_title: "خدماتنا",
+    service_oil_change_title: "تغيير الزيت",
+    service_oil_change_desc: "حافظ على صحة محركك من خلال خدمة تغيير الزيت السريعة والموثوقة.",
+    service_tire_rotation_title: "خدمات الإطارات",
+    service_tire_rotation_desc: "تبديل الإطارات وتوازنها واستبدالها لضمان سلامتك على الطريق.",
+    service_brake_repair_title: "إصلاح الفرامل",
+    service_brake_repair_desc: "فحص وإصلاحات متخصصة للفرامل لتحقيق قوة توقف مثالية.",
+    service_engine_diagnostic_title: "تشخيص المحرك",
+    service_engine_diagnostic_desc: "تشخيصات متقدمة لتحديد وإصلاح أي مشاكل في المحرك.",
+    
+    // Testimonials Section
+    testimonials_title: "ماذا يقول عملاؤنا",
+    testimonial_1_text: "خدمة رائعة وفريق عمل محترف للغاية. سيارتي تبدو وكأنها جديدة!",
+    testimonial_1_author: "أحمد بن علي",
+    testimonial_2_text: "خدمة سريعة وموثوقة وبأسعار معقولة. أوصي بشدة بخدمات ماكس-درايف.",
+    testimonial_2_author: "فاطمة دوبوا",
+    testimonial_3_text: "ساعدني المساعد الذكي في تحديد المشكلة حتى قبل أن أحضر. مبتكر جدا!",
+    testimonial_3_author: "جون سميث",
+    
+    // Contact Section
+    contact_title: "ابقى على تواصل",
+    contact_subtitle: "هل لديك سؤال؟ املأ النموذج أدناه وسنعود إليك قريبًا.",
+    contact_form_name: "الاسم",
+    contact_form_email: "البريد الإلكتروني",
+    contact_form_message: "الرسالة",
+    contact_form_submit: "إرسال الرسالة",
+    contact_info_address: "123 شارع السيارات، تونس، تونس",
+    contact_info_phone: "+216 12 345 678",
+    contact_info_email: "contact@maxdrive.com",
+
+    // AI Chat
+    ai_chat_title: "المساعد الذكي",
+    ai_chat_placeholder: "اسأل عن خدماتنا...",
+    ai_chat_welcome: "مرحباً! كيف يمكنني مساعدتك بخصوص سيارتك اليوم؟",
+
+    // Auth
+    login_title: "مرحبًا بعودتك!",
+    login_subtitle: "سجل الدخول للوصول إلى لوحة التحكم الخاصة بك.",
+    signup_title: "انشاء حساب",
+    signup_subtitle: "انضم إلينا لإدارة صحة سيارتك.",
+    email_label: "البريد الإلكتروني",
+    password_label: "كلمة المرور",
+    confirm_password_label: "تأكيد كلمة المرور",
+
+    // Dashboard
+    dashboard_title: "لوحة تحكم العميل",
+    tab_vehicles: "مركباتي",
+    tab_history: "سجل الخدمة",
+    tab_reminders: "التذكيرات",
+    add_vehicle_button: "إضافة مركبة جديدة",
+    vehicle_make: "الشركة المصنعة",
+    vehicle_model: "الموديل",
+    vehicle_year: "السنة",
+    vehicle_vin: "رقم الهيكل",
+    add_vehicle_title: "تسجيل مركبة جديدة",
+    add_vehicle_desc: "أضف تفاصيل سيارتك لتتبع سجل خدماتها.",
+    submit_button: "إرسال",
+    service_history_vehicle: "المركبة",
+    service_history_service: "الخدمة",
+    service_history_date: "التاريخ",
+    service_history_cost: "التكلفة",
+    reminders_title: "الصيانة القادمة",
+    logout: "تسجيل الخروج",
+  }
+};
+
+export type Language = keyof typeof translations;
+export type TranslationKey = keyof typeof translations['en'];
