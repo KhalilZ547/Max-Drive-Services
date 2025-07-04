@@ -45,13 +45,6 @@ export function Logo({ className, ...props }: React.SVGProps<SVGSVGElement>) {
         <polygon points="60,25 59,60 61,60" />
         <circle cx="60" cy="60" r="3" />
       </g>
-
-      {/* Wrench */}
-      <g className="wrench" fill="currentColor">
-        <path d="M42,85 C32,85 32,100 42,100 L48,100 L48,97 L42,97 C37,97 37,88 42,88 L48,88 L48,85 Z" />
-        <path d="M78,85 C88,85 88,100 78,100 L72,100 L72,97 L78,97 C83,97 83,88 78,88 L72,88 L72,85 Z" />
-        <rect x="48" y="90" width="24" height="5" rx="1" />
-      </g>
     </svg>
   );
 }
