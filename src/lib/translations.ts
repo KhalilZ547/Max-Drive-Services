@@ -7,6 +7,7 @@ export const translations = {
     nav_login: "Log In",
     nav_signup: "Sign Up",
     nav_dashboard: "Dashboard",
+    nav_appointment: "Book Appointment",
 
     // Hero Section
     hero_title: "Your Trusted Partner for Complete Car Care",
@@ -77,6 +78,24 @@ export const translations = {
     service_history_cost: "Cost",
     reminders_title: "Upcoming Maintenance",
     logout: "Logout",
+    welcome_title: "Welcome to Max-Drive-Services!",
+    welcome_subtitle: "It looks like you don't have any vehicles or services registered yet. Let's get you started by booking your first appointment.",
+    book_appointment_cta: "Book an Appointment",
+    appointment_page_title: "Book an Appointment",
+    appointment_page_subtitle: "Fill out the form below to schedule your service.",
+    service_label: "Service",
+    vehicle_label: "Vehicle",
+    date_label: "Preferred Date",
+    notes_label: "Additional Notes",
+    book_now_button: "Book Now",
+    no_vehicles_found: "No vehicles registered. Please describe your vehicle in the notes.",
+    select_service_placeholder: "Select a service",
+    select_vehicle_placeholder: "Select your vehicle",
+    date_placeholder: "Pick a date",
+    notes_placeholder: "Let us know anything else, e.g. your vehicle details if not registered.",
+    appointment_booked_title: "Appointment Booked!",
+    appointment_booked_desc: "We've scheduled your",
+    on: "on",
   },
   fr: {
     // Header
@@ -86,6 +105,7 @@ export const translations = {
     nav_login: "Connexion",
     nav_signup: "Inscription",
     nav_dashboard: "Tableau de bord",
+    nav_appointment: "Prendre rendez-vous",
 
     // Hero Section
     hero_title: "Votre Partenaire de Confiance pour l'Entretien Complet de votre Voiture",
@@ -156,6 +176,24 @@ export const translations = {
     service_history_cost: "Coût",
     reminders_title: "Entretien à Venir",
     logout: "Déconnexion",
+    welcome_title: "Bienvenue chez Max-Drive-Services !",
+    welcome_subtitle: "Il semble que vous n'ayez pas encore de véhicules ou de services enregistrés. Commençons par prendre votre premier rendez-vous.",
+    book_appointment_cta: "Prendre rendez-vous",
+    appointment_page_title: "Prendre rendez-vous",
+    appointment_page_subtitle: "Remplissez le formulaire ci-dessous pour planifier votre service.",
+    service_label: "Service",
+    vehicle_label: "Véhicule",
+    date_label: "Date Préférée",
+    notes_label: "Notes Supplémentaires",
+    book_now_button: "Réserver maintenant",
+    no_vehicles_found: "Aucun véhicule enregistré. Veuillez en ajouter un ou décrire votre véhicule dans les notes.",
+    select_service_placeholder: "Sélectionnez un service",
+    select_vehicle_placeholder: "Sélectionnez votre véhicule",
+    date_placeholder: "Choisissez une date",
+    notes_placeholder: "Faites-nous savoir autre chose, par exemple les détails de votre véhicule s'il n'est pas enregistré.",
+    appointment_booked_title: "Rendez-vous pris !",
+    appointment_booked_desc: "Nous avons programmé votre",
+    on: "le",
   },
   ar: {
     // Header
@@ -165,6 +203,7 @@ export const translations = {
     nav_login: "تسجيل الدخول",
     nav_signup: "التسجيل",
     nav_dashboard: "لوحة التحكم",
+    nav_appointment: "حجز موعد",
 
     // Hero Section
     hero_title: "شريكك الموثوق به للعناية الكاملة بالسيارات",
@@ -235,6 +274,24 @@ export const translations = {
     service_history_cost: "التكلفة",
     reminders_title: "الصيانة القادمة",
     logout: "تسجيل الخروج",
+    welcome_title: "أهلاً بك في ماكس-درايف-سيرفيسز!",
+    welcome_subtitle: "يبدو أنه ليس لديك أي مركبات أو خدمات مسجلة بعد. لنبدأ بحجز موعدك الأول.",
+    book_appointment_cta: "حجز موعد",
+    appointment_page_title: "حجز موعد",
+    appointment_page_subtitle: "املأ النموذج أدناه لجدولة خدمتك.",
+    service_label: "الخدمة",
+    vehicle_label: "المركبة",
+    date_label: "التاريخ المفضل",
+    notes_label: "ملاحظات إضافية",
+    book_now_button: "احجز الآن",
+    no_vehicles_found: "لا توجد مركبات مسجلة. يرجى وصف مركبتك في الملاحظات.",
+    select_service_placeholder: "اختر خدمة",
+    select_vehicle_placeholder: "اختر مركبتك",
+    date_placeholder: "اختر تاريخًا",
+    notes_placeholder: "أخبرنا بأي شيء آخر ، على سبيل المثال تفاصيل سيارتك إذا لم تكن مسجلة.",
+    appointment_booked_title: "تم حجز الموعد!",
+    appointment_booked_desc: "لقد قمنا بجدولة",
+    on: "في",
   }
 };
 

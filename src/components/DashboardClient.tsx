@@ -5,6 +5,7 @@ import {
   History,
   BellRing,
 } from "lucide-react";
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -23,26 +24,36 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "@/hooks/use-translation";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import { Button } from "./ui/button";
 
 
-const vehicles = [
-  { make: "Toyota", model: "Camry", year: 2021, vin: "123ABC456DEF" },
-  { make: "Honda", model: "Civic", year: 2022, vin: "789GHI012JKL" },
-];
+const vehicles: { make: string; model: string; year: number; vin: string; }[] = [];
 
-const serviceHistory = [
-  { vehicle: "Toyota Camry", service: "Oil Change", date: "2023-05-15", cost: "$75" },
-  { vehicle: "Honda Civic", service: "Brake Repair", date: "2023-06-20", cost: "$350" },
-  { vehicle: "Toyota Camry", service: "Tire Rotation", date: "2023-09-01", cost: "$50" },
-];
+const serviceHistory: { vehicle: string; service: string; date: string; cost: string; }[] = [];
 
-const reminders = [
-    { title: "Oil Change Due for Toyota Camry", date: "2024-08-15", details: "Next scheduled oil change is approaching. Book an appointment to keep your engine running smoothly." },
-    { title: "Annual Inspection for Honda Civic", date: "2024-09-01", details: "It's time for your yearly vehicle inspection to ensure everything is in top condition." },
-]
+const reminders: { title: string; date: string; details: string; }[] = [];
 
 export function DashboardClient() {
   const { t } = useTranslation();
+
+  if (vehicles.length === 0) {
+    return (
+      <main className="flex flex-1 flex-col items-center justify-center gap-4 p-4 md:gap-8 md:p-8 text-center">
+        <Card className="w-full max-w-lg">
+            <CardHeader>
+                <CardTitle className="text-3xl">{t('welcome_title')}</CardTitle>
+                <CardDescription>{t('welcome_subtitle')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Button size="lg" asChild>
+                    <Link href="/dashboard/appointment">{t('book_appointment_cta')}</Link>
+                </Button>
+            </CardContent>
+        </Card>
+      </main>
+    )
+  }
+
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">

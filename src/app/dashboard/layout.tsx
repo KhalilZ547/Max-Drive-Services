@@ -8,6 +8,7 @@ import {
   LogOut,
   Wrench,
   PanelLeft,
+  CalendarPlus,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -27,6 +28,7 @@ export default function DashboardLayout({
 
   const navItems = [
     { href: '/dashboard', icon: Home, label: t('nav_dashboard') },
+    { href: '/dashboard/appointment', icon: CalendarPlus, label: t('nav_appointment') },
     { href: '/dashboard/vehicles', icon: Car, label: t('tab_vehicles') },
     { href: '/dashboard/history', icon: History, label: t('tab_history') },
     { href: '/dashboard/profile', icon: CircleUser, label: 'Profile' },
