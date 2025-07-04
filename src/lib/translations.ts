@@ -60,6 +60,8 @@ export const translations = {
     email_label: "Email",
     password_label: "Password",
     confirm_password_label: "Confirm Password",
+    signup_confirmation_title: "Check your email!",
+    signup_confirmation_desc: "We've sent a confirmation link to your email. Please verify your account to log in.",
     
     // Dashboard
     dashboard_title: "Client Dashboard",
@@ -118,6 +120,8 @@ export const translations = {
     other_service_label: "Please Specify Service",
     other_service_placeholder: "e.g., Tire Rotation",
     other_service_error: "Please specify your service (min 3 chars).",
+    email_change_confirmation_title: "Email Change Pending",
+    email_change_confirmation_desc: "A confirmation link has been sent to your new email address. Please verify to update your email.",
   },
   fr: {
     // Header
@@ -179,6 +183,8 @@ export const translations = {
     email_label: "Email",
     password_label: "Mot de passe",
     confirm_password_label: "Confirmez le mot de passe",
+    signup_confirmation_title: "Vérifiez votre e-mail !",
+    signup_confirmation_desc: "Nous avons envoyé un lien de confirmation à votre adresse e-mail. Veuillez vérifier votre compte pour vous connecter.",
 
     // Dashboard
     dashboard_title: "Tableau de Bord Client",
@@ -237,6 +243,8 @@ export const translations = {
     other_service_label: "Veuillez préciser le service",
     other_service_placeholder: "ex: Rotation des pneus",
     other_service_error: "Veuillez préciser votre service (3 car. min).",
+    email_change_confirmation_title: "Changement d'e-mail en attente",
+    email_change_confirmation_desc: "Un lien de confirmation a été envoyé à votre nouvelle adresse e-mail. Veuillez vérifier pour mettre à jour votre e-mail.",
   },
   ar: {
     // Header
@@ -298,6 +306,8 @@ export const translations = {
     email_label: "البريد الإلكتروني",
     password_label: "كلمة المرور",
     confirm_password_label: "تأكيد كلمة المرور",
+    signup_confirmation_title: "تحقق من بريدك الإلكتروني!",
+    signup_confirmation_desc: "لقد أرسلنا رابط تأكيد إلى بريدك الإلكتروني. يرجى التحقق من حسابك لتسجيل الدخول.",
 
     // Dashboard
     dashboard_title: "لوحة تحكم العميل",
@@ -356,6 +366,8 @@ export const translations = {
     other_service_label: "يرجى تحديد الخدمة",
     other_service_placeholder: "مثال: تدوير الإطارات",
     other_service_error: "يرجى تحديد الخدمة (3 أحرف على الأقل).",
+    email_change_confirmation_title: "تغيير البريد الإلكتروني معلق",
+    email_change_confirmation_desc: "تم إرسال رابط تأكيد إلى عنوان بريدك الإلكتروني الجديد. يرجى التحقق لتحديث بريدك الإلكتروني.",
   }
 };
 

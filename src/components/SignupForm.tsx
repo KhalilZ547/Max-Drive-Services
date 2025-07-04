@@ -16,10 +16,12 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 export function SignupForm() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { toast } = useToast();
 
   const FormSchema = z.object({
     email: z.string().email({ message: "Please enter a valid email." }),
@@ -42,7 +44,11 @@ export function SignupForm() {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
     // Mock signup logic
-    router.push("/dashboard");
+    toast({
+        title: t('signup_confirmation_title'),
+        description: t('signup_confirmation_desc'),
+    });
+    router.push("/login");
   }
 
   return (

@@ -71,10 +71,17 @@ export default function ProfilePage() {
 
     function onSubmit(data: z.infer<typeof ProfileFormSchema>) {
         console.log(data);
-        toast({
-            title: t('profile_update_success_title'),
-            description: t('profile_update_success_desc'),
-        });
+        if (data.email !== user.email) {
+            toast({
+                title: t('email_change_confirmation_title'),
+                description: t('email_change_confirmation_desc'),
+            });
+        } else {
+            toast({
+                title: t('profile_update_success_title'),
+                description: t('profile_update_success_desc'),
+            });
+        }
     }
 
     return (
