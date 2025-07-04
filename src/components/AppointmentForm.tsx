@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -37,34 +38,51 @@ const services = [
     { id: 'brake_repair', key: 'service_brake_repair_title' },
     { id: 'engine_diagnostic', key: 'service_engine_diagnostic_title' },
     { id: 'ecu_solutions', key: 'service_ecu_solutions_title' },
+    { id: 'other', key: 'service_other_title' },
 ];
-
-const AppointmentFormSchema = z.object({
-  serviceId: z.string({
-    required_error: "Please select a service.",
-  }),
-  vehicle: z.string({ required_error: "Please enter your vehicle details." }).min(3, { message: "Please enter at least 3 characters." }),
-  appointmentDate: z.date({
-    required_error: "A date for the appointment is required.",
-  }),
-  notes: z.string().optional(),
-});
 
 export function AppointmentForm() {
     const { t } = useTranslation();
     const { toast } = useToast();
+
+    const AppointmentFormSchema = React.useMemo(() => z.object({
+        serviceId: z.string({
+            required_error: "Please select a service.",
+        }),
+        vehicle: z.string({ required_error: "Please enter your vehicle details." }).min(3, { message: "Please enter at least 3 characters." }),
+        appointmentDate: z.date({
+            required_error: "A date for the appointment is required.",
+        }),
+        notes: z.string().optional(),
+        otherService: z.string().optional(),
+        }).refine((data) => {
+            if (data.serviceId === 'other') {
+                return data.otherService && data.otherService.trim().length > 2;
+            }
+            return true;
+        }, {
+            message: t('other_service_error'),
+            path: ["otherService"],
+        }), [t]
+    );
 
     const form = useForm<z.infer<typeof AppointmentFormSchema>>({
         resolver: zodResolver(AppointmentFormSchema),
         defaultValues: {
             vehicle: "",
             notes: "",
+            otherService: "",
         },
     });
 
+    const selectedService = form.watch("serviceId");
+
     function onSubmit(data: z.infer<typeof AppointmentFormSchema>) {
         console.log(data);
-        const serviceName = t(services.find(s => s.id === data.serviceId)?.key as any);
+        const serviceName = data.serviceId === 'other' 
+            ? data.otherService
+            : t(services.find(s => s.id === data.serviceId)?.key as any);
+
         toast({
             title: t('appointment_booked_title'),
             description: `${t('appointment_booked_desc')} ${serviceName} ${t('on')} ${format(data.appointmentDate, "PPP")}.`,
@@ -105,6 +123,23 @@ export function AppointmentForm() {
                                 </FormItem>
                             )}
                         />
+
+                        {selectedService === 'other' && (
+                            <FormField
+                                control={form.control}
+                                name="otherService"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('other_service_label')}</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder={t('other_service_placeholder')} {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
+
                         <FormField
                             control={form.control}
                             name="vehicle"

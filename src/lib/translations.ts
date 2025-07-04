@@ -25,6 +25,7 @@ export const translations = {
     service_engine_diagnostic_desc: "Advanced diagnostics to identify and fix any engine issues.",
     service_ecu_solutions_title: "ECU Solutions",
     service_ecu_solutions_desc: "Custom ECU tuning and remapping for enhanced performance and fuel efficiency.",
+    service_other_title: "Other",
 
     // Testimonials Section
     testimonials_title: "What Our Clients Say",
@@ -112,6 +113,9 @@ export const translations = {
     dashboard_recent_activity_desc: "Your latest service records.",
     dashboard_no_recent_activity: "No recent activity.",
     dashboard_view_all_history: "View all history",
+    other_service_label: "Please Specify Service",
+    other_service_placeholder: "e.g., Tire Rotation",
+    other_service_error: "Please specify your service (min 3 chars).",
   },
   fr: {
     // Header
@@ -138,6 +142,7 @@ export const translations = {
     service_engine_diagnostic_desc: "Diagnostics avancés pour identifier et résoudre tout problème moteur.",
     service_ecu_solutions_title: "Solutions ECU",
     service_ecu_solutions_desc: "Réglage et reprogrammation d'ECU sur mesure pour des performances et une efficacité énergétique améliorées.",
+    service_other_title: "Autre",
     
     // Testimonials Section
     testimonials_title: "Ce que disent nos clients",
@@ -225,6 +230,9 @@ export const translations = {
     dashboard_recent_activity_desc: "Vos derniers relevés de service.",
     dashboard_no_recent_activity: "Aucune activité récente.",
     dashboard_view_all_history: "Voir tout l'historique",
+    other_service_label: "Veuillez préciser le service",
+    other_service_placeholder: "ex: Rotation des pneus",
+    other_service_error: "Veuillez préciser votre service (3 car. min).",
   },
   ar: {
     // Header
@@ -251,6 +259,7 @@ export const translations = {
     service_engine_diagnostic_desc: "تشخيصات متقدمة لتحديد وإصلاح أي مشاكل في المحرك.",
     service_ecu_solutions_title: "حلول وحدة التحكم الإلكترونية",
     service_ecu_solutions_desc: "ضبط وإعادة برمجة مخصصة لوحدة التحكم الإلكترونية (ECU) لتحسين الأداء وكفاءة استهلاك الوقود.",
+    service_other_title: "أخرى",
     
     // Testimonials Section
     testimonials_title: "ماذا يقول عملاؤنا",
@@ -338,6 +347,9 @@ export const translations = {
     dashboard_recent_activity_desc: "أحدث سجلات الخدمة الخاصة بك.",
     dashboard_no_recent_activity: "لا يوجد نشاط حديث.",
     dashboard_view_all_history: "عرض كل السجل",
+    other_service_label: "يرجى تحديد الخدمة",
+    other_service_placeholder: "مثال: تدوير الإطارات",
+    other_service_error: "يرجى تحديد الخدمة (3 أحرف على الأقل).",
   }
 };
 
