@@ -30,6 +30,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
 
 const services = [
     { id: 'oil_change', key: 'service_oil_change_title'},
@@ -38,13 +39,11 @@ const services = [
     { id: 'ecu_solutions', key: 'service_ecu_solutions_title' },
 ];
 
-const userVehicles: { id: string, name: string }[] = [];
-
 const AppointmentFormSchema = z.object({
   serviceId: z.string({
     required_error: "Please select a service.",
   }),
-  vehicleId: z.string().optional(),
+  vehicle: z.string({ required_error: "Please enter your vehicle details." }).min(3, { message: "Please enter at least 3 characters." }),
   appointmentDate: z.date({
     required_error: "A date for the appointment is required.",
   }),
@@ -57,6 +56,10 @@ export function AppointmentForm() {
 
     const form = useForm<z.infer<typeof AppointmentFormSchema>>({
         resolver: zodResolver(AppointmentFormSchema),
+        defaultValues: {
+            vehicle: "",
+            notes: "",
+        },
     });
 
     function onSubmit(data: z.infer<typeof AppointmentFormSchema>) {
@@ -104,23 +107,14 @@ export function AppointmentForm() {
                         />
                         <FormField
                             control={form.control}
-                            name="vehicleId"
+                            name="vehicle"
                             render={({ field }) => (
                                 <FormItem>
                                 <FormLabel>{t('vehicle_label')}</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={userVehicles.length === 0}>
-                                    <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder={t('select_vehicle_placeholder')} />
-                                    </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {userVehicles.map(vehicle => (
-                                            <SelectItem key={vehicle.id} value={vehicle.id}>{vehicle.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {userVehicles.length === 0 && <FormDescription>{t('no_vehicles_found')}</FormDescription>}
+                                <FormControl>
+                                    <Input placeholder={t('vehicle_placeholder')} {...field} />
+                                </FormControl>
+                                <FormDescription>{t('vehicle_input_description')}</FormDescription>
                                 <FormMessage />
                                 </FormItem>
                             )}
