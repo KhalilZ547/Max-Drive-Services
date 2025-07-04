@@ -2,13 +2,9 @@
 
 import {
   Car,
-  CircleUser,
   History,
-  LogOut,
-  PlusCircle,
   BellRing,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -26,17 +22,6 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "@/hooks/use-translation";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 
@@ -107,46 +92,9 @@ export function DashboardClient() {
         </TabsList>
         <TabsContent value="vehicles">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                    <CardTitle>{t('tab_vehicles')}</CardTitle>
-                    <CardDescription>Manage your registered vehicles.</CardDescription>
-                </div>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button size="sm" className="gap-1">
-                      <PlusCircle className="h-3.5 w-3.5" />
-                      {t('add_vehicle_button')}
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>{t('add_vehicle_title')}</DialogTitle>
-                      <DialogDescription>{t('add_vehicle_desc')}</DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="make" className="text-right">{t('vehicle_make')}</Label>
-                        <Input id="make" className="col-span-3" />
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="model" className="text-right">{t('vehicle_model')}</Label>
-                        <Input id="model" className="col-span-3" />
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="year" className="text-right">{t('vehicle_year')}</Label>
-                        <Input id="year" type="number" className="col-span-3" />
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="vin" className="text-right">{t('vehicle_vin')}</Label>
-                        <Input id="vin" className="col-span-3" />
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <Button type="submit">{t('submit_button')}</Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+            <CardHeader>
+              <CardTitle>{t('tab_vehicles')}</CardTitle>
+              <CardDescription>Manage your registered vehicles.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
