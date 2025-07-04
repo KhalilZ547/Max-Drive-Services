@@ -122,6 +122,23 @@ export const translations = {
     other_service_error: "Please specify your service (min 3 chars).",
     email_change_confirmation_title: "Email Change Pending",
     email_change_confirmation_desc: "A confirmation link has been sent to your new email address. Please verify to update your email.",
+
+    // Donation Section
+    donation_title: "Support Our Mission",
+    donation_subtitle: "Your generous contribution helps us continue providing top-notch services and training for aspiring mechanics.",
+    donation_paypal_tab: "PayPal",
+    donation_bank_tab: "Bank Transfer",
+    donation_paypal_desc: "Click the button below to donate securely via PayPal.",
+    donation_paypal_button: "Donate with PayPal",
+    donation_bank_desc: "You can make a direct bank transfer to the following account:",
+    donation_bank_beneficiary: "Beneficiary",
+    donation_bank_beneficiary_value: "Max-Drive-Services",
+    donation_bank_name: "Bank Name",
+    donation_bank_name_value: "Tunisian International Bank",
+    donation_bank_iban: "IBAN",
+    donation_bank_iban_value: "TN59 0000 1234 5678 9012 3456",
+    copied_toast_title: "Copied!",
+    copied_toast_desc: "IBAN has been copied to your clipboard.",
   },
   fr: {
     // Header
@@ -245,6 +262,23 @@ export const translations = {
     other_service_error: "Veuillez préciser votre service (3 car. min).",
     email_change_confirmation_title: "Changement d'e-mail en attente",
     email_change_confirmation_desc: "Un lien de confirmation a été envoyé à votre nouvelle adresse e-mail. Veuillez vérifier pour mettre à jour votre e-mail.",
+
+    // Donation Section
+    donation_title: "Soutenez Notre Mission",
+    donation_subtitle: "Votre généreuse contribution nous aide à continuer de fournir des services de premier ordre et de former des mécaniciens en herbe.",
+    donation_paypal_tab: "PayPal",
+    donation_bank_tab: "Virement Bancaire",
+    donation_paypal_desc: "Cliquez sur le bouton ci-dessous pour faire un don en toute sécurité via PayPal.",
+    donation_paypal_button: "Faire un don avec PayPal",
+    donation_bank_desc: "Vous pouvez effectuer un virement bancaire direct sur le compte suivant :",
+    donation_bank_beneficiary: "Bénéficiaire",
+    donation_bank_beneficiary_value: "Max-Drive-Services",
+    donation_bank_name: "Nom de la banque",
+    donation_bank_name_value: "Banque Internationale de Tunisie",
+    donation_bank_iban: "IBAN",
+    donation_bank_iban_value: "TN59 0000 1234 5678 9012 3456",
+    copied_toast_title: "Copié !",
+    copied_toast_desc: "L'IBAN a été copié dans votre presse-papiers.",
   },
   ar: {
     // Header
@@ -368,6 +402,23 @@ export const translations = {
     other_service_error: "يرجى تحديد الخدمة (3 أحرف على الأقل).",
     email_change_confirmation_title: "تغيير البريد الإلكتروني معلق",
     email_change_confirmation_desc: "تم إرسال رابط تأكيد إلى عنوان بريدك الإلكتروني الجديد. يرجى التحقق لتحديث بريدك الإلكتروني.",
+
+    // Donation Section
+    donation_title: "ادعم مهمتنا",
+    donation_subtitle: "تساعدنا مساهمتك السخية على مواصلة تقديم خدمات عالية الجودة وتدريب الميكانيكيين الطموحين.",
+    donation_paypal_tab: "باي بال",
+    donation_bank_tab: "تحويل بنكي",
+    donation_paypal_desc: "انقر على الزر أدناه للتبرع بأمان عبر باي بال.",
+    donation_paypal_button: "تبرع بواسطة باي بال",
+    donation_bank_desc: "يمكنك إجراء تحويل بنكي مباشر إلى الحساب التالي:",
+    donation_bank_beneficiary: "المستفيد",
+    donation_bank_beneficiary_value: "ماكس-درايف-سيرفيسز",
+    donation_bank_name: "اسم البنك",
+    donation_bank_name_value: "بنك تونس الدولي",
+    donation_bank_iban: "رقم الحساب المصرفي الدولي (IBAN)",
+    donation_bank_iban_value: "TN59 0000 1234 5678 9012 3456",
+    copied_toast_title: "تم النسخ!",
+    copied_toast_desc: "تم نسخ رقم الحساب المصرفي الدولي إلى الحافظة الخاصة بك.",
   }
 };
 
