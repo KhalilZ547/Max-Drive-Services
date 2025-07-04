@@ -6,7 +6,6 @@ import {
   History,
   Home,
   LogOut,
-  Wrench,
   PanelLeft,
   CalendarPlus,
 } from 'lucide-react';
@@ -16,6 +15,7 @@ import { useTranslation } from '@/hooks/use-translation';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import React from 'react';
+import { Logo } from '@/components/Logo';
 
 export default function DashboardLayout({
   children,
@@ -66,7 +66,7 @@ export default function DashboardLayout({
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold text-primary">
-              <Wrench className="h-6 w-6" />
+              <Logo className="h-8 w-8" />
               <span className="">Max-Drive-Services</span>
             </Link>
           </div>
@@ -102,7 +102,7 @@ export default function DashboardLayout({
           </Sheet>
           <div className="w-full flex-1">
              <Link href="/" className="flex items-center gap-2 font-semibold text-primary">
-              <Wrench className="h-6 w-6" />
+              <Logo className="h-8 w-8" />
             </Link>
           </div>
         </header>

@@ -1,4 +1,4 @@
-import { Wrench } from "lucide-react";
+import { Logo } from "./Logo";
 
 export function Footer() {
   return (
@@ -6,7 +6,7 @@ export function Footer() {
       <div className="container py-8">
         <div className="flex flex-col items-center text-center gap-2">
           <div className="flex items-center gap-2">
-            <Wrench className="h-6 w-6 text-primary" />
+            <Logo className="h-8 w-8 text-primary" />
             <span className="font-bold text-lg">Max-Drive-Services</span>
           </div>
           <p className="text-sm text-muted-foreground">

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Wrench, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -14,6 +14,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslation } from '@/hooks/use-translation';
 import type { Language } from '@/lib/translations';
 import React from 'react';
+import { Logo } from './Logo';
 
 export function Header() {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ export function Header() {
     <header className="bg-card/80 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary">
-          <Wrench className="h-6 w-6" />
+          <Logo className="h-8 w-8" />
           <span>Max-Drive-Services</span>
         </Link>
         <nav className="hidden md:flex items-center gap-6">
