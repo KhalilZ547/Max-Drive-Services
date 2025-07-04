@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -62,6 +61,13 @@ export default function ProfilePage() {
         fileInputRef.current?.click();
     };
 
+    const handleDeleteAvatar = () => {
+        setAvatarPreview(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
 
     function onSubmit(data: z.infer<typeof ProfileFormSchema>) {
         console.log(data);
@@ -94,6 +100,9 @@ export default function ProfilePage() {
                                     accept="image/*"
                                 />
                                 <Button type="button" variant="outline" onClick={handleButtonClick}>{t('change_photo_button')}</Button>
+                                {avatarPreview && (
+                                    <Button type="button" variant="destructive" onClick={handleDeleteAvatar}>{t('delete_photo_button')}</Button>
+                                )}
                             </div>
                              <FormField
                                 control={form.control}
