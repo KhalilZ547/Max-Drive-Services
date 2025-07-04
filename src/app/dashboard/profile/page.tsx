@@ -124,7 +124,7 @@ export default function ProfilePage() {
                                     <FormItem>
                                         <FormLabel>{t('email_label')}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="name@example.com" {...field} disabled />
+                                            <Input placeholder="name@example.com" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
