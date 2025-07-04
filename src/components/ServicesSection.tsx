@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/hooks/use-translation';
 import { Card, CardHeader, CardTitle, CardDescription } from './ui/card';
-import { Car, Wrench, CircleGauge, BrainCircuit } from 'lucide-react';
+import { Car, Wrench, CircleGauge, BrainCircuit, Cpu } from 'lucide-react';
 
 export function ServicesSection() {
   const { t } = useTranslation();
@@ -28,13 +28,18 @@ export function ServicesSection() {
       title: t('service_engine_diagnostic_title'),
       description: t('service_engine_diagnostic_desc'),
     },
+    {
+      icon: <Cpu className="w-10 h-10 text-primary" />,
+      title: t('service_ecu_solutions_title'),
+      description: t('service_ecu_solutions_desc'),
+    },
   ];
 
   return (
     <section id="services" className="py-20 bg-background">
       <div className="container">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">{t('services_title')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {services.map((service, index) => (
             <Card key={index} className="text-center p-6 flex flex-col items-center hover:shadow-lg transition-shadow duration-300">
               <CardHeader className="p-0 mb-4">

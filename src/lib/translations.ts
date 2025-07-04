@@ -23,6 +23,8 @@ export const translations = {
     service_brake_repair_desc: "Expert brake inspections and repairs for optimal stopping power.",
     service_engine_diagnostic_title: "Engine Diagnostics",
     service_engine_diagnostic_desc: "Advanced diagnostics to identify and fix any engine issues.",
+    service_ecu_solutions_title: "ECU Solutions",
+    service_ecu_solutions_desc: "Custom ECU tuning and remapping for enhanced performance and fuel efficiency.",
 
     // Testimonials Section
     testimonials_title: "What Our Clients Say",
@@ -102,6 +104,8 @@ export const translations = {
     service_brake_repair_desc: "Inspections et réparations expertes des freins pour une puissance de freinage optimale.",
     service_engine_diagnostic_title: "Diagnostic Moteur",
     service_engine_diagnostic_desc: "Diagnostics avancés pour identifier et résoudre tout problème moteur.",
+    service_ecu_solutions_title: "Solutions ECU",
+    service_ecu_solutions_desc: "Réglage et reprogrammation d'ECU sur mesure pour des performances et une efficacité énergétique améliorées.",
     
     // Testimonials Section
     testimonials_title: "Ce que disent nos clients",
@@ -181,6 +185,8 @@ export const translations = {
     service_brake_repair_desc: "فحص وإصلاحات متخصصة للفرامل لتحقيق قوة توقف مثالية.",
     service_engine_diagnostic_title: "تشخيص المحرك",
     service_engine_diagnostic_desc: "تشخيصات متقدمة لتحديد وإصلاح أي مشاكل في المحرك.",
+    service_ecu_solutions_title: "حلول وحدة التحكم الإلكترونية",
+    service_ecu_solutions_desc: "ضبط وإعادة برمجة مخصصة لوحدة التحكم الإلكترونية (ECU) لتحسين الأداء وكفاءة استهلاك الوقود.",
     
     // Testimonials Section
     testimonials_title: "ماذا يقول عملاؤنا",
