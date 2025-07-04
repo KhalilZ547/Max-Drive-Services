@@ -41,8 +41,10 @@ export function DonationSection() {
               <TabsContent value="paypal" className="p-6 text-center">
                 <div className="space-y-4">
                     <p className="text-muted-foreground">{t('donation_paypal_desc')}</p>
-                    <Button size="lg" className="w-full max-w-xs mx-auto bg-[#00457C] hover:bg-[#003057]">
-                        <span>{t('donation_paypal_button')}</span>
+                    <Button asChild size="lg" className="w-full max-w-xs mx-auto bg-[#00457C] hover:bg-[#003057]">
+                        <a href="https://www.paypal.com/donate" target="_blank" rel="noopener noreferrer">
+                            <span>{t('donation_paypal_button')}</span>
+                        </a>
                     </Button>
                 </div>
               </TabsContent>
