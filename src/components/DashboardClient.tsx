@@ -1,9 +1,11 @@
+
 "use client";
 
 import {
   Car,
   History,
   BellRing,
+  CalendarPlus,
 } from "lucide-react";
 import Link from 'next/link';
 import {
@@ -13,25 +15,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "@/hooks/use-translation";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 import { Button } from "./ui/button";
 
+const vehicles: { make: string; model: string; year: number; vin: string; }[] = [
+    { make: 'Toyota', model: 'Camry', year: 2021, vin: '1234567890ABCDEFG' },
+    { make: 'Honda', model: 'Civic', year: 2019, vin: 'GFEDCBA0987654321' },
+];
 
-const vehicles: { make: string; model: string; year: number; vin: string; }[] = [];
+const serviceHistory: { vehicle: string; service: string; date: string; cost: string; }[] = [
+    { vehicle: 'Toyota Camry 2021', service: 'Oil Change', date: '2023-10-26', cost: '$50.00' },
+    { vehicle: 'Honda Civic 2019', service: 'Brake Repair', date: '2023-09-15', cost: '$250.00' },
+    { vehicle: 'Toyota Camry 2021', service: 'Engine Diagnostic', date: '2023-11-05', cost: '$100.00' },
+];
 
-const serviceHistory: { vehicle: string; service: string; date: string; cost: string; }[] = [];
-
-const reminders: { title: string; date: string; details: string; }[] = [];
+const reminders: { title: string; date: string; details: string; }[] = [
+    { title: 'Oil Change due', date: '2024-08-15', details: 'Your Toyota Camry is due for an oil change.'}
+];
 
 export function DashboardClient() {
   const { t } = useTranslation();
@@ -53,7 +53,6 @@ export function DashboardClient() {
       </main>
     )
   }
-
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -94,88 +93,71 @@ export function DashboardClient() {
             </p>
           </CardContent>
         </Card>
+         <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{t('nav_appointment')}</CardTitle>
+            <CalendarPlus className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <Button asChild className="mt-2 w-full">
+              <Link href="/dashboard/appointment">{t('book_now_button')}</Link>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
-      <Tabs defaultValue="vehicles">
-        <TabsList>
-          <TabsTrigger value="vehicles">{t('tab_vehicles')}</TabsTrigger>
-          <TabsTrigger value="history">{t('tab_history')}</TabsTrigger>
-          <TabsTrigger value="reminders">{t('tab_reminders')}</TabsTrigger>
-        </TabsList>
-        <TabsContent value="vehicles">
-          <Card>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
             <CardHeader>
-              <CardTitle>{t('tab_vehicles')}</CardTitle>
-              <CardDescription>Manage your registered vehicles.</CardDescription>
+                <CardTitle>{t('reminders_title')}</CardTitle>
+                <CardDescription>{t('dashboard_reminders_desc')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {vehicles.map((vehicle, index) => (
-                    <Card key={index}>
-                        <CardHeader>
-                            <CardTitle>{vehicle.make} {vehicle.model}</CardTitle>
-                            <CardDescription>{vehicle.year} - VIN: {vehicle.vin}</CardDescription>
-                        </CardHeader>
-                    </Card>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="history">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('tab_history')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('service_history_vehicle')}</TableHead>
-                    <TableHead>{t('service_history_service')}</TableHead>
-                    <TableHead>{t('service_history_date')}</TableHead>
-                    <TableHead>{t('service_history_cost')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {serviceHistory.map((item, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{item.vehicle}</TableCell>
-                      <TableCell>{item.service}</TableCell>
-                      <TableCell>{item.date}</TableCell>
-                      <TableCell>{item.cost}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="reminders">
-            <Card>
-                <CardHeader>
-                    <CardTitle>{t('reminders_title')}</CardTitle>
-                    <CardDescription>Stay on top of your vehicle's maintenance schedule.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
+                {reminders.length > 0 ? (
+                      <ul className="space-y-2">
                         {reminders.map((reminder, index) => (
-                            <AccordionItem value={`item-${index}`} key={index}>
-                                <AccordionTrigger>
-                                    <div className="flex justify-between w-full pr-4">
-                                        <span>{reminder.title}</span>
-                                        <span className="text-muted-foreground">{reminder.date}</span>
-                                    </div>
-                                </AccordionTrigger>
-                                <AccordionContent>
-                                    {reminder.details}
-                                </AccordionContent>
-                            </AccordionItem>
+                            <li key={index} className="flex justify-between items-center p-2 rounded-lg bg-muted">
+                                <div>
+                                    <p className="font-semibold">{reminder.title}</p>
+                                    <p className="text-sm text-muted-foreground">{reminder.details}</p>
+                                </div>
+                                <span className="text-sm font-medium">{reminder.date}</span>
+                            </li>
                         ))}
-                    </Accordion>
-                </CardContent>
-            </Card>
-        </TabsContent>
-      </Tabs>
+                    </ul>
+                ) : (
+                    <p>{t('dashboard_no_reminders')}</p>
+                )}
+            </CardContent>
+        </Card>
+        <Card>
+            <CardHeader>
+                <CardTitle>{t('dashboard_recent_activity_title')}</CardTitle>
+                <CardDescription>{t('dashboard_recent_activity_desc')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+                  {serviceHistory.length > 0 ? (
+                      <ul className="space-y-2">
+                        {serviceHistory.slice(0, 3).map((item, index) => (
+                            <li key={index} className="flex justify-between items-center p-2 rounded-lg bg-muted">
+                                <div>
+                                    <p className="font-semibold">{item.service} for {item.vehicle}</p>
+                                    <p className="text-sm text-muted-foreground">on {item.date}</p>
+                                </div>
+                                <span className="text-sm font-medium">{item.cost}</span>
+                            </li>
+                        ))}
+                    </ul>
+                  ) : (
+                      <p>{t('dashboard_no_recent_activity')}</p>
+                  )}
+                  {serviceHistory.length > 3 && (
+                    <Button variant="link" asChild className="mt-2 p-0 h-auto">
+                        <Link href="/dashboard/history">{t('dashboard_view_all_history')}</Link>
+                    </Button>
+                )}
+            </CardContent>
+        </Card>
+      </div>
     </main>
   );
 }

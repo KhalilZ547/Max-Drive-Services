@@ -1,3 +1,4 @@
+
 export const translations = {
   en: {
     // Header
@@ -96,6 +97,21 @@ export const translations = {
     appointment_booked_title: "Appointment Booked!",
     appointment_booked_desc: "We've scheduled your",
     on: "on",
+    history_page_description: "View your past service records.",
+    history_page_no_history: "You have no service history yet.",
+    profile_page_title: "Profile",
+    profile_page_description: "Manage your personal information.",
+    profile_update_success_title: "Profile Updated",
+    profile_update_success_desc: "Your profile information has been updated successfully.",
+    profile_save_button: "Save Changes",
+    vehicles_page_description: "Manage your registered vehicles.",
+    vehicles_page_no_vehicles: "You have no vehicles registered yet.",
+    dashboard_reminders_desc: "Stay on top of your vehicle's maintenance schedule.",
+    dashboard_no_reminders: "No upcoming reminders.",
+    dashboard_recent_activity_title: "Recent Activity",
+    dashboard_recent_activity_desc: "Your latest service records.",
+    dashboard_no_recent_activity: "No recent activity.",
+    dashboard_view_all_history: "View all history",
   },
   fr: {
     // Header
@@ -194,6 +210,21 @@ export const translations = {
     appointment_booked_title: "Rendez-vous pris !",
     appointment_booked_desc: "Nous avons programmé votre",
     on: "le",
+    history_page_description: "Consultez vos anciens dossiers de service.",
+    history_page_no_history: "Vous n'avez pas encore d'historique de service.",
+    profile_page_title: "Profil",
+    profile_page_description: "Gérez vos informations personnelles.",
+    profile_update_success_title: "Profil mis à jour",
+    profile_update_success_desc: "Vos informations de profil ont été mises à jour avec succès.",
+    profile_save_button: "Enregistrer les modifications",
+    vehicles_page_description: "Gérez vos véhicules enregistrés.",
+    vehicles_page_no_vehicles: "Vous n'avez aucun véhicule enregistré pour le moment.",
+    dashboard_reminders_desc: "Restez au top du calendrier d'entretien de votre véhicule.",
+    dashboard_no_reminders: "Aucun rappel à venir.",
+    dashboard_recent_activity_title: "Activité récente",
+    dashboard_recent_activity_desc: "Vos derniers relevés de service.",
+    dashboard_no_recent_activity: "Aucune activité récente.",
+    dashboard_view_all_history: "Voir tout l'historique",
   },
   ar: {
     // Header
@@ -292,6 +323,21 @@ export const translations = {
     appointment_booked_title: "تم حجز الموعد!",
     appointment_booked_desc: "لقد قمنا بجدولة",
     on: "في",
+    history_page_description: "عرض سجلات الخدمة السابقة الخاصة بك.",
+    history_page_no_history: "ليس لديك سجل خدمة حتى الآن.",
+    profile_page_title: "الملف الشخصي",
+    profile_page_description: "إدارة معلوماتك الشخصية.",
+    profile_update_success_title: "تم تحديث الملف الشخصي",
+    profile_update_success_desc: "تم تحديث معلومات ملفك الشخصي بنجاح.",
+    profile_save_button: "حفظ التغييرات",
+    vehicles_page_description: "إدارة مركباتك المسجلة.",
+    vehicles_page_no_vehicles: "ليس لديك مركبات مسجلة حتى الآن.",
+    dashboard_reminders_desc: "ابق على اطلاع بجدول صيانة سيارتك.",
+    dashboard_no_reminders: "لا توجد تذكيرات قادمة.",
+    dashboard_recent_activity_title: "النشاط الأخير",
+    dashboard_recent_activity_desc: "أحدث سجلات الخدمة الخاصة بك.",
+    dashboard_no_recent_activity: "لا يوجد نشاط حديث.",
+    dashboard_view_all_history: "عرض كل السجل",
   }
 };
 
