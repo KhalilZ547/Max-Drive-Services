@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useTranslation } from '@/hooks/use-translation';
@@ -74,7 +75,7 @@ export function ContactSection() {
                       <FormItem>
                         <FormLabel>{t('contact_form_email')}</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="john@example.com" {...field} />
+                          <Input type="email" placeholder="karim@example.com" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -87,7 +88,7 @@ export function ContactSection() {
                       <FormItem>
                         <FormLabel>{t('contact_form_message')}</FormLabel>
                         <FormControl>
-                          <Textarea placeholder={t('contact_form_message')} {...field} />
+                          <Textarea placeholder={t('contact_form_message_placeholder')} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
