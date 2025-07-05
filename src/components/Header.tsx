@@ -31,8 +31,7 @@ export function Header() {
     <header className="bg-card/80 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary">
-          <Logo className="h-8 w-8" />
-          <span>Max-Drive-Services</span>
+          <Logo className="h-10 w-10" />
         </Link>
         <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
