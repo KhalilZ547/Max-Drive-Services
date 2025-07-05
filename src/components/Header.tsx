@@ -30,9 +30,9 @@ export function Header() {
   return (
     <header className="bg-card/80 backdrop-blur-sm sticky top-0 z-40 w-full border-b">
       <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-semibold text-lg text-primary">
+        <Link href="/" className="flex items-center gap-2 text-lg text-primary">
           <Logo className="h-10 w-10" />
-          <span className="font-headline uppercase tracking-wider text-lg">Max Drive Services</span>
+          <span className="font-headline font-bold">Max Drive Services</span>
         </Link>
         <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
