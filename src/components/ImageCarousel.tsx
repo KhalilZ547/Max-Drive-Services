@@ -35,6 +35,11 @@ const images = [
     alt: 'A clean and organized workshop with tools on the wall.',
     hint: 'workshop tools',
   },
+  {
+    src: 'https://placehold.co/800x450.png',
+    alt: 'A shiny red sports car in the garage.',
+    hint: 'sports car',
+  },
 ];
 
 export function ImageCarousel() {
@@ -60,25 +65,35 @@ export function ImageCarousel() {
       <div className="container">
         <Carousel
           setApi={setApi}
-          className="w-full max-w-5xl mx-auto group"
+          className="w-full max-w-6xl mx-auto group"
           opts={{
+            align: 'center',
             loop: true,
           }}
         >
-          <CarouselContent>
+          <CarouselContent className="-ml-4">
             {images.map((image, index) => (
-              <CarouselItem key={index}>
-                <Card className="overflow-hidden">
-                  <CardContent className="relative flex aspect-video items-center justify-center p-0">
-                    <Image
-                      src={image.src}
-                      alt={image.alt}
-                      fill
-                      className="object-cover"
-                      data-ai-hint={image.hint}
-                    />
-                  </CardContent>
-                </Card>
+              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                <div
+                  className={cn(
+                    'transition-all duration-300 ease-in-out',
+                    current === index
+                      ? 'scale-100 opacity-100'
+                      : 'scale-90 opacity-60'
+                  )}
+                >
+                  <Card className="overflow-hidden rounded-lg shadow-lg">
+                    <CardContent className="relative flex aspect-video items-center justify-center p-0">
+                      <Image
+                        src={image.src}
+                        alt={image.alt}
+                        fill
+                        className="object-cover"
+                        data-ai-hint={image.hint}
+                      />
+                    </CardContent>
+                  </Card>
+                </div>
               </CarouselItem>
             ))}
           </CarouselContent>
