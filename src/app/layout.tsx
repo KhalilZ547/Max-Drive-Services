@@ -3,8 +3,8 @@ import './globals.css';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/ThemeProvider';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { AIChat } from '@/components/AIChat';
+import { GlobalThemeToggle } from '@/components/GlobalThemeToggle';
 
 export const metadata: Metadata = {
   title: 'Max-Drive-Services',
@@ -36,7 +36,7 @@ export default function RootLayout({
           <LanguageProvider>
             {children}
             <Toaster />
-            <ThemeToggle />
+            <GlobalThemeToggle />
             <AIChat />
           </LanguageProvider>
         </ThemeProvider>

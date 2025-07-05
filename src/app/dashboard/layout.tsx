@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/select';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { Language } from '@/lib/translations';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function DashboardLayout({
   children,
@@ -100,7 +101,10 @@ export default function DashboardLayout({
             <NavContent />
           </div>
           <div className="mt-auto p-4 space-y-4">
-             <LanguageSelector />
+             <div className="flex w-full items-center gap-2">
+                <LanguageSelector />
+                <ThemeToggle variant="icon" className="shrink-0" />
+             </div>
              <Button size="sm" className="w-full" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4"/>
                 {t('logout')}
@@ -120,7 +124,10 @@ export default function DashboardLayout({
             <SheetContent side="left" className="flex flex-col">
               <NavContent />
               <div className="mt-auto space-y-4">
-                <LanguageSelector />
+                <div className="flex w-full items-center gap-2">
+                    <LanguageSelector />
+                    <ThemeToggle variant="icon" className="shrink-0" />
+                </div>
                 <Button size="sm" className="w-full" onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4"/>
                     {t('logout')}

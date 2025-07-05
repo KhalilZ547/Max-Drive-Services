@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import React, { useEffect, useState } from 'react';
 import { Logo } from '@/components/Logo';
 import { LogoSpinner } from '@/components/LogoSpinner';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function AdminLayout({
   children,
@@ -91,10 +92,13 @@ export default function AdminLayout({
             <NavContent />
           </div>
           <div className="mt-auto p-4">
-             <Button size="sm" className="w-full" onClick={handleLogout}>
-                <LogOut className="mr-2 h-4 w-4"/>
-                Logout
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button size="sm" className="w-full" onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4"/>
+                  Logout
+              </Button>
+              <ThemeToggle variant="icon" />
+            </div>
           </div>
         </div>
       </div>
@@ -109,7 +113,8 @@ export default function AdminLayout({
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
               <NavContent />
-              <div className="mt-auto">
+              <div className="mt-auto space-y-2">
+                <ThemeToggle variant="icon" className="w-full h-10" />
                 <Button size="sm" className="w-full" onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4"/>
                     Logout
