@@ -46,7 +46,20 @@ export default function ProfilePage() {
     });
 
     const watchedName = form.watch("name");
-    const avatarFallback = watchedName ? watchedName.charAt(0).toUpperCase() : "";
+    
+    const getAvatarFallback = (name: string | undefined): string => {
+        if (!name) return "";
+        const nameParts = name.trim().split(" ").filter(Boolean);
+
+        if (nameParts.length > 1) {
+            return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        } else if (nameParts.length === 1) {
+            return nameParts[0][0].toUpperCase();
+        }
+        return "";
+    };
+
+    const avatarFallback = getAvatarFallback(watchedName);
 
     const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
