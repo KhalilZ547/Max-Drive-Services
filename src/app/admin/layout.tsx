@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react';
 import { Logo } from '@/components/Logo';
 import { LogoSpinner } from '@/components/LogoSpinner';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AdminLayout({
   children,
@@ -24,6 +25,7 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -47,6 +49,14 @@ export default function AdminLayout({
     }
     router.push('/login');
   }
+
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    toast({
+      title: "Navigation Info",
+      description: "To return to the public home page, please log out first.",
+    });
+  };
 
   const NavContent = () => (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
@@ -83,7 +93,7 @@ export default function AdminLayout({
       <div className="hidden border-r bg-card md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/admin/dashboard" className="flex items-center gap-0 text-primary text-lg">
+            <Link href="/admin/dashboard" onClick={handleLogoClick} className="flex items-center gap-0 text-primary text-lg">
               <Logo className="h-10 w-10" />
               <span className="font-headline font-bold -ml-4">Admin Panel</span>
             </Link>
@@ -123,7 +133,7 @@ export default function AdminLayout({
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1">
-             <Link href="/admin/dashboard" className="flex items-center gap-0 text-primary text-lg">
+             <Link href="/admin/dashboard" onClick={handleLogoClick} className="flex items-center gap-0 text-primary text-lg">
               <Logo className="h-10 w-10" />
               <span className="font-headline font-bold -ml-4">Admin Panel</span>
             </Link>

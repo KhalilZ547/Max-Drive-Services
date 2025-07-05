@@ -27,6 +27,7 @@ import {
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { Language } from '@/lib/translations';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { useToast } from '@/hooks/use-toast';
 
 export default function DashboardLayout({
   children,
@@ -37,6 +38,7 @@ export default function DashboardLayout({
   const { language, setLanguage } = useLanguage();
   const pathname = usePathname();
   const router = useRouter();
+  const { toast } = useToast();
 
   const navItems = [
     { href: '/dashboard', icon: Home, label: t('nav_dashboard') },
@@ -52,6 +54,14 @@ export default function DashboardLayout({
     }
     router.push('/login');
   }
+
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    toast({
+      title: "Navigation Info",
+      description: "To return to the public home page, please log out first.",
+    });
+  };
 
   const NavContent = () => (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
@@ -92,7 +102,7 @@ export default function DashboardLayout({
       <div className="hidden border-r bg-card md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/dashboard" className="flex items-center gap-0 text-primary text-lg">
+            <Link href="/dashboard" onClick={handleLogoClick} className="flex items-center gap-0 text-primary text-lg">
               <Logo className="h-10 w-10" />
               <span className="font-headline font-bold -ml-4">Max Drive Services</span>
             </Link>
@@ -136,7 +146,7 @@ export default function DashboardLayout({
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1">
-             <Link href="/dashboard" className="flex items-center gap-0 text-primary text-lg">
+             <Link href="/dashboard" onClick={handleLogoClick} className="flex items-center gap-0 text-primary text-lg">
               <Logo className="h-10 w-10" />
               <span className="font-headline font-bold -ml-4">Max Drive Services</span>
             </Link>
