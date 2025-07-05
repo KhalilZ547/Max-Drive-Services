@@ -38,13 +38,15 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
 import { EditClientDialog } from "@/components/EditClientDialog";
+import { AddClientDialog } from "@/components/AddClientDialog";
 import { useAdminClients } from "@/hooks/use-admin-clients";
 import type { Client } from "@/lib/mock-data";
 
 
 export default function ClientsPage() {
     const { toast } = useToast();
-    const { clients, updateClient, deleteClient } = useAdminClients();
+    const { clients, addClient, updateClient, deleteClient } = useAdminClients();
+    const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [editingClient, setEditingClient] = useState<Client | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [deletingClientId, setDeletingClientId] = useState<string | null>(null);
@@ -71,6 +73,12 @@ export default function ClientsPage() {
         toast({ title: "Client Updated", description: "The client's information has been successfully updated."});
         setEditingClient(null);
     }
+    
+    const handleAddClient = (newClientData: Omit<Client, 'id' | 'registered'>) => {
+        addClient(newClientData);
+        toast({ title: "Client Added", description: "The new client has been successfully added."});
+        setIsAddDialogOpen(false);
+    };
 
 
     return (
@@ -82,7 +90,7 @@ export default function ClientsPage() {
                             <CardTitle>Clients</CardTitle>
                             <CardDescription>Manage your clients and view their details.</CardDescription>
                         </div>
-                        <Button>Add New Client</Button>
+                        <Button onClick={() => setIsAddDialogOpen(true)}>Add New Client</Button>
                     </CardHeader>
                     <CardContent>
                         <Table>
@@ -124,6 +132,11 @@ export default function ClientsPage() {
                     </CardContent>
                 </Card>
             </main>
+            <AddClientDialog
+                isOpen={isAddDialogOpen}
+                onOpenChange={setIsAddDialogOpen}
+                onAddClient={handleAddClient}
+            />
             {editingClient && (
                 <EditClientDialog
                     isOpen={isEditDialogOpen}

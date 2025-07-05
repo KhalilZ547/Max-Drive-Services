@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -57,6 +58,16 @@ export const useAdminClients = () => {
     setClients(newClients);
   }, []);
 
+  const addClient = useCallback((newClientData: Omit<Client, 'id' | 'registered'>) => {
+    const newClient: Client = {
+      ...newClientData,
+      id: `usr_${new Date().getTime()}`,
+      registered: new Date().toISOString().split('T')[0],
+    };
+    const newClients = [...clients, newClient];
+    updateClients(newClients);
+  }, [clients, updateClients]);
+
   const deleteClient = useCallback((clientId: string) => {
     const newClients = clients.filter((c) => c.id !== clientId);
     updateClients(newClients);
@@ -70,5 +81,5 @@ export const useAdminClients = () => {
   }, [clients, updateClients]);
 
 
-  return { clients, deleteClient, updateClient };
+  return { clients, addClient, deleteClient, updateClient };
 };
