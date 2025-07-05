@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -9,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Mock data, in a real app this would come from a database
 const vehicles = [
@@ -18,6 +20,37 @@ const vehicles = [
 
 export default function VehiclesPage() {
     const { t } = useTranslation();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsLoading(false), 1500);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (isLoading) {
+        return (
+             <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+                <Card>
+                    <CardHeader>
+                        <Skeleton className="h-8 w-40" />
+                        <Skeleton className="h-4 w-56 mt-2" />
+                    </CardHeader>
+                    <CardContent>
+                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                            {Array.from({ length: 2 }).map((_, index) => (
+                                <Card key={index}>
+                                    <CardHeader>
+                                        <CardTitle><Skeleton className="h-7 w-40" /></CardTitle>
+                                        <CardDescription><Skeleton className="h-4 w-48 mt-2" /></CardDescription>
+                                    </CardHeader>
+                                </Card>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+            </main>
+        )
+    }
 
     return (
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">

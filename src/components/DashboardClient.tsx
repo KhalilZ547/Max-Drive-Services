@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -17,7 +18,7 @@ import {
 import { useTranslation } from "@/hooks/use-translation";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
-import { DashboardSkeleton } from "./DashboardSkeleton";
+import { LogoSpinner } from "./LogoSpinner";
 
 const vehicles: { make: string; model: string; year: number; vin: string; }[] = [
     { make: 'Toyota', model: 'Camry', year: 2021, vin: '1234567890ABCDEFG' },
@@ -45,7 +46,12 @@ export function DashboardClient() {
   }, []);
 
   if (isLoading) {
-    return <DashboardSkeleton />;
+    return (
+        <main className="flex flex-1 flex-col items-center justify-center gap-4 p-4 md:gap-8 md:p-8">
+            <LogoSpinner className="h-32 w-32" />
+            <p className="text-muted-foreground">Loading your dashboard...</p>
+        </main>
+      )
   }
 
   if (vehicles.length === 0) {

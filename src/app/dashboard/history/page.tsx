@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -16,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTranslation } from "@/hooks/use-translation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const serviceHistory = [
     { vehicle: 'Toyota Camry 2021', service: 'Oil Change', date: '2023-10-26', cost: 50.00 },
@@ -27,6 +29,47 @@ const TND_TO_EUR_RATE = 0.3; // Approximate conversion rate
 
 export default function HistoryPage() {
     const { t } = useTranslation();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsLoading(false), 1500);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (isLoading) {
+        return (
+            <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+                <Card>
+                    <CardHeader>
+                        <Skeleton className="h-8 w-40" />
+                        <Skeleton className="h-4 w-56 mt-2" />
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>{t('service_history_vehicle')}</TableHead>
+                                    <TableHead>{t('service_history_service')}</TableHead>
+                                    <TableHead>{t('service_history_date')}</TableHead>
+                                    <TableHead>{t('service_history_cost')} (TND / EUR)</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {Array.from({ length: 3 }).map((_, i) => (
+                                    <TableRow key={i}>
+                                        <TableCell><Skeleton className="h-5 w-32" /></TableCell>
+                                        <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                                        <TableCell><Skeleton className="h-5 w-20" /></TableCell>
+                                        <TableCell><Skeleton className="h-5 w-28" /></TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+            </main>
+        )
+    }
 
     return (
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
