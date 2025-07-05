@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, X, Instagram, Facebook } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -15,7 +15,6 @@ import { useTranslation } from '@/hooks/use-translation';
 import type { Language } from '@/lib/translations';
 import React from 'react';
 import { Logo } from './Logo';
-import { WhatsappIcon } from './WhatsappIcon';
 
 export function Header() {
   const { t } = useTranslation();
@@ -33,7 +32,7 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-lg text-primary">
           <Logo className="h-10 w-10" />
-          <span className="font-headline font-bold text-foreground">Max Drive Services</span>
+          <span className="font-headline font-bold">Max Drive Services</span>
         </Link>
         <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
@@ -46,23 +45,7 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <div className="hidden md:flex items-center gap-1">
-           <Button variant="ghost" size="icon" asChild>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <Instagram className="h-5 w-5" />
-              </a>
-           </Button>
-            <Button variant="ghost" size="icon" asChild>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                    <Facebook className="h-5 w-5" />
-                </a>
-            </Button>
-            <Button variant="ghost" size="icon" asChild>
-                <a href="https://wa.me/21612345678" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-                    <WhatsappIcon className="h-5 w-5" />
-                </a>
-            </Button>
-
+        <div className="hidden md:flex items-center gap-2">
           <Select value={language} onValueChange={(value) => setLanguage(value as Language)}>
             <SelectTrigger className="w-28 text-sm">
               <SelectValue placeholder="Language" />
@@ -99,17 +82,6 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-             <div className="flex justify-center gap-4 my-4">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <Instagram className="h-6 w-6 text-muted-foreground hover:text-primary transition-colors" />
-              </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                <Facebook className="h-6 w-6 text-muted-foreground hover:text-primary transition-colors" />
-              </a>
-              <a href="https://wa.me/21612345678" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-                <WhatsappIcon className="h-6 w-6 text-muted-foreground hover:text-primary transition-colors" />
-              </a>
-            </div>
             <div className="flex flex-col gap-2 mt-auto">
               <Button variant="outline" asChild>
                 <Link href="/login">{t('nav_login')}</Link>
