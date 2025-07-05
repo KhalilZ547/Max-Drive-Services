@@ -32,7 +32,7 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-0 text-lg text-primary">
           <Logo className="h-10 w-10" />
-          <span className="font-headline font-bold">Max Drive Services</span>
+          <span className="font-headline font-bold -ml-2">Max Drive Services</span>
         </Link>
         <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
