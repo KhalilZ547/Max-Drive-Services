@@ -9,7 +9,7 @@ export const translations = {
     nav_signup: "Sign Up",
     nav_dashboard: "Dashboard",
     nav_appointment: "Book Appointment",
-    nav_donation: "Donation",
+    nav_donation: "Donate",
 
     // Hero Section
     hero_title: "Your Trusted Partner for Complete Car Care",
@@ -153,7 +153,7 @@ export const translations = {
     nav_signup: "Inscription",
     nav_dashboard: "Tableau de bord",
     nav_appointment: "Prendre rendez-vous",
-    nav_donation: "Don",
+    nav_donation: "Faire un don",
 
     // Hero Section
     hero_title: "Votre Partenaire de Confiance pour l'Entretien Complet de votre Voiture",
