@@ -24,18 +24,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import type { Client } from "@/lib/mock-data";
 
 const EditClientFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email(),
 });
 
-type Client = {
-    id: string;
-    name: string;
-    email: string;
-    registered: string;
-};
 
 type EditClientDialogProps = {
     isOpen: boolean;

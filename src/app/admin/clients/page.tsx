@@ -38,22 +38,13 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
 import { EditClientDialog } from "@/components/EditClientDialog";
+import { useAdminClients } from "@/hooks/use-admin-clients";
+import type { Client } from "@/lib/mock-data";
 
-
-// Mock data for clients
-const clientsData = [
-    { id: 'usr_1', name: 'Ahmed Ben Ali', email: 'ahmed.benali@example.com', registered: '2023-05-12' },
-    { id: 'usr_2', name: 'Fatima Dubois', email: 'fatima.dubois@example.com', registered: '2023-06-20' },
-    { id: 'usr_3', name: 'John Smith', email: 'john.smith@example.com', registered: '2023-07-01' },
-    { id: 'usr_4', name: 'Karim Ben Ahmed', email: 'karim@example.com', registered: '2024-01-15' },
-    { id: 'usr_5', name: 'Aisha Muller', email: 'aisha.muller@example.com', registered: '2024-03-22' },
-];
-
-type Client = typeof clientsData[0];
 
 export default function ClientsPage() {
     const { toast } = useToast();
-    const [clients, setClients] = useState(clientsData);
+    const { clients, updateClient, deleteClient } = useAdminClients();
     const [editingClient, setEditingClient] = useState<Client | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [deletingClientId, setDeletingClientId] = useState<string | null>(null);
@@ -70,13 +61,13 @@ export default function ClientsPage() {
 
     const confirmDelete = () => {
         if (!deletingClientId) return;
-        setClients(clients.filter(c => c.id !== deletingClientId));
+        deleteClient(deletingClientId);
         toast({ title: "Client Deleted", description: "The client has been successfully removed.", variant: "destructive" });
         setDeletingClientId(null);
     }
 
     const handleUpdateClient = (updatedClient: Client) => {
-        setClients(clients.map(c => c.id === updatedClient.id ? updatedClient : c));
+        updateClient(updatedClient);
         toast({ title: "Client Updated", description: "The client's information has been successfully updated."});
         setEditingClient(null);
     }

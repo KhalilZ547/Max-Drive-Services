@@ -15,15 +15,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
-const stats = {
-  totalClients: 54,
-  totalVehicles: 78,
-  upcomingAppointments: 12,
-};
+import { useAdminClients } from "@/hooks/use-admin-clients";
 
 
 export default function AdminDashboardPage() {
+  const { clients } = useAdminClients();
+
+  const stats = {
+    totalClients: clients.length,
+    totalVehicles: 78,
+    upcomingAppointments: 12,
+  };
+
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
         <CardHeader className="px-0">
