@@ -43,7 +43,7 @@ export function ContactSection() {
   return (
     <section id="contact" className="py-20 bg-background">
       <div className="container">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">{t('contact_title')}</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 font-headline uppercase tracking-wider">{t('contact_title')}</h2>
         <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">{t('contact_subtitle')}</p>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <Card>

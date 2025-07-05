@@ -30,7 +30,7 @@ export function TestimonialsSection() {
   return (
     <section id="testimonials" className="py-20 bg-card">
       <div className="container">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">{t('testimonials_title')}</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 font-headline uppercase tracking-wider">{t('testimonials_title')}</h2>
         <Carousel opts={{ loop: true }} className="w-full max-w-4xl mx-auto">
           <CarouselContent>
             {testimonials.map((testimonial, index) => (

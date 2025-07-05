@@ -33,7 +33,7 @@ export function ServicesSection() {
   return (
     <section id="services" className="pt-4 pb-20 bg-background">
       <div className="container">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">{t('services_title')}</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 font-headline uppercase tracking-wider">{t('services_title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((service, index) => (
             <Card key={index} className="group text-center p-6 flex flex-col items-center hover:shadow-lg transition-shadow duration-300">

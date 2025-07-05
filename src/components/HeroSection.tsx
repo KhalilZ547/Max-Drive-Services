@@ -22,7 +22,7 @@ export function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
       </div>
       <div className="container relative z-10 text-center">
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-primary-foreground bg-primary/70 p-4 rounded-lg inline-block">
+        <h1 className="text-4xl md:text-6xl font-headline font-bold tracking-wider uppercase text-primary-foreground bg-primary/70 p-4 rounded-lg inline-block">
           {t('hero_title')}
         </h1>
 

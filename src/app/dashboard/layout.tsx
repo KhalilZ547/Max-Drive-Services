@@ -67,7 +67,7 @@ export default function DashboardLayout({
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold text-primary text-lg">
               <Logo className="h-10 w-10" />
-              <span className="font-bold italic -skew-x-12">Max Drive Services</span>
+              <span className="font-headline uppercase tracking-wider text-lg">Max Drive Services</span>
             </Link>
           </div>
           <div className="flex-1">
@@ -103,7 +103,7 @@ export default function DashboardLayout({
           <div className="w-full flex-1">
              <Link href="/" className="flex items-center gap-2 font-semibold text-primary text-lg">
               <Logo className="h-10 w-10" />
-              <span className="font-bold italic -skew-x-12">Max Drive Services</span>
+              <span className="font-headline uppercase tracking-wider text-lg">Max Drive Services</span>
             </Link>
           </div>
         </header>
