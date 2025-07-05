@@ -111,7 +111,7 @@ export default function ProfilePage() {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <div className="flex items-center space-x-4">
                                 <Avatar className="h-20 w-20">
-                                    <AvatarImage src={avatarPreview || `https://placehold.co/80x80.png?text=${avatarFallback}`} />
+                                    <AvatarImage src={avatarPreview || undefined} />
                                     <AvatarFallback>{avatarFallback}</AvatarFallback>
                                 </Avatar>
                                 <input
