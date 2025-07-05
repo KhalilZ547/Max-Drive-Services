@@ -21,7 +21,6 @@ const serviceHistory = [
     { vehicle: 'Toyota Camry 2021', service: 'Oil Change', date: '2023-10-26', cost: 50.00 },
     { vehicle: 'Honda Civic 2019', service: 'Brake Repair', date: '2023-09-15', cost: 250.00 },
     { vehicle: 'Toyota Camry 2021', service: 'Engine Diagnostic', date: '2023-11-05', cost: 100.00 },
-    { vehicle: 'Ford F-150 2022', service: 'Tire Rotation', date: '2023-08-01', cost: 40.00 },
 ];
 
 const TND_TO_EUR_RATE = 0.3; // Approximate conversion rate
