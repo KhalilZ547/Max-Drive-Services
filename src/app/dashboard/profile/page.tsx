@@ -35,7 +35,6 @@ export default function ProfilePage() {
     const user = {
         name: "John Doe",
         email: "john.doe@example.com",
-        avatar: "JD"
     };
 
     const form = useForm<z.infer<typeof ProfileFormSchema>>({
@@ -45,6 +44,9 @@ export default function ProfilePage() {
             email: user.email,
         },
     });
+
+    const watchedName = form.watch("name");
+    const avatarFallback = watchedName ? watchedName.charAt(0).toUpperCase() : "";
 
     const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -96,8 +98,8 @@ export default function ProfilePage() {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <div className="flex items-center space-x-4">
                                 <Avatar className="h-20 w-20">
-                                    <AvatarImage src={avatarPreview || `https://placehold.co/80x80.png?text=${user.avatar}`} />
-                                    <AvatarFallback>{user.avatar}</AvatarFallback>
+                                    <AvatarImage src={avatarPreview || `https://placehold.co/80x80.png?text=${avatarFallback}`} />
+                                    <AvatarFallback>{avatarFallback}</AvatarFallback>
                                 </Avatar>
                                 <input
                                     type="file"
