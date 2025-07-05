@@ -61,7 +61,7 @@ export function ContactSection() {
                       <FormItem>
                         <FormLabel>{t('contact_form_name')}</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} />
+                          <Input placeholder="Karim Ben Ahmed" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
