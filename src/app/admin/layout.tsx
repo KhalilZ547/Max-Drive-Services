@@ -2,42 +2,47 @@
 'use client';
 import Link from 'next/link';
 import {
-  Car,
-  CircleUser,
-  History,
+  Users,
   Home,
   LogOut,
   PanelLeft,
-  CalendarPlus,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useTranslation } from '@/hooks/use-translation';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Logo } from '@/components/Logo';
+import { LogoSpinner } from '@/components/LogoSpinner';
 
-export default function DashboardLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { t } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const role = localStorage.getItem('userRole');
+      if (role !== 'admin') {
+        router.push('/login');
+      } else {
+        setIsAuthorized(true);
+      }
+    }
+  }, [router]);
 
   const navItems = [
-    { href: '/dashboard', icon: Home, label: t('nav_dashboard') },
-    { href: '/dashboard/appointment', icon: CalendarPlus, label: t('nav_appointment') },
-    { href: '/dashboard/vehicles', icon: Car, label: t('tab_vehicles') },
-    { href: '/dashboard/history', icon: History, label: t('tab_history') },
-    { href: '/dashboard/profile', icon: CircleUser, label: 'Profile' },
+    { href: '/admin/dashboard', icon: Home, label: 'Dashboard' },
+    { href: '/admin/clients', icon: Users, label: 'Clients' },
   ];
 
   const handleLogout = () => {
     if (typeof window !== 'undefined') {
-        localStorage.removeItem('userRole');
+      localStorage.removeItem('userRole');
     }
     router.push('/login');
   }
@@ -63,6 +68,15 @@ export default function DashboardLayout({
     </nav>
   );
 
+  if (!isAuthorized) {
+      return (
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-4 md:gap-8 md:p-8 min-h-screen">
+            <LogoSpinner className="h-32 w-32" />
+            <p className="text-muted-foreground">Verifying authorization...</p>
+        </div>
+      )
+  }
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-card md:block">
@@ -70,7 +84,7 @@ export default function DashboardLayout({
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-0 text-primary text-lg">
               <Logo className="h-10 w-10" />
-              <span className="font-headline font-bold -ml-4">Max Drive Services</span>
+              <span className="font-headline font-bold -ml-4">Admin Panel</span>
             </Link>
           </div>
           <div className="flex-1">
@@ -79,7 +93,7 @@ export default function DashboardLayout({
           <div className="mt-auto p-4">
              <Button size="sm" className="w-full" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4"/>
-                {t('logout')}
+                Logout
             </Button>
           </div>
         </div>
@@ -98,7 +112,7 @@ export default function DashboardLayout({
               <div className="mt-auto">
                 <Button size="sm" className="w-full" onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4"/>
-                    {t('logout')}
+                    Logout
                 </Button>
               </div>
             </SheetContent>
@@ -106,7 +120,7 @@ export default function DashboardLayout({
           <div className="w-full flex-1">
              <Link href="/" className="flex items-center gap-0 text-primary text-lg">
               <Logo className="h-10 w-10" />
-              <span className="font-headline font-bold -ml-4">Max Drive Services</span>
+              <span className="font-headline font-bold -ml-4">Admin Panel</span>
             </Link>
           </div>
         </header>

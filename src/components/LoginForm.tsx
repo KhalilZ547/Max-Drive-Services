@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -35,9 +36,20 @@ export function LoginForm() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-    // Mock login logic
-    router.push("/dashboard");
+    // Mock login logic with role-based routing
+    if (data.email.toLowerCase() === 'admin@maxdrive.com') {
+      // This is an admin user
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('userRole', 'admin');
+      }
+      router.push("/admin/dashboard");
+    } else {
+      // This is a regular client
+       if (typeof window !== 'undefined') {
+        localStorage.setItem('userRole', 'client');
+      }
+      router.push("/dashboard");
+    }
   }
 
   return (
