@@ -25,7 +25,19 @@ export function HeroSection() {
         <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-primary-foreground bg-primary/70 p-4 rounded-lg inline-block">
           {t('hero_title')}
         </h1>
-        <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-foreground/80">
+
+        <div className="my-6 flex justify-center">
+          <Image
+            src="https://placehold.co/150x150.png"
+            alt="Service Highlight"
+            width={150}
+            height={150}
+            className="rounded-full border-4 border-primary/50 shadow-lg"
+            data-ai-hint="car service"
+          />
+        </div>
+
+        <p className="max-w-3xl mx-auto text-lg md:text-xl text-foreground/80">
           {t('hero_subtitle')}
         </p>
         <div className="mt-8 flex justify-center">
