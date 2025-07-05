@@ -83,7 +83,7 @@ export default function AdminLayout({
       <div className="hidden border-r bg-card md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-0 text-primary text-lg">
+            <Link href="/admin/dashboard" className="flex items-center gap-0 text-primary text-lg">
               <Logo className="h-10 w-10" />
               <span className="font-headline font-bold -ml-4">Admin Panel</span>
             </Link>
@@ -123,7 +123,7 @@ export default function AdminLayout({
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1">
-             <Link href="/" className="flex items-center gap-0 text-primary text-lg">
+             <Link href="/admin/dashboard" className="flex items-center gap-0 text-primary text-lg">
               <Logo className="h-10 w-10" />
               <span className="font-headline font-bold -ml-4">Admin Panel</span>
             </Link>
