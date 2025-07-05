@@ -27,7 +27,7 @@ export function DonationSection() {
       <div className="container">
         <div className="max-w-2xl mx-auto group">
           <div className="text-center mb-12">
-              <Heart className="mx-auto h-12 w-12 text-primary mb-4 transition-all duration-300 group-hover:scale-110 group-hover:fill-destructive" />
+              <Heart strokeWidth={1.5} className="mx-auto h-12 w-12 text-primary mb-4 transition-all duration-300 group-hover:scale-110 group-hover:fill-destructive" />
               <h2 className="text-3xl md:text-4xl font-bold">{t('donation_title')}</h2>
               <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">{t('donation_subtitle')}</p>
           </div>
