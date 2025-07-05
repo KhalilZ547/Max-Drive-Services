@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import {
     DropdownMenu,
@@ -26,6 +26,16 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
 import { EditClientDialog } from "@/components/EditClientDialog";
 
@@ -46,6 +56,7 @@ export default function ClientsPage() {
     const [clients, setClients] = useState(clientsData);
     const [editingClient, setEditingClient] = useState<Client | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [deletingClientId, setDeletingClientId] = useState<string | null>(null);
 
 
     const handleEdit = (client: Client) => {
@@ -54,9 +65,15 @@ export default function ClientsPage() {
     };
 
     const handleDelete = (clientId: string) => {
-        // In a real app, this would show a confirmation dialog before deleting
-        toast({ title: "Delete Client", description: `Triggered delete for client ID: ${clientId}`, variant: "destructive" });
+        setDeletingClientId(clientId);
     };
+
+    const confirmDelete = () => {
+        if (!deletingClientId) return;
+        setClients(clients.filter(c => c.id !== deletingClientId));
+        toast({ title: "Client Deleted", description: "The client has been successfully removed.", variant: "destructive" });
+        setDeletingClientId(null);
+    }
 
     const handleUpdateClient = (updatedClient: Client) => {
         setClients(clients.map(c => c.id === updatedClient.id ? updatedClient : c));
@@ -105,7 +122,7 @@ export default function ClientsPage() {
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                                     <DropdownMenuItem onSelect={() => handleEdit(client)}>Edit</DropdownMenuItem>
-                                                    <DropdownMenuItem onSelect={() => handleDelete(client.id)} className="text-destructive">Delete</DropdownMenuItem>
+                                                    <DropdownMenuItem onSelect={() => handleDelete(client.id)} className="text-destructive focus:text-destructive">Delete</DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>
@@ -124,6 +141,25 @@ export default function ClientsPage() {
                     onUpdateClient={handleUpdateClient}
                 />
             )}
+            <AlertDialog open={!!deletingClientId} onOpenChange={(open) => {if(!open) setDeletingClientId(null)}}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the client's account.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={confirmDelete}
+                            className={buttonVariants({ variant: "destructive" })}
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     );
 }
