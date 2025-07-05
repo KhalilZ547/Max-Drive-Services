@@ -98,7 +98,7 @@ export function ContactSection() {
               </Form>
             </CardContent>
           </Card>
-          <div className="space-y-8">
+          <div className="flex flex-col md:flex-row justify-around gap-8">
             <div className="flex items-start gap-4">
               <div className="bg-primary/10 p-3 rounded-full">
                 <MapPin className="h-6 w-6 text-primary" />
