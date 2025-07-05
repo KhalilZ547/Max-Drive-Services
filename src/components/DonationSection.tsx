@@ -26,12 +26,12 @@ export function DonationSection() {
     <section id="donation" className="py-20 bg-card">
       <div className="container">
         <div className="text-center mb-12">
-            <Heart className="mx-auto h-12 w-12 text-primary mb-4" />
+            <Heart className="mx-auto h-12 w-12 text-primary mb-4 transition-all duration-300 group-hover:scale-110 group-hover:fill-current" />
             <h2 className="text-3xl md:text-4xl font-bold">{t('donation_title')}</h2>
             <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">{t('donation_subtitle')}</p>
         </div>
 
-        <Card className="max-w-2xl mx-auto">
+        <Card className="max-w-2xl mx-auto group">
           <CardContent className="p-0">
             <Tabs defaultValue="paypal" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
