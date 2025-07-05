@@ -47,19 +47,6 @@ export function Logo({ className, ...props }: React.SVGProps<SVGSVGElement>) {
           <circle cx="60" cy="60" r="3" />
         </g>
       </g>
-      <text
-        x="60"
-        y="100"
-        textAnchor="middle"
-        fontSize="14"
-        fontWeight="bold"
-        fontStyle="italic"
-        fill="currentColor"
-        transform="skewX(-15)"
-        letterSpacing="0.5"
-      >
-        Max Drive Services
-      </text>
     </svg>
   );
 }

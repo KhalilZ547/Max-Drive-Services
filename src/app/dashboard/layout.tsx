@@ -65,8 +65,9 @@ export default function DashboardLayout({
       <div className="hidden border-r bg-card md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold text-primary">
+            <Link href="/" className="flex items-center gap-2 font-semibold text-primary text-lg">
               <Logo className="h-10 w-10" />
+              <span className="font-bold italic -skew-x-12">Max Drive Services</span>
             </Link>
           </div>
           <div className="flex-1">
@@ -100,8 +101,9 @@ export default function DashboardLayout({
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1">
-             <Link href="/" className="flex items-center gap-2 font-semibold text-primary">
+             <Link href="/" className="flex items-center gap-2 font-semibold text-primary text-lg">
               <Logo className="h-10 w-10" />
+              <span className="font-bold italic -skew-x-12">Max Drive Services</span>
             </Link>
           </div>
         </header>
