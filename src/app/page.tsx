@@ -4,9 +4,9 @@ import { ServicesSection } from "@/components/ServicesSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { ContactSection } from "@/components/ContactSection";
 import { Footer } from "@/components/Footer";
-import { AIChat } from "@/components/AIChat";
 import { DonationSection } from "@/components/DonationSection";
 import { ImageCarousel } from "@/components/ImageCarousel";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Home() {
   return (
@@ -19,7 +19,7 @@ export default function Home() {
         <TestimonialsSection />
         <DonationSection />
         <ContactSection />
-        <AIChat />
+        <ThemeToggle />
       </main>
       <Footer />
     </div>
