@@ -36,7 +36,7 @@ const images = [
 
 export function ImageCarousel() {
   return (
-    <section className="py-20 bg-background">
+    <section className="pt-10 pb-20 bg-background">
       <div className="container">
         <Carousel
           className="w-full max-w-5xl mx-auto"

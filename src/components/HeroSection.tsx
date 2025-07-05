@@ -9,7 +9,7 @@ export function HeroSection() {
   const { t } = useTranslation();
 
   return (
-    <section className="relative bg-card py-20 md:py-32">
+    <section className="relative bg-card pt-20 md:pt-32 pb-10">
       <div className="absolute inset-0">
         <Image
           src="https://placehold.co/1920x1080.png"
