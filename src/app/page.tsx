@@ -6,7 +6,6 @@ import { ContactSection } from "@/components/ContactSection";
 import { Footer } from "@/components/Footer";
 import { DonationSection } from "@/components/DonationSection";
 import { ImageCarousel } from "@/components/ImageCarousel";
-import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Home() {
   return (
@@ -19,7 +18,6 @@ export default function Home() {
         <TestimonialsSection />
         <DonationSection />
         <ContactSection />
-        <ThemeToggle />
       </main>
       <Footer />
     </div>
