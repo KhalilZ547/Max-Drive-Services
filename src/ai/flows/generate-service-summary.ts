@@ -33,6 +33,7 @@ export async function generateServiceSummary(
 
 const prompt = ai.definePrompt({
   name: 'generateServiceSummaryPrompt',
+  model: 'googleai/gemini-2.0-flash',
   input: {schema: GenerateServiceSummaryInputSchema},
   output: {schema: GenerateServiceSummaryOutputSchema},
   prompt: `You are Max, an AI assistant for Max-Drive-Services, a garage that offers car services.

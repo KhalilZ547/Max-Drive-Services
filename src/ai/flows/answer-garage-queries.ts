@@ -27,6 +27,7 @@ export async function answerGarageQuery(input: AnswerGarageQueryInput): Promise<
 
 const prompt = ai.definePrompt({
   name: 'answerGarageQueryPrompt',
+  model: 'googleai/gemini-2.0-flash',
   input: {schema: AnswerGarageQueryInputSchema},
   output: {schema: AnswerGarageQueryOutputSchema},
   prompt: `You are a helpful AI assistant specializing in answering questions about garage services.
