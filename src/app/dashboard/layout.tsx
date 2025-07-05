@@ -17,6 +17,15 @@ import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import React from 'react';
 import { Logo } from '@/components/Logo';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useLanguage } from '@/contexts/LanguageContext';
+import type { Language } from '@/lib/translations';
 
 export default function DashboardLayout({
   children,
@@ -24,6 +33,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { t } = useTranslation();
+  const { language, setLanguage } = useLanguage();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -63,6 +73,19 @@ export default function DashboardLayout({
     </nav>
   );
 
+  const LanguageSelector = () => (
+    <Select value={language} onValueChange={(value) => setLanguage(value as Language)}>
+      <SelectTrigger className="w-full text-sm">
+        <SelectValue placeholder="Language" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="en">English</SelectItem>
+        <SelectItem value="fr">Français</SelectItem>
+        <SelectItem value="ar">العربية</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-card md:block">
@@ -76,7 +99,8 @@ export default function DashboardLayout({
           <div className="flex-1">
             <NavContent />
           </div>
-          <div className="mt-auto p-4">
+          <div className="mt-auto p-4 space-y-4">
+             <LanguageSelector />
              <Button size="sm" className="w-full" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4"/>
                 {t('logout')}
@@ -95,7 +119,8 @@ export default function DashboardLayout({
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
               <NavContent />
-              <div className="mt-auto">
+              <div className="mt-auto space-y-4">
+                <LanguageSelector />
                 <Button size="sm" className="w-full" onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4"/>
                     {t('logout')}
