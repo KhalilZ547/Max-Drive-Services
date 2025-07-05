@@ -9,42 +9,57 @@ export function Logo({ className, ...props }: React.SVGProps<SVGSVGElement>) {
       className={cn(className)}
       {...props}
     >
-      <g className="gauge" fill="currentColor">
-        {/* Gauge Ticks */}
-        {Array.from({ length: 8 }).map((_, i) => (
-          <rect
-            key={`tick-black-${i}`}
-            x="57"
-            y="12"
-            width="6"
-            height="10"
-            rx="1"
-            transform={`rotate(${-120 + i * 18}, 60, 60)`}
-          />
-        ))}
-      </g>
-      <g className="gauge-red" fill="hsl(var(--destructive))">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <rect
-            key={`tick-red-${i}`}
-            x="57"
-            y="12"
-            width="6"
-            height="10"
-            rx="1"
-            transform={`rotate(${30 + i * 18}, 60, 60)`}
-          />
-        ))}
-      </g>
+      <g transform="scale(0.85) translate(9, -5)">
+        <g className="gauge" fill="currentColor">
+          {/* Gauge Ticks */}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <rect
+              key={`tick-black-${i}`}
+              x="57"
+              y="12"
+              width="6"
+              height="10"
+              rx="1"
+              transform={`rotate(${-120 + i * 18}, 60, 60)`}
+            />
+          ))}
+        </g>
+        <g className="gauge-red" fill="hsl(var(--destructive))">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <rect
+              key={`tick-red-${i}`}
+              x="57"
+              y="12"
+              width="6"
+              height="10"
+              rx="1"
+              transform={`rotate(${30 + i * 18}, 60, 60)`}
+            />
+          ))}
+        </g>
 
-      {/* Dashboard background */}
-      <circle cx="60" cy="60" r="35" fill="transparent" />
+        {/* Dashboard background */}
+        <circle cx="60" cy="60" r="35" fill="transparent" />
 
-      {/* Needle */}
-      <g transform="rotate(45 60 60)" fill="hsl(var(--destructive))">
-        <polygon points="60,25 59,60 61,60" />
-        <circle cx="60" cy="60" r="3" />
+        {/* Needle */}
+        <g transform="rotate(45 60 60)" fill="hsl(var(--destructive))">
+          <polygon points="60,25 59,60 61,60" />
+          <circle cx="60" cy="60" r="3" />
+        </g>
       </g>
+      <text
+        x="60"
+        y="100"
+        textAnchor="middle"
+        fontSize="14"
+        fontWeight="bold"
+        fontStyle="italic"
+        fill="currentColor"
+        transform="skewX(-15)"
+        letterSpacing="0.5"
+      >
+        Max Drive Services
+      </text>
     </svg>
   );
 }
