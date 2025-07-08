@@ -4,7 +4,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -17,10 +17,14 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 export function LoginForm() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { toast } = useToast();
 
   const FormSchema = z.object({
     email: z.string().email(),
@@ -52,6 +56,14 @@ export function LoginForm() {
     }
   }
 
+  const handleForgotPassword = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    toast({
+        title: t('forgot_password_toast_title'),
+        description: t('forgot_password_toast_desc'),
+    });
+  };
+
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -60,7 +72,7 @@ export function LoginForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="email"
@@ -79,7 +91,12 @@ export function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('password_label')}</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>{t('password_label')}</FormLabel>
+                     <a href="#" onClick={handleForgotPassword} className={cn(buttonVariants({ variant: "link" }), "p-0 h-auto text-xs")}>
+                        {t('forgot_password_link')}
+                     </a>
+                  </div>
                   <FormControl>
                     <Input type="password" {...field} />
                   </FormControl>
@@ -90,6 +107,12 @@ export function LoginForm() {
             <Button type="submit" className="w-full">{t('nav_login')}</Button>
           </form>
         </Form>
+        <div className="mt-6 text-center text-sm">
+          {t('login_create_account_prompt')}{' '}
+          <Link href="/signup" className="underline font-semibold text-primary">
+            {t('nav_signup')}
+          </Link>
+        </div>
       </CardContent>
     </Card>
   );

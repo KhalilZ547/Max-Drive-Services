@@ -143,6 +143,12 @@ export const translations = {
     donation_bank_iban_value: "TN59 0000 1234 5678 9012 3456",
     copied_toast_title: "Copied!",
     copied_toast_desc: "IBAN has been copied to your clipboard.",
+
+    // Login Page
+    forgot_password_link: "Forgot password?",
+    login_create_account_prompt: "Don't have an account?",
+    forgot_password_toast_title: "Feature In Development",
+    forgot_password_toast_desc: "The password reset functionality is currently being built. Please check back later."
   },
   fr: {
     // Header
@@ -287,6 +293,12 @@ export const translations = {
     donation_bank_iban_value: "TN59 0000 1234 5678 9012 3456",
     copied_toast_title: "Copié !",
     copied_toast_desc: "L'IBAN a été copié dans votre presse-papiers.",
+
+    // Login Page
+    forgot_password_link: "Mot de passe oublié ?",
+    login_create_account_prompt: "Pas encore de compte ?",
+    forgot_password_toast_title: "Fonctionnalité en développement",
+    forgot_password_toast_desc: "La fonctionnalité de réinitialisation du mot de passe est en cours de construction. Veuillez revenir plus tard."
   },
   ar: {
     // Header
@@ -431,6 +443,12 @@ export const translations = {
     donation_bank_iban_value: "TN59 0000 1234 5678 9012 3456",
     copied_toast_title: "تم النسخ!",
     copied_toast_desc: "تم نسخ رقم الحساب المصرفي الدولي إلى الحافظة الخاصة بك.",
+
+    // Login Page
+    forgot_password_link: "هل نسيت كلمة المرور؟",
+    login_create_account_prompt: "ليس لديك حساب؟",
+    forgot_password_toast_title: "الميزة قيد التطوير",
+    forgot_password_toast_desc: "يتم حاليًا إنشاء وظيفة إعادة تعيين كلمة المرور. يرجى التحقق مرة أخرى لاحقًا."
   }
 };
 
