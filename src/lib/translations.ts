@@ -147,8 +147,20 @@ export const translations = {
     // Login Page
     forgot_password_link: "Forgot password?",
     login_create_account_prompt: "Don't have an account?",
-    forgot_password_toast_title: "Feature In Development",
-    forgot_password_toast_desc: "The password reset functionality is currently being built. Please check back later."
+    forgot_password_title: "Forgot Password",
+    forgot_password_subtitle: "Enter your email and we'll send you a link to reset your password.",
+    send_reset_link_button: "Send Reset Link",
+    password_reset_sent_title: "Check your email",
+    password_reset_sent_desc: "If an account with that email exists, we have sent a password reset link.",
+    back_to_login_link: "Back to login",
+    reset_password_title: 'Reset Your Password',
+    reset_password_subtitle: 'Enter the code from your email and your new password.',
+    reset_code_label: 'Verification Code',
+    new_password_label: 'New Password',
+    confirm_new_password_label: 'Confirm New Password',
+    reset_password_button: 'Reset Password',
+    password_reset_success_title: 'Password Reset!',
+    password_reset_success_desc: 'Your password has been changed successfully. You can now log in.',
   },
   fr: {
     // Header
@@ -297,8 +309,20 @@ export const translations = {
     // Login Page
     forgot_password_link: "Mot de passe oublié ?",
     login_create_account_prompt: "Pas encore de compte ?",
-    forgot_password_toast_title: "Fonctionnalité en développement",
-    forgot_password_toast_desc: "La fonctionnalité de réinitialisation du mot de passe est en cours de construction. Veuillez revenir plus tard."
+    forgot_password_title: 'Mot de passe oublié',
+    forgot_password_subtitle: "Entrez votre email et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+    send_reset_link_button: 'Envoyer le lien de réinitialisation',
+    password_reset_sent_title: 'Vérifiez votre e-mail',
+    password_reset_sent_desc: 'Si un compte avec cet e-mail existe, nous avons envoyé un lien de réinitialisation de mot de passe.',
+    back_to_login_link: 'Retour à la connexion',
+    reset_password_title: 'Réinitialisez votre mot de passe',
+    reset_password_subtitle: 'Entrez le code de votre e-mail et votre nouveau mot de passe.',
+    reset_code_label: 'Code de vérification',
+    new_password_label: 'Nouveau mot de passe',
+    confirm_new_password_label: 'Confirmer le nouveau mot de passe',
+    reset_password_button: 'Réinitialiser le mot de passe',
+    password_reset_success_title: 'Mot de passe réinitialisé !',
+    password_reset_success_desc: 'Votre mot de passe a été changé avec succès. Vous pouvez maintenant vous connecter.',
   },
   ar: {
     // Header
@@ -447,8 +471,20 @@ export const translations = {
     // Login Page
     forgot_password_link: "هل نسيت كلمة المرور؟",
     login_create_account_prompt: "ليس لديك حساب؟",
-    forgot_password_toast_title: "الميزة قيد التطوير",
-    forgot_password_toast_desc: "يتم حاليًا إنشاء وظيفة إعادة تعيين كلمة المرور. يرجى التحقق مرة أخرى لاحقًا."
+    forgot_password_title: 'نسيت كلمة المرور',
+    forgot_password_subtitle: 'أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور الخاصة بك.',
+    send_reset_link_button: 'إرسال رابط إعادة التعيين',
+    password_reset_sent_title: 'تحقق من بريدك الإلكتروني',
+    password_reset_sent_desc: 'إذا كان هناك حساب بهذا البريد الإلكتروني، فقد أرسلنا رابط إعادة تعيين كلمة المرور.',
+    back_to_login_link: 'العودة إلى تسجيل الدخول',
+    reset_password_title: 'إعادة تعيين كلمة المرور الخاصة بك',
+    reset_password_subtitle: 'أدخل الرمز من بريدك الإلكتروني وكلمة المرور الجديدة.',
+    reset_code_label: 'رمز التحقق',
+    new_password_label: 'كلمة المرور الجديدة',
+    confirm_new_password_label: 'تأكيد كلمة المرور الجديدة',
+    reset_password_button: 'إعادة تعيين كلمة المرور',
+    password_reset_success_title: 'تمت إعادة تعيين كلمة المرور!',
+    password_reset_success_desc: 'تم تغيير كلمة المرور الخاصة بك بنجاح. يمكنك الآن تسجيل الدخول.',
   }
 };
 

@@ -18,13 +18,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useTranslation } from "@/hooks/use-translation";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 export function LoginForm() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { toast } = useToast();
 
   const FormSchema = z.object({
     email: z.string().email(),
@@ -56,14 +54,6 @@ export function LoginForm() {
     }
   }
 
-  const handleForgotPassword = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    toast({
-        title: t('forgot_password_toast_title'),
-        description: t('forgot_password_toast_desc'),
-    });
-  };
-
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -93,9 +83,9 @@ export function LoginForm() {
                 <FormItem>
                   <div className="flex items-center justify-between">
                     <FormLabel>{t('password_label')}</FormLabel>
-                     <a href="#" onClick={handleForgotPassword} className={cn(buttonVariants({ variant: "link" }), "p-0 h-auto text-xs")}>
+                     <Link href="/forgot-password" className={cn(buttonVariants({ variant: "link" }), "p-0 h-auto text-xs")}>
                         {t('forgot_password_link')}
-                     </a>
+                     </Link>
                   </div>
                   <FormControl>
                     <Input type="password" {...field} />
