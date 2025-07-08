@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { clientsData } from "@/lib/mock-data";
+import { sendEmail } from "@/services/email";
 
 const ForgotPasswordSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
@@ -37,14 +38,25 @@ export function ForgotPasswordForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof ForgotPasswordSchema>) {
-    console.log("Password reset requested for:", data.email);
-    
-    // Check if email exists in our mock data
+  async function onSubmit(data: z.infer<typeof ForgotPasswordSchema>) {
     const adminEmail = 'admin@maxdrive.com';
     const isRegistered = clientsData.some(client => client.email.toLowerCase() === data.email.toLowerCase()) || data.email.toLowerCase() === adminEmail;
 
     if (isRegistered) {
+      // In a real app, generate a secure, unique, and temporary code.
+      const verificationCode = "123456"; // This is a mock code.
+      
+      await sendEmail({
+        to: data.email,
+        subject: "Your Password Reset Code for Max-Drive-Services",
+        html: `
+          <h1>Password Reset Request</h1>
+          <p>We received a request to reset your password. Use the code below to complete the process:</p>
+          <h2 style="text-align:center;letter-spacing:2px;font-size:2em;">${verificationCode}</h2>
+          <p>This code will expire in 10 minutes. If you did not request this, you can safely ignore this email.</p>
+        `
+      });
+
       toast({
         title: t('password_reset_sent_title'),
         description: t('password_reset_sent_desc'),
