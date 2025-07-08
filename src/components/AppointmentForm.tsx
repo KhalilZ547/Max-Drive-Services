@@ -34,6 +34,7 @@ import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { sendEmail } from "@/services/email";
 
 const services = [
     { id: 'oil_change', key: 'service_oil_change_title'},
@@ -85,15 +86,52 @@ export function AppointmentForm() {
 
     const selectedService = form.watch("serviceId");
 
-    function onSubmit(data: z.infer<typeof AppointmentFormSchema>) {
-        console.log(data);
+    async function onSubmit(data: z.infer<typeof AppointmentFormSchema>) {
         const serviceName = data.serviceId === 'other' 
             ? data.otherService
             : t(services.find(s => s.id === data.serviceId)?.key as any);
+        
+        const formattedDate = format(data.appointmentDate, "PPP");
+        const adminEmail = 'contact@maxdrive.com';
+        // This should be replaced with the actual logged-in user's email in a real app
+        const userEmail = 'john.doe@example.com'; 
+
+        // Email to Admin
+        await sendEmail({
+            to: adminEmail,
+            subject: `New Appointment Booking: ${serviceName} for ${data.vehicle}`,
+            html: `
+                <h1>New Appointment Request</h1>
+                <p>A new appointment has been booked through the website.</p>
+                <ul>
+                    <li><strong>Service:</strong> ${serviceName}</li>
+                    <li><strong>Vehicle:</strong> ${data.vehicle}</li>
+                    <li><strong>Requested Date:</strong> ${formattedDate}</li>
+                    <li><strong>Notes:</strong> ${data.notes || 'None'}</li>
+                </ul>
+            `
+        });
+
+        // Confirmation Email to User
+        await sendEmail({
+            to: userEmail,
+            subject: `Your Appointment Confirmation with Max-Drive-Services`,
+            html: `
+                <h1>Appointment Confirmed!</h1>
+                <p>Thank you for booking with Max-Drive-Services. Your appointment details are below:</p>
+                <ul>
+                    <li><strong>Service:</strong> ${serviceName}</li>
+                    <li><strong>Vehicle:</strong> ${data.vehicle}</li>
+                    <li><strong>Date:</strong> ${formattedDate}</li>
+                </ul>
+                <p>We look forward to seeing you!</p>
+            `
+        });
+
 
         toast({
             title: t('appointment_booked_title'),
-            description: `${t('appointment_booked_desc')} ${serviceName} ${t('on')} ${format(data.appointmentDate, "PPP")}.`,
+            description: `${t('appointment_booked_desc')} ${serviceName} ${t('on')} ${formattedDate}.`,
         });
         form.reset();
     }
