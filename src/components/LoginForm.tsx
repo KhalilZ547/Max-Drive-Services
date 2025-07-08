@@ -81,15 +81,15 @@ export function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex items-center justify-between">
-                    <FormLabel>{t('password_label')}</FormLabel>
+                  <FormLabel>{t('password_label')}</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <div className="flex justify-end">
                      <Link href="/forgot-password" className={cn(buttonVariants({ variant: "link" }), "p-0 h-auto text-xs")}>
                         {t('forgot_password_link')}
                      </Link>
                   </div>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
