@@ -11,54 +11,20 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, memo, MouseEvent } from 'react';
 import { Logo } from '@/components/Logo';
 import { LogoSpinner } from '@/components/LogoSpinner';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useToast } from '@/hooks/use-toast';
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const navItems = [
+  { href: '/admin/dashboard', icon: Home, label: 'Dashboard' },
+  { href: '/admin/clients', icon: Users, label: 'Clients' },
+];
+
+const NavContent = memo(() => {
   const pathname = usePathname();
-  const router = useRouter();
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const role = localStorage.getItem('userRole');
-      if (role !== 'admin') {
-        router.push('/login');
-      } else {
-        setIsAuthorized(true);
-      }
-    }
-  }, [router]);
-
-  const navItems = [
-    { href: '/admin/dashboard', icon: Home, label: 'Dashboard' },
-    { href: '/admin/clients', icon: Users, label: 'Clients' },
-  ];
-
-  const handleLogout = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('userRole');
-    }
-    router.push('/login');
-  }
-
-  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    toast({
-      title: "Navigation Info",
-      description: "To return to the public home page, please log out first.",
-    });
-  };
-
-  const NavContent = () => (
+  return (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
@@ -78,6 +44,43 @@ export default function AdminLayout({
       })}
     </nav>
   );
+});
+NavContent.displayName = 'NavContent';
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const role = localStorage.getItem('userRole');
+      if (role !== 'admin') {
+        router.push('/login');
+      } else {
+        setIsAuthorized(true);
+      }
+    }
+  }, [router]);
+
+  const handleLogout = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('userRole');
+    }
+    router.push('/login');
+  }, [router]);
+
+  const handleLogoClick = useCallback((e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    toast({
+      title: "Navigation Info",
+      description: "To return to the public home page, please log out first.",
+    });
+  }, [toast]);
 
   if (!isAuthorized) {
       return (

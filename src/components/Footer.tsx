@@ -1,8 +1,9 @@
 import { Logo } from "./Logo";
 import { Instagram, Facebook } from 'lucide-react';
 import { WhatsappIcon } from './WhatsappIcon';
+import React from "react";
 
-export function Footer() {
+const FooterComponent = () => {
   return (
     <footer className="bg-card border-t">
       <div className="container py-8">
@@ -29,3 +30,5 @@ export function Footer() {
     </footer>
   );
 }
+
+export const Footer = React.memo(FooterComponent);

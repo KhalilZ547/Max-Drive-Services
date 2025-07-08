@@ -14,19 +14,19 @@ import {
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslation } from '@/hooks/use-translation';
 import type { Language } from '@/lib/translations';
-import React from 'react';
+import { useState, useMemo } from 'react';
 import { Logo } from './Logo';
 
 export function Header() {
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguage();
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const navLinks = [
+  const navLinks = useMemo(() => [
     { href: '#services', label: t('nav_services') },
     { href: '#donation', label: t('nav_donation') },
     { href: '#contact', label: t('nav_contact') },
-  ];
+  ], [t]);
 
   return (
     <header className="bg-card/80 backdrop-blur-sm sticky top-0 z-40 w-full border-b">

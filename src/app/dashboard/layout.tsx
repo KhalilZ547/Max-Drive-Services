@@ -15,7 +15,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTranslation } from '@/hooks/use-translation';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import React from 'react';
+import { memo, useMemo, useCallback, MouseEvent } from 'react';
 import { Logo } from '@/components/Logo';
 import {
   Select,
@@ -29,41 +29,9 @@ import type { Language } from '@/lib/translations';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useToast } from '@/hooks/use-toast';
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { t } = useTranslation();
-  const { language, setLanguage } = useLanguage();
+const NavContent = memo(({ navItems }: { navItems: { href: string; icon: React.ElementType; label: string }[] }) => {
   const pathname = usePathname();
-  const router = useRouter();
-  const { toast } = useToast();
-
-  const navItems = [
-    { href: '/dashboard', icon: Home, label: t('nav_dashboard') },
-    { href: '/dashboard/appointment', icon: CalendarPlus, label: t('nav_appointment') },
-    { href: '/dashboard/vehicles', icon: Car, label: t('tab_vehicles') },
-    { href: '/dashboard/history', icon: History, label: t('tab_history') },
-    { href: '/dashboard/profile', icon: CircleUser, label: 'Profile' },
-  ];
-
-  const handleLogout = () => {
-    if (typeof window !== 'undefined') {
-        localStorage.removeItem('userRole');
-    }
-    router.push('/login');
-  }
-
-  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    toast({
-      title: "Navigation Info",
-      description: "To return to the public home page, please log out first.",
-    });
-  };
-
-  const NavContent = () => (
+  return (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
@@ -83,8 +51,12 @@ export default function DashboardLayout({
       })}
     </nav>
   );
+});
+NavContent.displayName = 'NavContent';
 
-  const LanguageSelector = () => (
+const LanguageSelector = memo(() => {
+  const { language, setLanguage } = useLanguage();
+  return (
     <Select value={language} onValueChange={(value) => setLanguage(value as Language)}>
       <SelectTrigger className="w-full text-sm">
         <SelectValue placeholder="Language" />
@@ -96,6 +68,40 @@ export default function DashboardLayout({
       </SelectContent>
     </Select>
   );
+});
+LanguageSelector.displayName = 'LanguageSelector';
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const navItems = useMemo(() => [
+    { href: '/dashboard', icon: Home, label: t('nav_dashboard') },
+    { href: '/dashboard/appointment', icon: CalendarPlus, label: t('nav_appointment') },
+    { href: '/dashboard/vehicles', icon: Car, label: t('tab_vehicles') },
+    { href: '/dashboard/history', icon: History, label: t('tab_history') },
+    { href: '/dashboard/profile', icon: CircleUser, label: 'Profile' },
+  ], [t]);
+
+  const handleLogout = useCallback(() => {
+    if (typeof window !== 'undefined') {
+        localStorage.removeItem('userRole');
+    }
+    router.push('/login');
+  }, [router]);
+
+  const handleLogoClick = useCallback((e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    toast({
+      title: "Navigation Info",
+      description: "To return to the public home page, please log out first.",
+    });
+  }, [toast]);
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -108,7 +114,7 @@ export default function DashboardLayout({
             </Link>
           </div>
           <div className="flex-1">
-            <NavContent />
+            <NavContent navItems={navItems} />
           </div>
           <div className="mt-auto p-4 space-y-4">
              <div className="flex w-full items-center gap-2">
@@ -132,7 +138,7 @@ export default function DashboardLayout({
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
-              <NavContent />
+              <NavContent navItems={navItems} />
               <div className="mt-auto space-y-4">
                 <div className="flex w-full items-center gap-2">
                     <LanguageSelector />

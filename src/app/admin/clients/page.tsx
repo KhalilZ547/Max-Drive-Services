@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -41,7 +41,6 @@ import { EditClientDialog } from "@/components/EditClientDialog";
 import { AddClientDialog } from "@/components/AddClientDialog";
 import { useAdminClients } from "@/hooks/use-admin-clients";
 import type { Client } from "@/lib/mock-data";
-import { Skeleton } from "@/components/ui/skeleton";
 
 
 export default function ClientsPage() {
@@ -51,84 +50,34 @@ export default function ClientsPage() {
     const [editingClient, setEditingClient] = useState<Client | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [deletingClientId, setDeletingClientId] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 500); 
-        return () => clearTimeout(timer);
-    }, []);
-
-
-    const handleEdit = (client: Client) => {
+    const handleEdit = useCallback((client: Client) => {
         setEditingClient(client);
         setIsEditDialogOpen(true);
-    };
+    }, []);
 
-    const handleDelete = (clientId: string) => {
+    const handleDelete = useCallback((clientId: string) => {
         setDeletingClientId(clientId);
-    };
+    }, []);
 
-    const confirmDelete = () => {
+    const confirmDelete = useCallback(() => {
         if (!deletingClientId) return;
         deleteClient(deletingClientId);
         toast({ title: "Client Deleted", description: "The client has been successfully removed.", variant: "destructive" });
         setDeletingClientId(null);
-    }
+    }, [deletingClientId, deleteClient, toast]);
 
-    const handleUpdateClient = (updatedClient: Client) => {
+    const handleUpdateClient = useCallback((updatedClient: Client) => {
         updateClient(updatedClient);
         toast({ title: "Client Updated", description: "The client's information has been successfully updated."});
         setEditingClient(null);
-    }
+    }, [toast, updateClient]);
     
-    const handleAddClient = (newClientData: Omit<Client, 'id' | 'registered'>) => {
+    const handleAddClient = useCallback((newClientData: Omit<Client, 'id' | 'registered'>) => {
         addClient(newClientData);
         toast({ title: "Client Added", description: "The new client has been successfully added."});
         setIsAddDialogOpen(false);
-    };
-
-    if (isLoading) {
-        return (
-            <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-                <Card>
-                    <CardHeader className="flex-row items-center justify-between">
-                        <div>
-                            <Skeleton className="h-8 w-24" />
-                            <Skeleton className="h-4 w-64 mt-2" />
-                        </div>
-                        <Skeleton className="h-10 w-32" />
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Email</TableHead>
-                                    <TableHead>Registered On</TableHead>
-                                    <TableHead>
-                                        <span className="sr-only">Actions</span>
-                                    </TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {Array.from({ length: 5 }).map((_, i) => (
-                                    <TableRow key={i}>
-                                        <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-                                        <TableCell><Skeleton className="h-5 w-48" /></TableCell>
-                                        <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                                        <TableCell><Skeleton className="h-8 w-8 rounded-full" /></TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
-            </main>
-        )
-    }
-
+    }, [addClient, toast]);
 
     return (
         <>

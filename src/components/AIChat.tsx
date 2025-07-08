@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -27,7 +28,7 @@ export function AIChat() {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
 
-  const handleSend = async () => {
+  const handleSend = useCallback(async () => {
     if (!input.trim()) return;
 
     const userMessage: Message = { sender: 'user', text: input };
@@ -48,14 +49,14 @@ export function AIChat() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [input]);
 
-  const handleOpenChange = (open: boolean) => {
+  const handleOpenChange = useCallback((open: boolean) => {
     setIsOpen(open);
     if(open && messages.length === 0){
         setMessages([{ sender: 'bot', text: t('ai_chat_welcome') }]);
     }
-  }
+  }, [messages.length, t]);
 
   return (
     <>

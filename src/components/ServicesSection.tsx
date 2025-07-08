@@ -1,5 +1,7 @@
+
 'use client';
 
+import { useMemo } from 'react';
 import { useTranslation } from '@/hooks/use-translation';
 import { Card, CardHeader, CardTitle, CardDescription } from './ui/card';
 import { Wrench, CircleGauge, BrainCircuit, Cpu } from 'lucide-react';
@@ -7,7 +9,7 @@ import { Wrench, CircleGauge, BrainCircuit, Cpu } from 'lucide-react';
 export function ServicesSection() {
   const { t } = useTranslation();
 
-  const services = [
+  const services = useMemo(() => [
     {
       icon: <Wrench className="w-10 h-10 text-primary transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-12" />,
       title: t('service_oil_change_title'),
@@ -28,7 +30,7 @@ export function ServicesSection() {
       title: t('service_ecu_solutions_title'),
       description: t('service_ecu_solutions_desc'),
     },
-  ];
+  ], [t]);
 
   return (
     <section id="services" className="pt-4 pb-20 bg-background">
@@ -39,7 +41,7 @@ export function ServicesSection() {
             <Card key={index} className="group text-center p-6 flex flex-col items-center hover:shadow-lg transition-shadow duration-300">
               <CardHeader className="p-0 mb-4">
                 {service.icon}
-                <CardTitle className="mt-4">{service.title}</CardTitle>
+                <CardTitle>{service.title}</CardTitle>
               </CardHeader>
               <CardDescription>{service.description}</CardDescription>
             </Card>

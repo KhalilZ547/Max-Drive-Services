@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 
-export function Logo({ className, ...props }: React.SVGProps<SVGSVGElement>) {
+export const Logo = React.memo(function Logo({ className, ...props }: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -49,4 +49,4 @@ export function Logo({ className, ...props }: React.SVGProps<SVGSVGElement>) {
       </g>
     </svg>
   );
-}
+});

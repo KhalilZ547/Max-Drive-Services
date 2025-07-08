@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { LanguageProvider } from '@/contexts/LanguageContext';
-import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/ThemeProvider';
-import { AIChat } from '@/components/AIChat';
-import { GlobalThemeToggle } from '@/components/GlobalThemeToggle';
+import { GlobalComponents } from '@/components/GlobalComponents';
 
 export const metadata: Metadata = {
   title: 'Max-Drive-Services',
@@ -35,9 +33,7 @@ export default function RootLayout({
         >
           <LanguageProvider>
             {children}
-            <Toaster />
-            <GlobalThemeToggle />
-            <AIChat />
+            <GlobalComponents />
           </LanguageProvider>
         </ThemeProvider>
       </body>

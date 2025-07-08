@@ -1,5 +1,7 @@
+
 'use client';
 
+import { useMemo } from 'react';
 import { useTranslation } from '@/hooks/use-translation';
 import { Card, CardContent } from './ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
@@ -9,7 +11,7 @@ import { Star } from 'lucide-react';
 export function TestimonialsSection() {
   const { t } = useTranslation();
 
-  const testimonials = [
+  const testimonials = useMemo(() => [
     {
       text: t('testimonial_1_text'),
       author: t('testimonial_1_author'),
@@ -25,7 +27,7 @@ export function TestimonialsSection() {
       author: t('testimonial_3_author'),
       avatar: 'J',
     },
-  ];
+  ], [t]);
 
   return (
     <section id="testimonials" className="py-20 bg-card">

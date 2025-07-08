@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -17,32 +18,24 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useState, useRef, ChangeEvent, useEffect } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useRef, ChangeEvent, useCallback } from "react";
 
 const ProfileFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email(),
 });
 
+// Mock user data, defined outside the component to prevent re-creation on re-renders
+const user = {
+    name: "John Doe",
+    email: "john.doe@example.com",
+};
+
 export default function ProfilePage() {
     const { t } = useTranslation();
     const { toast } = useToast();
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 500);
-        return () => clearTimeout(timer);
-    }, []);
-
-
-    // Mock user data
-    const user = {
-        name: "John Doe",
-        email: "john.doe@example.com",
-    };
 
     const form = useForm<z.infer<typeof ProfileFormSchema>>({
         resolver: zodResolver(ProfileFormSchema),
@@ -54,7 +47,7 @@ export default function ProfilePage() {
 
     const watchedName = form.watch("name");
     
-    const getAvatarFallback = (name: string | undefined): string => {
+    const getAvatarFallback = useCallback((name: string | undefined): string => {
         if (!name) return "";
         const nameParts = name.trim().split(" ").filter(Boolean);
 
@@ -64,11 +57,11 @@ export default function ProfilePage() {
             return nameParts[0][0].toUpperCase();
         }
         return "";
-    };
+    }, []);
 
     const avatarFallback = getAvatarFallback(watchedName);
 
-    const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const handleAvatarChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             const reader = new FileReader();
@@ -77,21 +70,20 @@ export default function ProfilePage() {
             };
             reader.readAsDataURL(file);
         }
-    };
+    }, []);
 
-    const handleButtonClick = () => {
+    const handleButtonClick = useCallback(() => {
         fileInputRef.current?.click();
-    };
+    }, []);
 
-    const handleDeleteAvatar = () => {
+    const handleDeleteAvatar = useCallback(() => {
         setAvatarPreview(null);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
-    };
+    }, []);
 
-
-    function onSubmit(data: z.infer<typeof ProfileFormSchema>) {
+    const onSubmit = useCallback((data: z.infer<typeof ProfileFormSchema>) => {
         console.log(data);
         if (data.email !== user.email) {
             toast({
@@ -104,37 +96,7 @@ export default function ProfilePage() {
                 description: t('profile_update_success_desc'),
             });
         }
-    }
-
-    if (isLoading) {
-        return (
-            <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-                <Card>
-                    <CardHeader>
-                        <Skeleton className="h-8 w-40" />
-                        <Skeleton className="h-4 w-56 mt-2" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-6">
-                            <div className="flex items-center space-x-4">
-                                <Skeleton className="h-20 w-20 rounded-full" />
-                                <Skeleton className="h-10 w-28" />
-                            </div>
-                            <div className="space-y-2">
-                                <Skeleton className="h-4 w-20" />
-                                <Skeleton className="h-10 w-full" />
-                            </div>
-                             <div className="space-y-2">
-                                <Skeleton className="h-4 w-20" />
-                                <Skeleton className="h-10 w-full" />
-                            </div>
-                            <Skeleton className="h-10 w-32" />
-                        </div>
-                    </CardContent>
-                </Card>
-            </main>
-        )
-    }
+    }, [t, toast]);
 
     return (
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
