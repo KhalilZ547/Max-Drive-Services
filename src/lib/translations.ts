@@ -161,6 +161,8 @@ export const translations = {
     reset_password_button: 'Reset Password',
     password_reset_success_title: 'Password Reset!',
     password_reset_success_desc: 'Your password has been changed successfully. You can now log in.',
+    email_not_found_title: "Email Not Found",
+    email_not_found_desc: "This email is not associated with any account. Please check the email or create a new account.",
   },
   fr: {
     // Header
@@ -323,6 +325,8 @@ export const translations = {
     reset_password_button: 'Réinitialiser le mot de passe',
     password_reset_success_title: 'Mot de passe réinitialisé !',
     password_reset_success_desc: 'Votre mot de passe a été changé avec succès. Vous pouvez maintenant vous connecter.',
+    email_not_found_title: "Email non trouvé",
+    email_not_found_desc: "Cet e-mail n'est associé à aucun compte. Veuillez vérifier l'e-mail ou créer un nouveau compte.",
   },
   ar: {
     // Header
@@ -485,6 +489,8 @@ export const translations = {
     reset_password_button: 'إعادة تعيين كلمة المرور',
     password_reset_success_title: 'تمت إعادة تعيين كلمة المرور!',
     password_reset_success_desc: 'تم تغيير كلمة المرور الخاصة بك بنجاح. يمكنك الآن تسجيل الدخول.',
+    email_not_found_title: "البريد الإلكتروني غير موجود",
+    email_not_found_desc: "هذا البريد الإلكتروني غير مرتبط بأي حساب. يرجى التحقق من البريد الإلكتروني أو إنشاء حساب جديد.",
   }
 };
 

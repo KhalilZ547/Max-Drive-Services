@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -18,6 +19,7 @@ import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { clientsData } from "@/lib/mock-data";
 
 const ForgotPasswordSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
@@ -37,13 +39,24 @@ export function ForgotPasswordForm() {
 
   function onSubmit(data: z.infer<typeof ForgotPasswordSchema>) {
     console.log("Password reset requested for:", data.email);
-    // In a real app, you would call an API to send a reset link.
-    // Here, we just simulate it.
-    toast({
-      title: t('password_reset_sent_title'),
-      description: t('password_reset_sent_desc'),
-    });
-    router.push("/reset-password");
+    
+    // Check if email exists in our mock data
+    const adminEmail = 'admin@maxdrive.com';
+    const isRegistered = clientsData.some(client => client.email.toLowerCase() === data.email.toLowerCase()) || data.email.toLowerCase() === adminEmail;
+
+    if (isRegistered) {
+      toast({
+        title: t('password_reset_sent_title'),
+        description: t('password_reset_sent_desc'),
+      });
+      router.push("/reset-password");
+    } else {
+      toast({
+        title: t('email_not_found_title'),
+        description: t('email_not_found_desc'),
+        variant: "destructive"
+      });
+    }
   }
 
   return (
