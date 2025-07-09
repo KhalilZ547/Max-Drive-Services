@@ -1,7 +1,7 @@
 
 'use client';
 
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import {
   Carousel,
@@ -43,11 +43,11 @@ const images = [
 ];
 
 export function ImageCarousel() {
-  const [api, setApi] = React.useState<CarouselApi>();
-  const [current, setCurrent] = React.useState(0);
-  const [count, setCount] = React.useState(0);
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!api) {
       return;
     }

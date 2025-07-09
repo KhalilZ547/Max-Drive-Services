@@ -1,7 +1,7 @@
 
 "use client";
 
-import React from "react";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -47,7 +47,7 @@ export function AppointmentForm() {
     const { t } = useTranslation();
     const { toast } = useToast();
 
-    const AppointmentFormSchema = React.useMemo(() => z.object({
+    const AppointmentFormSchema = useMemo(() => z.object({
         serviceId: z.string({
             required_error: "Please select a service.",
         }),

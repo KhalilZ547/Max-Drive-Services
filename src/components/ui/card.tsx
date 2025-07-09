@@ -1,11 +1,11 @@
 
-import * as React from "react"
+import { forwardRef, type HTMLAttributes } from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cn } from "@/lib/utils"
 
-const Card = React.forwardRef<
+const Card = forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -18,9 +18,9 @@ const Card = React.forwardRef<
 ))
 Card.displayName = "Card"
 
-const CardHeader = React.forwardRef<
+const CardHeader = forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -30,9 +30,9 @@ const CardHeader = React.forwardRef<
 ))
 CardHeader.displayName = "CardHeader"
 
-type CardTitleProps = { asChild?: boolean } & React.HTMLAttributes<HTMLHeadingElement>
+type CardTitleProps = { asChild?: boolean } & HTMLAttributes<HTMLHeadingElement>
 
-const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
+const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
   ({ className, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "h3"
     return (
@@ -49,9 +49,9 @@ const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
 )
 CardTitle.displayName = "CardTitle"
 
-type CardDescriptionProps = { asChild?: boolean } & React.HTMLAttributes<HTMLParagraphElement>
+type CardDescriptionProps = { asChild?: boolean } & HTMLAttributes<HTMLParagraphElement>
 
-const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescriptionProps>(
+const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
   ({ className, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "p"
     return (
@@ -65,17 +65,17 @@ const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescriptionPr
 )
 CardDescription.displayName = "CardDescription"
 
-const CardContent = React.forwardRef<
+const CardContent = forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
   <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
 ))
 CardContent.displayName = "CardContent"
 
-const CardFooter = React.forwardRef<
+const CardFooter = forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
