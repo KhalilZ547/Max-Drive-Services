@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -41,6 +41,7 @@ import { EditClientDialog } from "@/components/EditClientDialog";
 import { AddClientDialog } from "@/components/AddClientDialog";
 import { useAdminClients } from "@/hooks/use-admin-clients";
 import type { Client } from "@/lib/mock-data";
+import { AdminClientsSkeleton } from "@/components/AdminClientsSkeleton";
 
 
 export default function ClientsPage() {
@@ -50,6 +51,12 @@ export default function ClientsPage() {
     const [editingClient, setEditingClient] = useState<Client | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [deletingClientId, setDeletingClientId] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsLoading(false), 1000);
+        return () => clearTimeout(timer);
+    }, []);
 
     const handleEdit = useCallback((client: Client) => {
         setEditingClient(client);
@@ -78,6 +85,10 @@ export default function ClientsPage() {
         toast({ title: "Client Added", description: "The new client has been successfully added."});
         setIsAddDialogOpen(false);
     }, [addClient, toast]);
+
+    if (isLoading) {
+        return <AdminClientsSkeleton />;
+    }
 
     return (
         <>

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   Users,
   Car,
@@ -17,16 +17,27 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAdminClients } from "@/hooks/use-admin-clients";
+import { AdminDashboardSkeleton } from "@/components/AdminDashboardSkeleton";
 
 
 export default function AdminDashboardPage() {
   const { clients } = useAdminClients();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const stats = useMemo(() => ({
     totalClients: clients.length,
     totalVehicles: 78,
     upcomingAppointments: 12,
   }), [clients.length]);
+
+  if (isLoading) {
+    return <AdminDashboardSkeleton />;
+  }
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
