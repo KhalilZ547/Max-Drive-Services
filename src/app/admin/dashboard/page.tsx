@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAdminClients } from "@/hooks/use-admin-clients";
-import { AdminDashboardSkeleton } from "@/components/AdminDashboardSkeleton";
+import { LogoSpinner } from "@/components/LogoSpinner";
 
 
 export default function AdminDashboardPage() {
@@ -36,7 +36,12 @@ export default function AdminDashboardPage() {
   }), [clients.length]);
 
   if (isLoading) {
-    return <AdminDashboardSkeleton />;
+    return (
+      <main className="flex flex-1 flex-col items-center justify-center gap-4 p-4 md:gap-8 md:p-8">
+          <LogoSpinner className="h-32 w-32" />
+          <p className="text-muted-foreground">Loading dashboard...</p>
+      </main>
+    )
   }
 
   return (
