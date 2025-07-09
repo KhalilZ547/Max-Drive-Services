@@ -15,8 +15,9 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTranslation } from '@/hooks/use-translation';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { memo, useMemo, useCallback, MouseEvent } from 'react';
+import { memo, useMemo, useCallback, MouseEvent, useState, useEffect } from 'react';
 import { Logo } from '@/components/Logo';
+import { LogoSpinner } from '@/components/LogoSpinner';
 import {
   Select,
   SelectContent,
@@ -79,6 +80,18 @@ export default function DashboardLayout({
   const { t } = useTranslation();
   const router = useRouter();
   const { toast } = useToast();
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const role = localStorage.getItem('userRole');
+      if (role !== 'client') {
+        router.push('/login');
+      } else {
+        setIsAuthorized(true);
+      }
+    }
+  }, [router]);
 
   const navItems = useMemo(() => [
     { href: '/dashboard', icon: Home, label: t('nav_dashboard') },
@@ -102,6 +115,15 @@ export default function DashboardLayout({
       description: "To return to the public home page, please log out first.",
     });
   }, [toast]);
+
+  if (!isAuthorized) {
+      return (
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-4 md:gap-8 md:p-8 min-h-screen">
+            <LogoSpinner className="h-32 w-32" />
+            <p className="text-muted-foreground">Verifying authorization...</p>
+        </div>
+      )
+  }
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">

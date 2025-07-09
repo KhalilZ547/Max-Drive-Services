@@ -18,7 +18,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useState, useRef, ChangeEvent, useCallback } from "react";
+import { useState, useRef, ChangeEvent, useCallback, useEffect } from "react";
+import { ProfilePageSkeleton } from "@/components/ProfilePageSkeleton";
 
 const ProfileFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -36,6 +37,12 @@ export default function ProfilePage() {
     const { toast } = useToast();
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsLoading(false), 1000);
+        return () => clearTimeout(timer);
+    }, []);
 
     const form = useForm<z.infer<typeof ProfileFormSchema>>({
         resolver: zodResolver(ProfileFormSchema),
@@ -97,6 +104,10 @@ export default function ProfilePage() {
             });
         }
     }, [t, toast]);
+
+    if (isLoading) {
+        return <ProfilePageSkeleton />;
+    }
 
     return (
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">

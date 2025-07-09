@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -9,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
+import { VehiclesPageSkeleton } from '@/components/VehiclesPageSkeleton';
 
 // Mock data, in a real app this would come from a database
 const vehicles = [
@@ -18,6 +20,16 @@ const vehicles = [
 
 export default function VehiclesPage() {
     const { t } = useTranslation();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsLoading(false), 1000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (isLoading) {
+        return <VehiclesPageSkeleton />;
+    }
 
     return (
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
