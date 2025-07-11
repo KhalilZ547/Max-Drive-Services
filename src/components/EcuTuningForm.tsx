@@ -1,10 +1,11 @@
 
 "use client";
 
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useSearchParams } from 'next/navigation';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,9 +29,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
-import { UploadCloud, File, X, Loader2 } from "lucide-react";
+import { UploadCloud, File as FileIcon, X, Loader2 } from "lucide-react";
 import { useTuningRequests } from "@/hooks/use-tuning-requests";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { vehicleData } from "@/lib/mock-data";
 
 const ecuServices = [
     { id: 'dtc_off', key: 'ecu_dtc_off_title' },
@@ -47,11 +49,17 @@ export function EcuTuningForm() {
     const [fileName, setFileName] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const searchParams = useSearchParams();
 
     const EcuTuningFormSchema = useMemo(() => z.object({
         name: z.string().min(2, { message: t('contact_form_name') + " is required." }),
         email: z.string().email(),
-        vehicle: z.string().min(3, { message: "Vehicle details are required." }),
+        
+        vehicleMake: z.string({ required_error: "Please select a vehicle make." }),
+        vehicleModel: z.string({ required_error: "Please select a vehicle model." }),
+        vehicleYear: z.string({ required_error: "Please select a vehicle year." }),
+        vehicleEngine: z.string({ required_error: "Please select an engine." }),
+
         serviceId: z.string({ required_error: "Please select a service." }),
         fileType: z.enum(["eeprom", "flash", "full_backup"], { required_error: "You need to select a file type." }),
         file: z.any().refine(file => file?.length == 1, "ECU file is required."),
@@ -62,8 +70,40 @@ export function EcuTuningForm() {
         resolver: zodResolver(EcuTuningFormSchema),
         defaultValues: {
             fileType: "flash",
-        }
+        },
     });
+
+    useEffect(() => {
+        const service = searchParams.get('service');
+        if (service) {
+            form.setValue('serviceId', service);
+        }
+    }, [searchParams, form]);
+
+
+    const watchedMake = form.watch("vehicleMake");
+    const watchedModel = form.watch("vehicleModel");
+    const watchedYear = form.watch("vehicleYear");
+
+    const models = useMemo(() => {
+        return watchedMake ? vehicleData[watchedMake]?.models ?? [] : [];
+    }, [watchedMake]);
+
+    const years = useMemo(() => {
+        return watchedMake && watchedModel
+            ? vehicleData[watchedMake]?.years[watchedModel] ?? []
+            : [];
+    }, [watchedMake, watchedModel]);
+
+    const engines = useMemo(() => {
+        return watchedMake && watchedModel && watchedYear
+            ? vehicleData[watchedMake]?.engines[watchedModel]?.[watchedYear] ?? []
+            : [];
+    }, [watchedMake, watchedModel, watchedYear]);
+    
+    useEffect(() => { form.resetField("vehicleModel") }, [watchedMake, form]);
+    useEffect(() => { form.resetField("vehicleYear") }, [watchedModel, form]);
+    useEffect(() => { form.resetField("vehicleEngine") }, [watchedYear, form]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -83,11 +123,19 @@ export function EcuTuningForm() {
 
     async function onSubmit(data: z.infer<typeof EcuTuningFormSchema>) {
         setIsSubmitting(true);
-        // Simulate async operation
         await new Promise(resolve => setTimeout(resolve, 1500));
 
+        const vehicleDetails = `${data.vehicleMake} ${data.vehicleModel} ${data.vehicleYear} ${data.vehicleEngine}`;
         const serviceName = t(ecuServices.find(s => s.id === data.serviceId)!.key as any);
-        addRequest({ ...data, service: serviceName });
+        
+        addRequest({ 
+            name: data.name,
+            email: data.email,
+            vehicle: vehicleDetails,
+            service: serviceName,
+            fileType: data.fileType,
+            notes: data.notes
+        });
         
         toast({
             title: "Request Submitted!",
@@ -136,20 +184,36 @@ export function EcuTuningForm() {
                             />
                         </div>
                         
-                        <FormField
-                            control={form.control}
-                            name="vehicle"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Vehicle Details</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="e.g., Audi A3 2018 2.0 TDI" {...field} />
-                                    </FormControl>
-                                    <FormDescription>Make, model, year, and engine.</FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <Card className="p-4 bg-muted/30">
+                            <CardTitle as="h4" className="text-lg mb-4">Vehicle Details</CardTitle>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField control={form.control} name="vehicleMake" render={({ field }) => (
+                                    <FormItem><FormLabel>Make</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select Make" /></SelectTrigger></FormControl>
+                                        <SelectContent>{Object.keys(vehicleData).map(make => <SelectItem key={make} value={make}>{make}</SelectItem>)}</SelectContent>
+                                    </Select><FormMessage /></FormItem>
+                                )}/>
+                                <FormField control={form.control} name="vehicleModel" render={({ field }) => (
+                                    <FormItem><FormLabel>Model</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value} disabled={!watchedMake}><FormControl><SelectTrigger><SelectValue placeholder="Select Model" /></SelectTrigger></FormControl>
+                                        <SelectContent>{models.map(model => <SelectItem key={model} value={model}>{model}</SelectItem>)}</SelectContent>
+                                    </Select><FormMessage /></FormItem>
+                                )}/>
+                                <FormField control={form.control} name="vehicleYear" render={({ field }) => (
+                                    <FormItem><FormLabel>Year</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value} disabled={!watchedModel}><FormControl><SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger></FormControl>
+                                        <SelectContent>{years.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}</SelectContent>
+                                    </Select><FormMessage /></FormItem>
+                                )}/>
+                                <FormField control={form.control} name="vehicleEngine" render={({ field }) => (
+                                    <FormItem><FormLabel>Engine</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value} disabled={!watchedYear}><FormControl><SelectTrigger><SelectValue placeholder="Select Engine" /></SelectTrigger></FormControl>
+                                        <SelectContent>{engines.map(engine => <SelectItem key={engine} value={engine}>{engine}</SelectItem>)}</SelectContent>
+                                    </Select><FormMessage /></FormItem>
+                                )}/>
+                            </div>
+                        </Card>
+
 
                         <FormField
                             control={form.control}
@@ -157,7 +221,7 @@ export function EcuTuningForm() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('service_label')}</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder={t('select_service_placeholder')} />
@@ -185,7 +249,7 @@ export function EcuTuningForm() {
                                 <FormControl>
                                     <RadioGroup
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
+                                        value={field.value}
                                         className="flex flex-col space-y-1"
                                     >
                                         <FormItem className="flex items-center space-x-3 space-y-0">
@@ -229,12 +293,12 @@ export function EcuTuningForm() {
                                                 ref={fileInputRef} 
                                                 className="hidden"
                                                 onChange={handleFileChange}
-                                                accept=".bin,.zip,.rar"
+                                                accept=".bin,.zip,.rar,.ori"
                                             />
                                             <div className="flex flex-col items-center gap-2 text-muted-foreground">
                                                 <UploadCloud className="h-10 w-10"/>
                                                 <span>Click to upload or drag and drop</span>
-                                                <span className="text-xs">.bin, .zip, .rar files</span>
+                                                <span className="text-xs">.bin, .ori, .zip, .rar files</span>
                                             </div>
                                         </div>
                                     </FormControl>
@@ -246,7 +310,7 @@ export function EcuTuningForm() {
                         {fileName && (
                             <div className="flex items-center justify-between rounded-lg border bg-muted/50 p-3">
                                 <div className="flex items-center gap-2">
-                                    <File className="h-5 w-5 text-primary"/>
+                                    <FileIcon className="h-5 w-5 text-primary"/>
                                     <span className="text-sm font-medium">{fileName}</span>
                                 </div>
                                 <Button type="button" variant="ghost" size="icon" onClick={handleRemoveFile}>

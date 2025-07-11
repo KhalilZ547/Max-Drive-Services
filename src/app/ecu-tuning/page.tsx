@@ -1,10 +1,13 @@
 
+"use client";
+
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { EcuTuningForm } from "@/components/EcuTuningForm";
 import { EcuSolutionsSection } from "@/components/EcuSolutionsSection";
+import { Suspense } from "react";
 
-export default function EcuTuningPage() {
+function EcuTuningContent() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
@@ -18,5 +21,13 @@ export default function EcuTuningPage() {
       </main>
       <Footer />
     </div>
+  )
+}
+
+export default function EcuTuningPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EcuTuningContent />
+    </Suspense>
   );
 }

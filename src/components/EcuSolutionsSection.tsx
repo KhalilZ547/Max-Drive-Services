@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from './ui/
 import { Zap, ShieldOff, Droplets, Gauge, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 type EcuSolutionsSectionProps = {
   isPageHeader?: boolean;
@@ -14,6 +15,7 @@ type EcuSolutionsSectionProps = {
 
 export function EcuSolutionsSection({ isPageHeader = false }: EcuSolutionsSectionProps) {
   const { t } = useTranslation();
+  const router = useRouter();
 
   const ecuServices = useMemo(() => [
     {
@@ -41,6 +43,10 @@ export function EcuSolutionsSection({ isPageHeader = false }: EcuSolutionsSectio
       id: 'performance_tuning'
     },
   ], [t]);
+  
+  const handleCardClick = (serviceId: string) => {
+    router.push(`/ecu-tuning?service=${serviceId}`);
+  };
 
   return (
     <section id="ecu" className={isPageHeader ? "pt-20 pb-10 bg-card" : "py-20 bg-card"}>
@@ -51,7 +57,11 @@ export function EcuSolutionsSection({ isPageHeader = false }: EcuSolutionsSectio
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {ecuServices.map((service) => (
-            <Card key={service.id} className="text-center p-6 flex flex-col items-center border-2 border-transparent hover:border-primary hover:shadow-xl transition-all duration-300">
+            <Card 
+              key={service.id} 
+              className="text-center p-6 flex flex-col items-center border-2 border-transparent hover:border-primary hover:shadow-xl transition-all duration-300 cursor-pointer"
+              onClick={() => handleCardClick(service.id)}
+            >
               <CardHeader className="p-0 mb-4">
                 {service.icon}
                 <CardTitle className="mt-4">{service.title}</CardTitle>

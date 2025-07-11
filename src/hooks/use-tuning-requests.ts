@@ -83,6 +83,9 @@ export const useTuningRequests = () => {
             if (price !== undefined) {
                 updatedReq.price = price;
             }
+            if (status === 'Completed') {
+                updatedReq.modifiedFileUrl = '#'; // In a real app, this would be a generated secure link
+            }
             return updatedReq;
         }
         return req;
