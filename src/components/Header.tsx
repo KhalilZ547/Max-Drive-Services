@@ -24,6 +24,7 @@ export function Header() {
 
   const navLinks = useMemo(() => [
     { href: '#services', label: t('nav_services') },
+    { href: '#ecu', label: t('nav_ecu_solutions') },
     { href: '#donation', label: t('nav_donation') },
     { href: '#contact', label: t('nav_contact') },
   ], [t]);

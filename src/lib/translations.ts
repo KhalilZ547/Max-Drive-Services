@@ -10,6 +10,7 @@ export const translations = {
     nav_dashboard: "Dashboard",
     nav_appointment: "Book Appointment",
     nav_donation: "Donate",
+    nav_ecu_solutions: "ECU Solutions",
 
     // Hero Section
     hero_title: "Your Trusted Partner for Complete Car Care",
@@ -27,6 +28,18 @@ export const translations = {
     service_ecu_solutions_title: "ECU Solutions",
     service_ecu_solutions_desc: "Custom ECU tuning and remapping for enhanced performance and fuel efficiency.",
     service_other_title: "Other",
+
+    // ECU Solutions Section
+    ecu_solutions_title: "Advanced ECU Solutions",
+    ecu_solutions_subtitle: "Unlock your vehicle's true potential. We provide specialized ECU services for performance enthusiasts and workshops.",
+    ecu_dtc_off_title: "DTC Off",
+    ecu_dtc_off_desc: "Permanently remove specific Diagnostic Trouble Codes from the ECU, ideal for modified vehicles.",
+    ecu_egr_off_title: "EGR Off",
+    ecu_egr_off_desc: "Disable the Exhaust Gas Recirculation system to improve performance and engine longevity.",
+    ecu_adblue_off_title: "AdBlue Off",
+    ecu_adblue_off_desc: "Electronically disable the AdBlue system, eliminating the need for refills and potential failures.",
+    ecu_performance_tuning_title: "Performance Tuning",
+    ecu_performance_tuning_desc: "Custom Stage 1 & 2 tuning to safely increase horsepower and torque.",
 
     // Testimonials Section
     testimonials_title: "What Our Clients Say",
@@ -174,6 +187,7 @@ export const translations = {
     nav_dashboard: "Tableau de bord",
     nav_appointment: "Prendre rendez-vous",
     nav_donation: "Faire un don",
+    nav_ecu_solutions: "Solutions ECU",
 
     // Hero Section
     hero_title: "Votre Partenaire de Confiance pour l'Entretien Complet de votre Voiture",
@@ -191,6 +205,18 @@ export const translations = {
     service_ecu_solutions_title: "Solutions ECU",
     service_ecu_solutions_desc: "Réglage et reprogrammation d'ECU sur mesure pour des performances et une efficacité énergétique améliorées.",
     service_other_title: "Autre",
+
+    // ECU Solutions Section
+    ecu_solutions_title: "Solutions ECU Avancées",
+    ecu_solutions_subtitle: "Libérez le véritable potentiel de votre véhicule. Nous fournissons des services ECU spécialisés pour les passionnés de performance et les ateliers.",
+    ecu_dtc_off_title: "DTC Off",
+    ecu_dtc_off_desc: "Supprimez définitivement des codes d'anomalie de diagnostic spécifiques de l'ECU, idéal pour les véhicules modifiés.",
+    ecu_egr_off_title: "EGR Off",
+    ecu_egr_off_desc: "Désactivez le système de recirculation des gaz d'échappement pour améliorer les performances et la longévité du moteur.",
+    ecu_adblue_off_title: "AdBlue Off",
+    ecu_adblue_off_desc: "Désactivez électroniquement le système AdBlue, éliminant le besoin de recharges et les pannes potentielles.",
+    ecu_performance_tuning_title: "Reprogrammation Moteur",
+    ecu_performance_tuning_desc: "Reprogrammation personnalisée Stage 1 & 2 pour augmenter en toute sécurité la puissance et le couple.",
     
     // Testimonials Section
     testimonials_title: "Ce que disent nos clients",
@@ -338,6 +364,7 @@ export const translations = {
     nav_dashboard: "لوحة التحكم",
     nav_appointment: "حجز موعد",
     nav_donation: "تبرع",
+    nav_ecu_solutions: "حلول ECU",
 
     // Hero Section
     hero_title: "شريكك الموثوق به للعناية الكاملة بالسيارات",
@@ -355,6 +382,18 @@ export const translations = {
     service_ecu_solutions_title: "حلول وحدة التحكم الإلكترونية",
     service_ecu_solutions_desc: "ضبط وإعادة برمجة مخصصة لوحدة التحكم الإلكترونية (ECU) لتحسين الأداء وكفاءة استهلاك الوقود.",
     service_other_title: "أخرى",
+
+    // ECU Solutions Section
+    ecu_solutions_title: "حلول ECU المتقدمة",
+    ecu_solutions_subtitle: "أطلق العنان للإمكانيات الحقيقية لسيارتك. نحن نقدم خدمات ECU متخصصة لعشاق الأداء والورش.",
+    ecu_dtc_off_title: "إلغاء أكواد الأعطال (DTC)",
+    ecu_dtc_off_desc: "إزالة أكواد أعطال التشخيص المحددة بشكل دائم من وحدة التحكم الإلكترونية ، وهو مثالي للمركبات المعدلة.",
+    ecu_egr_off_title: "إلغاء نظام EGR",
+    ecu_egr_off_desc: "قم بتعطيل نظام إعادة تدوير غاز العادم لتحسين الأداء وإطالة عمر المحرك.",
+    ecu_adblue_off_title: "إلغاء نظام AdBlue",
+    ecu_adblue_off_desc: "قم بتعطيل نظام AdBlue إلكترونيًا ، مما يلغي الحاجة إلى إعادة التعبئة والأعطال المحتملة.",
+    ecu_performance_tuning_title: "ضبط الأداء",
+    ecu_performance_tuning_desc: "ضبط مخصص للمرحلة 1 و 2 لزيادة القوة الحصانية وعزم الدوران بأمان.",
     
     // Testimonials Section
     testimonials_title: "ماذا يقول عملاؤنا",
