@@ -1,3 +1,4 @@
+
 // Mock data for clients
 export const clientsData = [
     { id: 'usr_1', name: 'Ahmed Ben Ali', email: 'ahmed.benali@example.com', registered: '2023-05-12' },
@@ -8,3 +9,34 @@ export const clientsData = [
 ];
 
 export type Client = (typeof clientsData)[0];
+
+export const tuningRequestsData = [
+    { 
+        id: 'req_1', 
+        name: 'Jane Doe', 
+        email: 'jane.doe@example.com',
+        vehicle: 'VW Golf 7 GTI 2019',
+        service: 'Performance Tuning',
+        date: '2024-05-18T10:00:00Z', 
+        status: 'Awaiting Payment' as const, 
+        price: 250.00,
+        originalFileUrl: '#',
+        modifiedFileUrl: null,
+        notes: 'Looking for a Stage 1 tune for better daily driving.'
+    },
+    { 
+        id: 'req_2', 
+        name: 'Carlos Rey', 
+        email: 'carlos.rey@example.com',
+        vehicle: 'BMW 330d 2020',
+        service: 'EGR Off',
+        date: '2024-05-20T14:30:00Z', 
+        status: 'Pending' as const, 
+        price: null,
+        originalFileUrl: '#',
+        modifiedFileUrl: null,
+        notes: ''
+    },
+];
+
+export type TuningRequest = (typeof tuningRequestsData)[0];

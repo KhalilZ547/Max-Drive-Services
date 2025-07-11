@@ -40,6 +40,8 @@ export const translations = {
     ecu_adblue_off_desc: "Electronically disable the AdBlue system, eliminating the need for refills and potential failures.",
     ecu_performance_tuning_title: "Performance Tuning",
     ecu_performance_tuning_desc: "Custom Stage 1 & 2 tuning to safely increase horsepower and torque.",
+    ecu_upload_file_cta: "Upload Your File for a Quote",
+
 
     // Testimonials Section
     testimonials_title: "What Our Clients Say",
@@ -217,6 +219,7 @@ export const translations = {
     ecu_adblue_off_desc: "Désactivez électroniquement le système AdBlue, éliminant le besoin de recharges et les pannes potentielles.",
     ecu_performance_tuning_title: "Reprogrammation Moteur",
     ecu_performance_tuning_desc: "Reprogrammation personnalisée Stage 1 & 2 pour augmenter en toute sécurité la puissance et le couple.",
+    ecu_upload_file_cta: "Envoyez votre fichier pour un devis",
     
     // Testimonials Section
     testimonials_title: "Ce que disent nos clients",
@@ -394,6 +397,7 @@ export const translations = {
     ecu_adblue_off_desc: "قم بتعطيل نظام AdBlue إلكترونيًا ، مما يلغي الحاجة إلى إعادة التعبئة والأعطال المحتملة.",
     ecu_performance_tuning_title: "ضبط الأداء",
     ecu_performance_tuning_desc: "ضبط مخصص للمرحلة 1 و 2 لزيادة القوة الحصانية وعزم الدوران بأمان.",
+    ecu_upload_file_cta: "ارفع ملفك للحصول على عرض أسعار",
     
     // Testimonials Section
     testimonials_title: "ماذا يقول عملاؤنا",

@@ -6,6 +6,7 @@ import {
   Home,
   LogOut,
   PanelLeft,
+  Cpu,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -20,6 +21,7 @@ import { useToast } from '@/hooks/use-toast';
 const navItems = [
   { href: '/admin/dashboard', icon: Home, label: 'Dashboard' },
   { href: '/admin/clients', icon: Users, label: 'Clients' },
+  { href: '/admin/tuning', icon: Cpu, label: 'Tuning Requests' },
 ];
 
 const NavContent = memo(() => {
@@ -27,7 +29,7 @@ const NavContent = memo(() => {
   return (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
       {navItems.map((item) => {
-        const isActive = pathname === item.href;
+        const isActive = pathname.startsWith(item.href);
         return (
           <Link
             key={item.href}

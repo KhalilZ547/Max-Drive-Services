@@ -23,10 +23,10 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = useMemo(() => [
-    { href: '#services', label: t('nav_services') },
-    { href: '#ecu', label: t('nav_ecu_solutions') },
-    { href: '#donation', label: t('nav_donation') },
-    { href: '#contact', label: t('nav_contact') },
+    { href: '/#services', label: t('nav_services') },
+    { href: '/ecu-tuning', label: t('nav_ecu_solutions') },
+    { href: '/#donation', label: t('nav_donation') },
+    { href: '/#contact', label: t('nav_contact') },
   ], [t]);
 
   return (
