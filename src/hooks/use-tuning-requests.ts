@@ -39,6 +39,7 @@ type NewRequestPayload = {
     email: string;
     vehicle: string;
     service: string;
+    fileType: 'eeprom' | 'flash' | 'full_backup';
     notes?: string;
 }
 

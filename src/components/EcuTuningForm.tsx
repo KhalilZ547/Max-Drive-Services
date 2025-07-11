@@ -30,6 +30,7 @@ import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
 import { UploadCloud, File, X, Loader2 } from "lucide-react";
 import { useTuningRequests } from "@/hooks/use-tuning-requests";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 const ecuServices = [
     { id: 'dtc_off', key: 'ecu_dtc_off_title' },
@@ -52,12 +53,16 @@ export function EcuTuningForm() {
         email: z.string().email(),
         vehicle: z.string().min(3, { message: "Vehicle details are required." }),
         serviceId: z.string({ required_error: "Please select a service." }),
+        fileType: z.enum(["eeprom", "flash", "full_backup"], { required_error: "You need to select a file type." }),
         file: z.any().refine(file => file?.length == 1, "ECU file is required."),
         notes: z.string().optional(),
     }), [t]);
 
     const form = useForm<z.infer<typeof EcuTuningFormSchema>>({
         resolver: zodResolver(EcuTuningFormSchema),
+        defaultValues: {
+            fileType: "flash",
+        }
     });
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -173,6 +178,43 @@ export function EcuTuningForm() {
 
                         <FormField
                             control={form.control}
+                            name="fileType"
+                            render={({ field }) => (
+                                <FormItem className="space-y-3">
+                                <FormLabel>File Type</FormLabel>
+                                <FormControl>
+                                    <RadioGroup
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        className="flex flex-col space-y-1"
+                                    >
+                                        <FormItem className="flex items-center space-x-3 space-y-0">
+                                            <FormControl>
+                                            <RadioGroupItem value="flash" />
+                                            </FormControl>
+                                            <FormLabel className="font-normal">Flash File</FormLabel>
+                                        </FormItem>
+                                        <FormItem className="flex items-center space-x-3 space-y-0">
+                                            <FormControl>
+                                            <RadioGroupItem value="eeprom" />
+                                            </FormControl>
+                                            <FormLabel className="font-normal">EEPROM File</FormLabel>
+                                        </FormItem>
+                                        <FormItem className="flex items-center space-x-3 space-y-0">
+                                            <FormControl>
+                                            <RadioGroupItem value="full_backup" />
+                                            </FormControl>
+                                            <FormLabel className="font-normal">Full Backup (.rar/.zip)</FormLabel>
+                                        </FormItem>
+                                    </RadioGroup>
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
                             name="file"
                             render={({ field }) => (
                                 <FormItem>
@@ -187,12 +229,12 @@ export function EcuTuningForm() {
                                                 ref={fileInputRef} 
                                                 className="hidden"
                                                 onChange={handleFileChange}
-                                                accept=".bin"
+                                                accept=".bin,.zip,.rar"
                                             />
                                             <div className="flex flex-col items-center gap-2 text-muted-foreground">
                                                 <UploadCloud className="h-10 w-10"/>
                                                 <span>Click to upload or drag and drop</span>
-                                                <span className="text-xs">Binary file (.bin)</span>
+                                                <span className="text-xs">.bin, .zip, .rar files</span>
                                             </div>
                                         </div>
                                     </FormControl>
