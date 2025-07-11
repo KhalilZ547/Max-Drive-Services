@@ -345,4 +345,9 @@ export const vehicleData: Record<string, {
             }
         },
     },
+    "Other": {
+        models: [],
+        years: {},
+        engines: {},
+    }
 };
