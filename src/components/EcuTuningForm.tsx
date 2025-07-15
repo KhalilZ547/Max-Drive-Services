@@ -33,6 +33,7 @@ import { UploadCloud, File as FileIcon, X, Loader2 } from "lucide-react";
 import { useTuningRequests } from "@/hooks/use-tuning-requests";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { vehicleData } from "@/lib/mock-data";
+import { Checkbox } from "./ui/checkbox";
 
 const ecuServices = [
     { id: 'dtc_off', key: 'ecu_dtc_off_title' },
@@ -50,6 +51,7 @@ export function EcuTuningForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const searchParams = useSearchParams();
+    const initialService = searchParams.get('service');
 
     const EcuTuningFormSchema = useMemo(() => z.object({
         name: z.string().min(2, { message: t('contact_form_name') + " is required." }),
@@ -61,7 +63,9 @@ export function EcuTuningForm() {
         vehicleEngine: z.string().optional(),
         otherVehicle: z.string().optional(),
 
-        serviceId: z.string({ required_error: "Please select a service." }),
+        serviceIds: z.array(z.string()).refine((value) => value.some((item) => item), {
+            message: "You have to select at least one service.",
+        }),
         fileType: z.enum(["eeprom", "flash", "full_backup"], { required_error: "You need to select a file type." }),
         file: z.any().refine(file => file?.length == 1, "ECU file is required."),
         notes: z.string().optional(),
@@ -79,15 +83,15 @@ export function EcuTuningForm() {
         resolver: zodResolver(EcuTuningFormSchema),
         defaultValues: {
             fileType: "flash",
+            serviceIds: initialService ? [initialService] : [],
         },
     });
 
     useEffect(() => {
-        const service = searchParams.get('service');
-        if (service) {
-            form.setValue('serviceId', service);
+        if (initialService) {
+            form.setValue('serviceIds', [initialService]);
         }
-    }, [searchParams, form]);
+    }, [initialService, form]);
 
 
     const watchedMake = form.watch("vehicleMake");
@@ -137,13 +141,14 @@ export function EcuTuningForm() {
         const vehicleDetails = data.vehicleMake === 'Other'
             ? data.otherVehicle!
             : `${data.vehicleMake} ${data.vehicleModel} ${data.vehicleYear} ${data.vehicleEngine}`;
-        const serviceName = t(ecuServices.find(s => s.id === data.serviceId)!.key as any);
+        
+        const serviceNames = data.serviceIds.map(id => t(ecuServices.find(s => s.id === id)!.key as any)).join(', ');
         
         addRequest({ 
             name: data.name,
             email: data.email,
             vehicle: vehicleDetails,
-            service: serviceName,
+            service: serviceNames,
             fileType: data.fileType,
             notes: data.notes
         });
@@ -241,27 +246,50 @@ export function EcuTuningForm() {
                             </div>
                         </Card>
 
-
                         <FormField
                             control={form.control}
-                            name="serviceId"
-                            render={({ field }) => (
+                            name="serviceIds"
+                            render={() => (
                                 <FormItem>
-                                    <FormLabel>{t('service_label')}</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder={t('select_service_placeholder')} />
-                                        </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                        {ecuServices.map(service => (
-                                            <SelectItem key={service.id} value={service.id}>
-                                                {t(service.key as any)}
-                                            </SelectItem>
-                                        ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <div className="mb-4">
+                                        <FormLabel>{t('service_label')}</FormLabel>
+                                        <FormDescription>
+                                            Select all services you require.
+                                        </FormDescription>
+                                    </div>
+                                    {ecuServices.map((item) => (
+                                        <FormField
+                                        key={item.id}
+                                        control={form.control}
+                                        name="serviceIds"
+                                        render={({ field }) => {
+                                            return (
+                                            <FormItem
+                                                key={item.id}
+                                                className="flex flex-row items-start space-x-3 space-y-0"
+                                            >
+                                                <FormControl>
+                                                <Checkbox
+                                                    checked={field.value?.includes(item.id)}
+                                                    onCheckedChange={(checked) => {
+                                                    return checked
+                                                        ? field.onChange([...(field.value || []), item.id])
+                                                        : field.onChange(
+                                                            field.value?.filter(
+                                                            (value) => value !== item.id
+                                                            )
+                                                        )
+                                                    }}
+                                                />
+                                                </FormControl>
+                                                <FormLabel className="font-normal">
+                                                    {t(item.key as any)}
+                                                </FormLabel>
+                                            </FormItem>
+                                            )
+                                        }}
+                                        />
+                                    ))}
                                     <FormMessage />
                                 </FormItem>
                             )}
