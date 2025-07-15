@@ -9,13 +9,14 @@ import {
   LogOut,
   PanelLeft,
   CalendarPlus,
+  type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTranslation } from '@/hooks/use-translation';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { memo, useMemo, useCallback, MouseEvent, useState, useEffect } from 'react';
+import { memo, useMemo, useCallback, MouseEvent, useState, useEffect, type ComponentType } from 'react';
 import { Logo } from '@/components/Logo';
 import { LogoSpinner } from '@/components/LogoSpinner';
 import {
@@ -30,7 +31,13 @@ import type { Language } from '@/lib/translations';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useToast } from '@/hooks/use-toast';
 
-const NavContent = memo(({ navItems }: { navItems: { href: string; icon: React.ElementType; label: string }[] }) => {
+type NavItem = {
+  href: string;
+  icon: ComponentType<{ className?: string }>;
+  label: string;
+};
+
+const NavContent = memo(({ navItems }: { navItems: NavItem[] }) => {
   const pathname = usePathname();
   return (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
@@ -93,7 +100,7 @@ export default function DashboardLayout({
     }
   }, [router]);
 
-  const navItems = useMemo(() => [
+  const navItems: NavItem[] = useMemo(() => [
     { href: '/dashboard', icon: Home, label: t('nav_dashboard') },
     { href: '/dashboard/appointment', icon: CalendarPlus, label: t('nav_appointment') },
     { href: '/dashboard/vehicles', icon: Car, label: t('tab_vehicles') },
