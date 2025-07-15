@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Users } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -102,42 +102,51 @@ export default function ClientsPage() {
                         <Button onClick={() => setIsAddDialogOpen(true)}>Add New Client</Button>
                     </CardHeader>
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Email</TableHead>
-                                    <TableHead>Registered On</TableHead>
-                                    <TableHead>
-                                        <span className="sr-only">Actions</span>
-                                    </TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {clients.map((client) => (
-                                    <TableRow key={client.id}>
-                                        <TableCell className="font-medium">{client.name}</TableCell>
-                                        <TableCell>{client.email}</TableCell>
-                                        <TableCell>{client.registered}</TableCell>
-                                        <TableCell>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                                                        <MoreHorizontal className="h-4 w-4" />
-                                                        <span className="sr-only">Toggle menu</span>
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                    <DropdownMenuItem onSelect={() => handleEdit(client)}>Edit</DropdownMenuItem>
-                                                    <DropdownMenuItem onSelect={() => handleDelete(client.id)} className="text-destructive focus:text-destructive">Delete</DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </TableCell>
+                        {clients.length > 0 ? (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        <TableHead>Registered On</TableHead>
+                                        <TableHead>
+                                            <span className="sr-only">Actions</span>
+                                        </TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {clients.map((client) => (
+                                        <TableRow key={client.id}>
+                                            <TableCell className="font-medium">{client.name}</TableCell>
+                                            <TableCell>{client.email}</TableCell>
+                                            <TableCell>{client.registered}</TableCell>
+                                            <TableCell>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button aria-haspopup="true" size="icon" variant="ghost">
+                                                            <MoreHorizontal className="h-4 w-4" />
+                                                            <span className="sr-only">Toggle menu</span>
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                        <DropdownMenuItem onSelect={() => handleEdit(client)}>Edit</DropdownMenuItem>
+                                                        <DropdownMenuItem onSelect={() => handleDelete(client.id)} className="text-destructive focus:text-destructive">Delete</DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        ) : (
+                            <div className="text-center py-16">
+                                <Users className="mx-auto h-12 w-12 text-muted-foreground" />
+                                <h3 className="mt-4 text-lg font-semibold">No Clients Found</h3>
+                                <p className="mt-2 text-sm text-muted-foreground">Get started by adding a new client.</p>
+                                <Button className="mt-4" onClick={() => setIsAddDialogOpen(true)}>Add Client</Button>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </main>
