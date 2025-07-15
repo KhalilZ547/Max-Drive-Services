@@ -7,6 +7,7 @@ import { GlobalComponents } from '@/components/GlobalComponents';
 export const metadata: Metadata = {
   title: 'Max-Drive-Services',
   description: 'Your Trusted Partner for Complete Car Care',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -23,6 +24,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Teko:wght@700&display=swap"
           rel="stylesheet"
         ></link>
+        <meta name="theme-color" content="#0020ad" />
       </head>
       <body className="font-body antialiased">
         <ThemeProvider
