@@ -75,17 +75,17 @@ export function EcuTuningForm() {
         file: z.any().refine(file => file?.length == 1, "ECU file is required."),
         notes: z.string().optional(),
     }).superRefine((data, ctx) => {
-        if (data.vehicleMake === OTHER_VALUE && !data.otherVehicleMake) {
-            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify the vehicle make.", path: ["otherVehicleMake"] });
+        if (data.vehicleMake === OTHER_VALUE && (!data.otherVehicleMake || data.otherVehicleMake.trim().length < 2)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify the vehicle make (min 2 chars).", path: ["otherVehicleMake"] });
         }
-        if (data.vehicleModel === OTHER_VALUE && !data.otherVehicleModel) {
-            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify the vehicle model.", path: ["otherVehicleModel"] });
+        if (data.vehicleModel === OTHER_VALUE && (!data.otherVehicleModel || data.otherVehicleModel.trim().length < 2)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify the vehicle model (min 2 chars).", path: ["otherVehicleModel"] });
         }
-        if (data.vehicleYear === OTHER_VALUE && !data.otherVehicleYear) {
-            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify the vehicle year.", path: ["otherVehicleYear"] });
+        if (data.vehicleYear === OTHER_VALUE && (!data.otherVehicleYear || !/^\d{4}$/.test(data.otherVehicleYear))) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify a valid 4-digit year.", path: ["otherVehicleYear"] });
         }
-        if (data.vehicleEngine === OTHER_VALUE && !data.otherVehicleEngine) {
-            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify the vehicle engine.", path: ["otherVehicleEngine"] });
+        if (data.vehicleEngine === OTHER_VALUE && (!data.otherVehicleEngine || data.otherVehicleEngine.trim().length < 2)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify the vehicle engine (min 2 chars).", path: ["otherVehicleEngine"] });
         }
     }), [t]);
 
@@ -170,7 +170,22 @@ export function EcuTuningForm() {
             title: "Request Submitted!",
             description: "We've received your tuning request. We will review your file and email you a quote shortly.",
         });
-        form.reset();
+        form.reset({
+            name: '',
+            email: '',
+            vehicleMake: undefined,
+            otherVehicleMake: '',
+            vehicleModel: undefined,
+            otherVehicleModel: '',
+            vehicleYear: undefined,
+            otherVehicleYear: '',
+            vehicleEngine: undefined,
+            otherVehicleEngine: '',
+            serviceIds: [],
+            fileType: "flash",
+            file: null,
+            notes: ''
+        });
         setFileName(null);
         setIsSubmitting(false);
     }
@@ -233,7 +248,7 @@ export function EcuTuningForm() {
                                    )}/>
                                 )}
                                 
-                                {watchedMake && watchedMake !== OTHER_VALUE && (
+                                {watchedMake && (
                                 <>
                                     <FormField control={form.control} name="vehicleModel" render={({ field }) => (
                                         <FormItem><FormLabel>Model</FormLabel>
