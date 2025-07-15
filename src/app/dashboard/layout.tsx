@@ -9,7 +9,6 @@ import {
   LogOut,
   PanelLeft,
   CalendarPlus,
-  type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -37,7 +36,7 @@ type NavItem = {
   label: string;
 };
 
-const NavContent = memo(({ navItems }: { navItems: NavItem[] }) => {
+const NavContent = memo(function NavContent({ navItems }: { navItems: NavItem[] }) {
   const pathname = usePathname();
   return (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
@@ -60,9 +59,8 @@ const NavContent = memo(({ navItems }: { navItems: NavItem[] }) => {
     </nav>
   );
 });
-NavContent.displayName = 'NavContent';
 
-const LanguageSelector = memo(() => {
+const LanguageSelector = memo(function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
   return (
     <Select value={language} onValueChange={(value) => setLanguage(value as Language)}>
@@ -77,7 +75,6 @@ const LanguageSelector = memo(() => {
     </Select>
   );
 });
-LanguageSelector.displayName = 'LanguageSelector';
 
 export default function DashboardLayout({
   children,
@@ -100,7 +97,7 @@ export default function DashboardLayout({
     }
   }, [router]);
 
-  const navItems: NavItem[] = useMemo(() => [
+  const navItems = useMemo(() => [
     { href: '/dashboard', icon: Home, label: t('nav_dashboard') },
     { href: '/dashboard/appointment', icon: CalendarPlus, label: t('nav_appointment') },
     { href: '/dashboard/vehicles', icon: Car, label: t('tab_vehicles') },
