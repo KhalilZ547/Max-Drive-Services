@@ -47,7 +47,6 @@ const NavContent = memo(() => {
     </nav>
   );
 });
-NavContent.displayName = 'NavContent';
 
 export default function AdminLayout({
   children,
