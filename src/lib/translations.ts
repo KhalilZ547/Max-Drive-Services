@@ -30,7 +30,7 @@ export const translations = {
     service_other_title: "Other",
 
     // ECU Solutions Section
-    ecu_solutions_title: "Advanced ECU Solutions",
+    ecu_solutions_title: "Remote ECU Solutions",
     ecu_solutions_subtitle: "Unlock your vehicle's true potential. We provide specialized ECU services for performance enthusiasts and workshops.",
     ecu_dtc_off_title: "DTC Off",
     ecu_dtc_off_desc: "Permanently remove specific Diagnostic Trouble Codes from the ECU, ideal for modified vehicles.",
@@ -209,7 +209,7 @@ export const translations = {
     service_other_title: "Autre",
 
     // ECU Solutions Section
-    ecu_solutions_title: "Solutions ECU Avancées",
+    ecu_solutions_title: "Solutions ECU à distance",
     ecu_solutions_subtitle: "Libérez le véritable potentiel de votre véhicule. Nous fournissons des services ECU spécialisés pour les passionnés de performance et les ateliers.",
     ecu_dtc_off_title: "DTC Off",
     ecu_dtc_off_desc: "Supprimez définitivement des codes d'anomalie de diagnostic spécifiques de l'ECU, idéal pour les véhicules modifiés.",
@@ -387,7 +387,7 @@ export const translations = {
     service_other_title: "أخرى",
 
     // ECU Solutions Section
-    ecu_solutions_title: "حلول ECU المتقدمة",
+    ecu_solutions_title: "حلول ECU عن بعد",
     ecu_solutions_subtitle: "أطلق العنان للإمكانيات الحقيقية لسيارتك. نحن نقدم خدمات ECU متخصصة لعشاق الأداء والورش.",
     ecu_dtc_off_title: "إلغاء أكواد الأعطال (DTC)",
     ecu_dtc_off_desc: "إزالة أكواد أعطال التشخيص المحددة بشكل دائم من وحدة التحكم الإلكترونية ، وهو مثالي للمركبات المعدلة.",
