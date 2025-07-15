@@ -92,6 +92,13 @@ export function EcuTuningForm() {
     const form = useForm<z.infer<typeof EcuTuningFormSchema>>({
         resolver: zodResolver(EcuTuningFormSchema),
         defaultValues: {
+            name: "",
+            email: "",
+            otherVehicleMake: "",
+            otherVehicleModel: "",
+            otherVehicleYear: "",
+            otherVehicleEngine: "",
+            notes: "",
             fileType: "flash",
             serviceIds: initialService ? [initialService] : [],
         },
@@ -252,7 +259,7 @@ export function EcuTuningForm() {
                                 <>
                                     <FormField control={form.control} name="vehicleModel" render={({ field }) => (
                                         <FormItem><FormLabel>Model</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value} disabled={!models.length}><FormControl><SelectTrigger><SelectValue placeholder="Select Model" /></SelectTrigger></FormControl>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={watchedMake !== OTHER_VALUE && !models.length}><FormControl><SelectTrigger><SelectValue placeholder="Select Model" /></SelectTrigger></FormControl>
                                             <SelectContent>{models.map(model => <SelectItem key={model} value={model}>{model}</SelectItem>)}<SelectItem value={OTHER_VALUE}>Other</SelectItem></SelectContent>
                                         </Select><FormMessage /></FormItem>
                                     )}/>
@@ -268,7 +275,7 @@ export function EcuTuningForm() {
 
                                     <FormField control={form.control} name="vehicleYear" render={({ field }) => (
                                         <FormItem><FormLabel>Year</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value} disabled={!years.length || watchedModel === OTHER_VALUE}><FormControl><SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger></FormControl>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={watchedMake !== OTHER_VALUE && (!years.length || watchedModel === OTHER_VALUE)}><FormControl><SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger></FormControl>
                                             <SelectContent>{years.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}<SelectItem value={OTHER_VALUE}>Other</SelectItem></SelectContent>
                                         </Select><FormMessage /></FormItem>
                                     )}/>
@@ -284,7 +291,7 @@ export function EcuTuningForm() {
 
                                     <FormField control={form.control} name="vehicleEngine" render={({ field }) => (
                                         <FormItem className="md:col-span-2"><FormLabel>Engine</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value} disabled={!engines.length || watchedYear === OTHER_VALUE}><FormControl><SelectTrigger><SelectValue placeholder="Select Engine" /></SelectTrigger></FormControl>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={watchedMake !== OTHER_VALUE && (!engines.length || watchedYear === OTHER_VALUE)}><FormControl><SelectTrigger><SelectValue placeholder="Select Engine" /></SelectTrigger></FormControl>
                                             <SelectContent>{engines.map(engine => <SelectItem key={engine} value={engine}>{engine}</SelectItem>)}<SelectItem value={OTHER_VALUE}>Other</SelectItem></SelectContent>
                                         </Select><FormMessage /></FormItem>
                                     )}/>
