@@ -35,7 +35,7 @@ type NewClientData = Omit<Client, 'id' | 'registered'>;
 type AddClientDialogProps = {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
-    onAddClient: (client: NewClientData) => void;
+    onAddClient: (client: NewClientData) => Promise<void>;
 };
 
 export function AddClientDialog({ isOpen, onOpenChange, onAddClient }: AddClientDialogProps) {
@@ -48,8 +48,8 @@ export function AddClientDialog({ isOpen, onOpenChange, onAddClient }: AddClient
     },
   });
 
-  function onSubmit(data: z.infer<typeof AddClientFormSchema>) {
-    onAddClient(data);
+  async function onSubmit(data: z.infer<typeof AddClientFormSchema>) {
+    await onAddClient(data);
     onOpenChange(false);
     form.reset();
   }
