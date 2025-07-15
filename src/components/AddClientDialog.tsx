@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,6 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import type { Client } from "@/lib/mock-data";
+import { Loader2 } from "lucide-react";
 
 const AddClientFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -39,6 +41,7 @@ type AddClientDialogProps = {
 };
 
 export function AddClientDialog({ isOpen, onOpenChange, onAddClient }: AddClientDialogProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<z.infer<typeof AddClientFormSchema>>({
     resolver: zodResolver(AddClientFormSchema),
@@ -48,14 +51,21 @@ export function AddClientDialog({ isOpen, onOpenChange, onAddClient }: AddClient
     },
   });
 
+  const handleDialogChange = (open: boolean) => {
+    if (!open) {
+      form.reset();
+    }
+    onOpenChange(open);
+  }
+
   async function onSubmit(data: z.infer<typeof AddClientFormSchema>) {
+    setIsSubmitting(true);
     await onAddClient(data);
-    onOpenChange(false);
-    form.reset();
+    setIsSubmitting(false);
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => { onOpenChange(open); if (!open) form.reset(); }}>
+    <Dialog open={isOpen} onOpenChange={handleDialogChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add New Client</DialogTitle>
@@ -72,7 +82,7 @@ export function AddClientDialog({ isOpen, onOpenChange, onAddClient }: AddClient
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Client's full name" {...field} />
+                    <Input placeholder="Client's full name" {...field} disabled={isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -85,7 +95,7 @@ export function AddClientDialog({ isOpen, onOpenChange, onAddClient }: AddClient
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="client@example.com" {...field} />
+                    <Input type="email" placeholder="client@example.com" {...field} disabled={isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -93,11 +103,14 @@ export function AddClientDialog({ isOpen, onOpenChange, onAddClient }: AddClient
             />
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="button" variant="secondary">
+                <Button type="button" variant="secondary" disabled={isSubmitting}>
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit">Add Client & Send Invite</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Add Client & Send Invite
+              </Button>
             </DialogFooter>
           </form>
         </Form>

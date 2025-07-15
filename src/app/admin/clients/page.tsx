@@ -39,24 +39,31 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { EditClientDialog } from "@/components/EditClientDialog";
 import { AddClientDialog } from "@/components/AddClientDialog";
-import { useAdminClients } from "@/hooks/use-admin-clients";
-import type { Client } from "@/lib/mock-data";
 import { AdminClientsSkeleton } from "@/components/AdminClientsSkeleton";
+import type { Client } from "@/lib/mock-data";
+import { getClients, addClient, updateClient, deleteClient } from "./actions";
 
 
 export default function ClientsPage() {
     const { toast } = useToast();
-    const { clients, addClient, updateClient, deleteClient } = useAdminClients();
+    const [clients, setClients] = useState<Client[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [editingClient, setEditingClient] = useState<Client | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [deletingClientId, setDeletingClientId] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+
+    const fetchClients = useCallback(async () => {
+        setIsLoading(true);
+        const fetchedClients = await getClients();
+        setClients(fetchedClients);
+        setIsLoading(false);
+    }, []);
 
     useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 1000);
-        return () => clearTimeout(timer);
-    }, []);
+        fetchClients();
+    }, [fetchClients]);
 
     const handleEdit = useCallback((client: Client) => {
         setEditingClient(client);
@@ -67,24 +74,35 @@ export default function ClientsPage() {
         setDeletingClientId(clientId);
     }, []);
 
-    const confirmDelete = useCallback(() => {
+    const confirmDelete = useCallback(async () => {
         if (!deletingClientId) return;
-        deleteClient(deletingClientId);
+        await deleteClient(deletingClientId);
         toast({ title: "Client Deleted", description: "The client has been successfully removed.", variant: "destructive" });
         setDeletingClientId(null);
-    }, [deletingClientId, deleteClient, toast]);
+        fetchClients(); // Refresh the list
+    }, [deletingClientId, fetchClients, toast]);
 
-    const handleUpdateClient = useCallback((updatedClient: Client) => {
-        updateClient(updatedClient);
-        toast({ title: "Client Updated", description: "The client's information has been successfully updated."});
-        setEditingClient(null);
-    }, [toast, updateClient]);
+    const handleUpdateClient = useCallback(async (updatedClient: Client) => {
+        const result = await updateClient(updatedClient);
+        if (result.success) {
+            toast({ title: "Client Updated", description: "The client's information has been successfully updated."});
+            setEditingClient(null);
+            fetchClients();
+        } else {
+            toast({ title: "Update Failed", description: result.error, variant: "destructive" });
+        }
+    }, [toast, fetchClients]);
     
     const handleAddClient = useCallback(async (newClientData: Omit<Client, 'id' | 'registered'>) => {
-        await addClient(newClientData);
-        toast({ title: "Client Added", description: `An invitation email has been sent to ${newClientData.email}.`});
-        setIsAddDialogOpen(false);
-    }, [addClient, toast]);
+        const result = await addClient(newClientData);
+        if(result.success) {
+            toast({ title: "Client Added", description: `An invitation email has been sent to ${newClientData.email}.`});
+            setIsAddDialogOpen(false);
+            fetchClients();
+        } else {
+             toast({ title: "Failed to Add Client", description: result.error, variant: "destructive" });
+        }
+    }, [fetchClients, toast]);
 
     if (isLoading) {
         return <AdminClientsSkeleton />;
@@ -140,7 +158,7 @@ export default function ClientsPage() {
                                 </TableBody>
                             </Table>
                         ) : (
-                            <div className="text-center py-16">
+                             <div className="text-center py-16">
                                 <Users className="mx-auto h-12 w-12 text-muted-foreground" />
                                 <h3 className="mt-4 text-lg font-semibold">No Clients Found</h3>
                                 <p className="mt-2 text-sm text-muted-foreground">Get started by adding a new client.</p>
@@ -168,7 +186,7 @@ export default function ClientsPage() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the client's account.
+                            This action cannot be undone. This will permanently delete the client's account from your records.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

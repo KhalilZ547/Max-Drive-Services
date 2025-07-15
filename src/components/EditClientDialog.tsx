@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import type { Client } from "@/lib/mock-data";
+import { Loader2 } from "lucide-react";
 
 const EditClientFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -36,11 +37,12 @@ type EditClientDialogProps = {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
     client: Client | null;
-    onUpdateClient: (client: Client) => void;
+    onUpdateClient: (client: Client) => Promise<void>;
 };
 
 
 export function EditClientDialog({ isOpen, onOpenChange, client, onUpdateClient }: EditClientDialogProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<z.infer<typeof EditClientFormSchema>>({
     resolver: zodResolver(EditClientFormSchema),
@@ -61,10 +63,11 @@ export function EditClientDialog({ isOpen, onOpenChange, client, onUpdateClient 
 
   if (!client) return null;
 
-  function onSubmit(data: z.infer<typeof EditClientFormSchema>) {
+  async function onSubmit(data: z.infer<typeof EditClientFormSchema>) {
+    setIsSubmitting(true);
     const updatedClient = { ...client!, ...data };
-    onUpdateClient(updatedClient);
-    onOpenChange(false);
+    await onUpdateClient(updatedClient);
+    setIsSubmitting(false);
   }
 
   return (
@@ -85,7 +88,7 @@ export function EditClientDialog({ isOpen, onOpenChange, client, onUpdateClient 
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} disabled={isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -98,7 +101,7 @@ export function EditClientDialog({ isOpen, onOpenChange, client, onUpdateClient 
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" {...field} />
+                    <Input type="email" {...field} disabled={isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -106,11 +109,14 @@ export function EditClientDialog({ isOpen, onOpenChange, client, onUpdateClient 
             />
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="button" variant="secondary">
+                <Button type="button" variant="secondary" disabled={isSubmitting}>
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit">Save Changes</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Changes
+              </Button>
             </DialogFooter>
           </form>
         </Form>
