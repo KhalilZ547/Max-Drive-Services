@@ -43,6 +43,8 @@ const ecuServices = [
     { id: 'other', key: 'service_other_title' },
 ];
 
+const OTHER_VALUE = 'other_manual_input';
+
 export function EcuTuningForm() {
     const { t } = useTranslation();
     const { toast } = useToast();
@@ -58,25 +60,33 @@ export function EcuTuningForm() {
         email: z.string().email(),
         
         vehicleMake: z.string({ required_error: "Please select a vehicle make." }),
+        otherVehicleMake: z.string().optional(),
         vehicleModel: z.string().optional(),
+        otherVehicleModel: z.string().optional(),
         vehicleYear: z.string().optional(),
+        otherVehicleYear: z.string().optional(),
         vehicleEngine: z.string().optional(),
-        otherVehicle: z.string().optional(),
-
+        otherVehicleEngine: z.string().optional(),
+        
         serviceIds: z.array(z.string()).refine((value) => value.some((item) => item), {
             message: "You have to select at least one service.",
         }),
         fileType: z.enum(["eeprom", "flash", "full_backup"], { required_error: "You need to select a file type." }),
         file: z.any().refine(file => file?.length == 1, "ECU file is required."),
         notes: z.string().optional(),
-    }).refine(data => {
-        if (data.vehicleMake === 'Other') {
-            return data.otherVehicle && data.otherVehicle.length >= 5;
+    }).superRefine((data, ctx) => {
+        if (data.vehicleMake === OTHER_VALUE && !data.otherVehicleMake) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify the vehicle make.", path: ["otherVehicleMake"] });
         }
-        return data.vehicleModel && data.vehicleYear && data.vehicleEngine;
-    }, {
-        message: "Please complete all vehicle fields.",
-        path: ['otherVehicle'], 
+        if (data.vehicleModel === OTHER_VALUE && !data.otherVehicleModel) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify the vehicle model.", path: ["otherVehicleModel"] });
+        }
+        if (data.vehicleYear === OTHER_VALUE && !data.otherVehicleYear) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify the vehicle year.", path: ["otherVehicleYear"] });
+        }
+        if (data.vehicleEngine === OTHER_VALUE && !data.otherVehicleEngine) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify the vehicle engine.", path: ["otherVehicleEngine"] });
+        }
     }), [t]);
 
     const form = useForm<z.infer<typeof EcuTuningFormSchema>>({
@@ -99,17 +109,17 @@ export function EcuTuningForm() {
     const watchedYear = form.watch("vehicleYear");
 
     const models = useMemo(() => {
-        return watchedMake && vehicleData[watchedMake] ? vehicleData[watchedMake].models : [];
+        return watchedMake && watchedMake !== OTHER_VALUE && vehicleData[watchedMake] ? vehicleData[watchedMake].models : [];
     }, [watchedMake]);
 
     const years = useMemo(() => {
-        return watchedMake && watchedModel && vehicleData[watchedMake]
+        return watchedMake && watchedMake !== OTHER_VALUE && watchedModel && watchedModel !== OTHER_VALUE && vehicleData[watchedMake]
             ? vehicleData[watchedMake].years[watchedModel] ?? []
             : [];
     }, [watchedMake, watchedModel]);
 
     const engines = useMemo(() => {
-        return watchedMake && watchedModel && watchedYear && vehicleData[watchedMake]
+        return watchedMake && watchedMake !== OTHER_VALUE && watchedModel && watchedModel !== OTHER_VALUE && watchedYear && watchedYear !== OTHER_VALUE && vehicleData[watchedMake]
             ? vehicleData[watchedMake].engines[watchedModel]?.[watchedYear] ?? []
             : [];
     }, [watchedMake, watchedModel, watchedYear]);
@@ -138,9 +148,12 @@ export function EcuTuningForm() {
         setIsSubmitting(true);
         await new Promise(resolve => setTimeout(resolve, 1500));
 
-        const vehicleDetails = data.vehicleMake === 'Other'
-            ? data.otherVehicle!
-            : `${data.vehicleMake} ${data.vehicleModel} ${data.vehicleYear} ${data.vehicleEngine}`;
+        const make = data.vehicleMake === OTHER_VALUE ? data.otherVehicleMake : data.vehicleMake;
+        const model = data.vehicleModel === OTHER_VALUE ? data.otherVehicleModel : data.vehicleModel;
+        const year = data.vehicleYear === OTHER_VALUE ? data.otherVehicleYear : data.vehicleYear;
+        const engine = data.vehicleEngine === OTHER_VALUE ? data.otherVehicleEngine : data.vehicleEngine;
+
+        const vehicleDetails = [make, model, year, engine].filter(Boolean).join(' ');
         
         const serviceNames = data.serviceIds.map(id => t(ecuServices.find(s => s.id === id)!.key as any)).join(', ');
         
@@ -206,42 +219,70 @@ export function EcuTuningForm() {
                                 <FormField control={form.control} name="vehicleMake" render={({ field }) => (
                                     <FormItem className="md:col-span-2"><FormLabel>Make</FormLabel>
                                     <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select Make" /></SelectTrigger></FormControl>
-                                        <SelectContent>{Object.keys(vehicleData).map(make => <SelectItem key={make} value={make}>{make}</SelectItem>)}</SelectContent>
+                                        <SelectContent>{Object.keys(vehicleData).filter(m => m !== 'Other').map(make => <SelectItem key={make} value={make}>{make}</SelectItem>)}<SelectItem value={OTHER_VALUE}>Other</SelectItem></SelectContent>
                                     </Select><FormMessage /></FormItem>
                                 )}/>
                                 
-                                {watchedMake === 'Other' ? (
-                                     <FormField control={form.control} name="otherVehicle" render={({ field }) => (
-                                        <FormItem className="md:col-span-2">
-                                            <FormLabel>Vehicle Details</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="e.g., Lancia Delta Integrale 1992 2.0L 16V" {...field} />
-                                            </FormControl>
-                                            <FormDescription>Please provide Make, Model, Year, and Engine.</FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
+                                {watchedMake === OTHER_VALUE && (
+                                    <FormField control={form.control} name="otherVehicleMake" render={({ field }) => (
+                                       <FormItem className="md:col-span-2">
+                                           <FormLabel>Specify Make</FormLabel>
+                                           <FormControl><Input placeholder="e.g., Lancia" {...field} /></FormControl>
+                                           <FormMessage />
+                                       </FormItem>
+                                   )}/>
+                                )}
+                                
+                                {watchedMake && watchedMake !== OTHER_VALUE && (
+                                <>
+                                    <FormField control={form.control} name="vehicleModel" render={({ field }) => (
+                                        <FormItem><FormLabel>Model</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={!models.length}><FormControl><SelectTrigger><SelectValue placeholder="Select Model" /></SelectTrigger></FormControl>
+                                            <SelectContent>{models.map(model => <SelectItem key={model} value={model}>{model}</SelectItem>)}<SelectItem value={OTHER_VALUE}>Other</SelectItem></SelectContent>
+                                        </Select><FormMessage /></FormItem>
                                     )}/>
-                                ) : (
-                                    <>
-                                        <FormField control={form.control} name="vehicleModel" render={({ field }) => (
-                                            <FormItem><FormLabel>Model</FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value} disabled={!watchedMake}><FormControl><SelectTrigger><SelectValue placeholder="Select Model" /></SelectTrigger></FormControl>
-                                                <SelectContent>{models.map(model => <SelectItem key={model} value={model}>{model}</SelectItem>)}</SelectContent>
-                                            </Select><FormMessage /></FormItem>
+                                    {watchedModel === OTHER_VALUE && (
+                                        <FormField control={form.control} name="otherVehicleModel" render={({ field }) => (
+                                           <FormItem>
+                                               <FormLabel>Specify Model</FormLabel>
+                                               <FormControl><Input placeholder="e.g., Delta Integrale" {...field} /></FormControl>
+                                               <FormMessage />
+                                           </FormItem>
+                                       )}/>
+                                    )}
+
+                                    <FormField control={form.control} name="vehicleYear" render={({ field }) => (
+                                        <FormItem><FormLabel>Year</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={!years.length || watchedModel === OTHER_VALUE}><FormControl><SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger></FormControl>
+                                            <SelectContent>{years.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}<SelectItem value={OTHER_VALUE}>Other</SelectItem></SelectContent>
+                                        </Select><FormMessage /></FormItem>
+                                    )}/>
+                                    {watchedYear === OTHER_VALUE && (
+                                        <FormField control={form.control} name="otherVehicleYear" render={({ field }) => (
+                                           <FormItem>
+                                               <FormLabel>Specify Year</FormLabel>
+                                               <FormControl><Input placeholder="e.g., 1992" {...field} /></FormControl>
+                                               <FormMessage />
+                                           </FormItem>
+                                       )}/>
+                                    )}
+
+                                    <FormField control={form.control} name="vehicleEngine" render={({ field }) => (
+                                        <FormItem className="md:col-span-2"><FormLabel>Engine</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={!engines.length || watchedYear === OTHER_VALUE}><FormControl><SelectTrigger><SelectValue placeholder="Select Engine" /></SelectTrigger></FormControl>
+                                            <SelectContent>{engines.map(engine => <SelectItem key={engine} value={engine}>{engine}</SelectItem>)}<SelectItem value={OTHER_VALUE}>Other</SelectItem></SelectContent>
+                                        </Select><FormMessage /></FormItem>
+                                    )}/>
+                                    {form.watch('vehicleEngine') === OTHER_VALUE && (
+                                         <FormField control={form.control} name="otherVehicleEngine" render={({ field }) => (
+                                            <FormItem className="md:col-span-2">
+                                                <FormLabel>Specify Engine</FormLabel>
+                                                <FormControl><Input placeholder="e.g., 2.0L 16V Turbo" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
                                         )}/>
-                                        <FormField control={form.control} name="vehicleYear" render={({ field }) => (
-                                            <FormItem><FormLabel>Year</FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value} disabled={!watchedModel}><FormControl><SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger></FormControl>
-                                                <SelectContent>{years.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}</SelectContent>
-                                            </Select><FormMessage /></FormItem>
-                                        )}/>
-                                        <FormField control={form.control} name="vehicleEngine" render={({ field }) => (
-                                            <FormItem className="md:col-span-2"><FormLabel>Engine</FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value} disabled={!watchedYear}><FormControl><SelectTrigger><SelectValue placeholder="Select Engine" /></SelectTrigger></FormControl>
-                                                <SelectContent>{engines.map(engine => <SelectItem key={engine} value={engine}>{engine}</SelectItem>)}</SelectContent>
-                                            </Select><FormMessage /></FormItem>
-                                        )}/>
-                                    </>
+                                    )}
+                                </>
                                 )}
                             </div>
                         </Card>
@@ -257,39 +298,41 @@ export function EcuTuningForm() {
                                             Select all services you require.
                                         </FormDescription>
                                     </div>
-                                    {ecuServices.map((item) => (
-                                        <FormField
-                                        key={item.id}
-                                        control={form.control}
-                                        name="serviceIds"
-                                        render={({ field }) => {
-                                            return (
-                                            <FormItem
-                                                key={item.id}
-                                                className="flex flex-row items-start space-x-3 space-y-0"
-                                            >
-                                                <FormControl>
-                                                <Checkbox
-                                                    checked={field.value?.includes(item.id)}
-                                                    onCheckedChange={(checked) => {
-                                                    return checked
-                                                        ? field.onChange([...(field.value || []), item.id])
-                                                        : field.onChange(
-                                                            field.value?.filter(
-                                                            (value) => value !== item.id
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+                                        {ecuServices.map((item) => (
+                                            <FormField
+                                            key={item.id}
+                                            control={form.control}
+                                            name="serviceIds"
+                                            render={({ field }) => {
+                                                return (
+                                                <FormItem
+                                                    key={item.id}
+                                                    className="flex flex-row items-start space-x-3 space-y-0"
+                                                >
+                                                    <FormControl>
+                                                    <Checkbox
+                                                        checked={field.value?.includes(item.id)}
+                                                        onCheckedChange={(checked) => {
+                                                        return checked
+                                                            ? field.onChange([...(field.value || []), item.id])
+                                                            : field.onChange(
+                                                                field.value?.filter(
+                                                                (value) => value !== item.id
+                                                                )
                                                             )
-                                                        )
-                                                    }}
-                                                />
-                                                </FormControl>
-                                                <FormLabel className="font-normal">
-                                                    {t(item.key as any)}
-                                                </FormLabel>
-                                            </FormItem>
-                                            )
-                                        }}
-                                        />
-                                    ))}
+                                                        }}
+                                                    />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">
+                                                        {t(item.key as any)}
+                                                    </FormLabel>
+                                                </FormItem>
+                                                )
+                                            }}
+                                            />
+                                        ))}
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             )}
