@@ -80,9 +80,9 @@ export default function ClientsPage() {
         setEditingClient(null);
     }, [toast, updateClient]);
     
-    const handleAddClient = useCallback((newClientData: Omit<Client, 'id' | 'registered'>) => {
-        addClient(newClientData);
-        toast({ title: "Client Added", description: "The new client has been successfully added."});
+    const handleAddClient = useCallback(async (newClientData: Omit<Client, 'id' | 'registered'>) => {
+        await addClient(newClientData);
+        toast({ title: "Client Added", description: `An invitation email has been sent to ${newClientData.email}.`});
         setIsAddDialogOpen(false);
     }, [addClient, toast]);
 

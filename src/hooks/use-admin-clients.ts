@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { clientsData, type Client } from '@/lib/mock-data';
+import { sendEmail } from '@/services/email';
 
 const STORAGE_KEY = 'adminClients';
 
@@ -58,7 +59,7 @@ export const useAdminClients = () => {
     setClients(newClients);
   }, []);
 
-  const addClient = useCallback((newClientData: Omit<Client, 'id' | 'registered'>) => {
+  const addClient = useCallback(async (newClientData: Omit<Client, 'id' | 'registered'>) => {
     const newClient: Client = {
       ...newClientData,
       id: `usr_${new Date().getTime()}`,
@@ -66,6 +67,20 @@ export const useAdminClients = () => {
     };
     const newClients = [...clients, newClient];
     updateClients(newClients);
+
+    const setupLink = `${window.location.origin}/reset-password?email=${encodeURIComponent(newClient.email)}`;
+
+    await sendEmail({
+      to: newClient.email,
+      subject: "Welcome to Max-Drive-Services! Set up your account.",
+      html: `
+        <h1>Welcome, ${newClient.name}!</h1>
+        <p>An account has been created for you at Max-Drive-Services. Please click the link below to set your password and activate your account:</p>
+        <a href="${setupLink}" target="_blank" style="display:inline-block;padding:10px 20px;background-color:#2563eb;color:white;text-decoration:none;border-radius:5px;">Set Your Password</a>
+        <p>If you were not expecting this, you can safely ignore this email.</p>
+      `
+    });
+
   }, [clients, updateClients]);
 
   const deleteClient = useCallback((clientId: string) => {

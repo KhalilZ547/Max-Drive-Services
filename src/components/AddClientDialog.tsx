@@ -60,7 +60,7 @@ export function AddClientDialog({ isOpen, onOpenChange, onAddClient }: AddClient
         <DialogHeader>
           <DialogTitle>Add New Client</DialogTitle>
           <DialogDescription>
-            Enter the details for the new client below.
+            Enter the details for the new client. An email will be sent to them to set up their password and activate their account.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -97,7 +97,7 @@ export function AddClientDialog({ isOpen, onOpenChange, onAddClient }: AddClient
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit">Add Client</Button>
+              <Button type="submit">Add Client & Send Invite</Button>
             </DialogFooter>
           </form>
         </Form>
