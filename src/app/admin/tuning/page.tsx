@@ -27,33 +27,56 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useToast } from "@/hooks/use-toast";
-import { useTuningRequests } from "@/hooks/use-tuning-requests";
 import { AdminTuningSkeleton } from "@/components/AdminTuningSkeleton";
 import type { TuningRequest } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
+import { getTuningRequests, updateTuningRequestStatus } from "./actions";
 
 export default function TuningRequestsPage() {
     const { toast } = useToast();
-    const { requests, updateRequestStatus } = useTuningRequests();
+    const [requests, setRequests] = useState<TuningRequest[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 1000);
-        return () => clearTimeout(timer);
-    }, []);
+    const fetchRequests = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const fetchedRequests = await getTuningRequests();
+            setRequests(fetchedRequests);
+        } catch (error) {
+            console.error("Failed to fetch tuning requests:", error);
+            toast({ title: "Error", description: "Could not fetch requests.", variant: "destructive" });
+        } finally {
+            setIsLoading(false);
+        }
+    }, [toast]);
 
-    const handleSetPrice = useCallback((request: TuningRequest) => {
+
+    useEffect(() => {
+        fetchRequests();
+    }, [fetchRequests]);
+
+    const handleSetPrice = useCallback(async (request: TuningRequest) => {
         const price = prompt(`Set price for ${request.vehicle} - ${request.service}:`, "150");
         if (price && !isNaN(parseFloat(price))) {
-            updateRequestStatus(request.id, "Awaiting Payment", parseFloat(price));
-            toast({ title: "Price Set", description: `A quote has been sent to ${request.email}.` });
+            const result = await updateTuningRequestStatus(request.id, "Awaiting Payment", parseFloat(price));
+            if (result.success) {
+                toast({ title: "Price Set", description: `A quote has been sent to ${request.email}.` });
+                fetchRequests();
+            } else {
+                toast({ title: "Error", description: result.error, variant: "destructive" });
+            }
         }
-    }, [updateRequestStatus, toast]);
+    }, [fetchRequests, toast]);
 
-    const handleMarkAsDone = useCallback((request: TuningRequest) => {
-       updateRequestStatus(request.id, "Completed");
-       toast({ title: "Marked as Completed", description: `The client will be notified to download their file.` });
-    }, [updateRequestStatus, toast]);
+    const handleMarkAsDone = useCallback(async (request: TuningRequest) => {
+       const result = await updateTuningRequestStatus(request.id, "Completed");
+       if (result.success) {
+            toast({ title: "Marked as Completed", description: `The client will be notified to download their file.` });
+            fetchRequests();
+       } else {
+           toast({ title: "Error", description: result.error, variant: "destructive" });
+       }
+    }, [fetchRequests, toast]);
 
     if (isLoading) {
         return <AdminTuningSkeleton />;
@@ -112,7 +135,7 @@ export default function TuningRequestsPage() {
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                    <DropdownMenuItem onSelect={() => {}}>
+                                                    <DropdownMenuItem onSelect={() => window.open(request.original_file_url!, '_blank')} disabled={!request.original_file_url}>
                                                         <Download className="mr-2 h-4 w-4" />
                                                         Download Original File
                                                     </DropdownMenuItem>

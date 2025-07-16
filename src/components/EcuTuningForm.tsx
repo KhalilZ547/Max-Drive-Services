@@ -30,10 +30,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
 import { UploadCloud, File as FileIcon, X, Loader2 } from "lucide-react";
-import { useTuningRequests } from "@/hooks/use-tuning-requests";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { vehicleData } from "@/lib/mock-data";
 import { Checkbox } from "./ui/checkbox";
+import { addTuningRequest } from "@/app/admin/tuning/actions";
 
 const ecuServices = [
     { id: 'dtc_off', key: 'ecu_dtc_off_title' },
@@ -45,10 +45,13 @@ const ecuServices = [
 
 const OTHER_VALUE = 'other_manual_input';
 
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+const ALLOWED_FILE_TYPES = ['.bin', '.zip', '.rar', '.ori'];
+
+
 export function EcuTuningForm() {
     const { t } = useTranslation();
     const { toast } = useToast();
-    const { addRequest } = useTuningRequests();
     const [fileName, setFileName] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -72,7 +75,14 @@ export function EcuTuningForm() {
             message: "You have to select at least one service.",
         }),
         fileType: z.enum(["eeprom", "flash", "full_backup"], { required_error: "You need to select a file type." }),
-        file: z.any().refine(file => file?.length == 1, "ECU file is required."),
+        file: z
+            .custom<FileList>()
+            .refine(files => files?.length === 1, "ECU file is required.")
+            .refine(files => files?.[0]?.size <= MAX_FILE_SIZE, `File size should be less than 50 MB.`)
+            .refine(
+                files => ALLOWED_FILE_TYPES.some(type => files?.[0]?.name.endsWith(type)),
+                `Only .bin, .zip, .rar, .ori files are allowed.`
+            ),
         notes: z.string().optional(),
     }).superRefine((data, ctx) => {
         if (data.vehicleMake === OTHER_VALUE && (!data.otherVehicleMake || data.otherVehicleMake.trim().length < 2)) {
@@ -139,13 +149,13 @@ export function EcuTuningForm() {
         const file = event.target.files?.[0];
         if (file) {
             setFileName(file.name);
-            form.setValue("file", event.target.files);
+            form.setValue("file", event.target.files as FileList);
         }
     };
 
     const handleRemoveFile = () => {
         setFileName(null);
-        form.setValue("file", null);
+        form.setValue("file", null as any); // a bit of a hack for react-hook-form
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -153,47 +163,55 @@ export function EcuTuningForm() {
 
     async function onSubmit(data: z.infer<typeof EcuTuningFormSchema>) {
         setIsSubmitting(true);
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
+        
         const make = data.vehicleMake === OTHER_VALUE ? data.otherVehicleMake : data.vehicleMake;
         const model = data.vehicleModel === OTHER_VALUE ? data.otherVehicleModel : data.vehicleModel;
         const year = data.vehicleYear === OTHER_VALUE ? data.otherVehicleYear : data.vehicleYear;
         const engine = data.vehicleEngine === OTHER_VALUE ? data.otherVehicleEngine : data.vehicleEngine;
-
         const vehicleDetails = [make, model, year, engine].filter(Boolean).join(' ');
-        
         const serviceNames = data.serviceIds.map(id => t(ecuServices.find(s => s.id === id)!.key as any)).join(', ');
+
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('email', data.email);
+        formData.append('vehicle', vehicleDetails);
+        formData.append('service', serviceNames);
+        formData.append('fileType', data.fileType);
+        formData.append('notes', data.notes || '');
+        formData.append('file', data.file[0]);
+
+        const result = await addTuningRequest(formData);
         
-        addRequest({ 
-            name: data.name,
-            email: data.email,
-            vehicle: vehicleDetails,
-            service: serviceNames,
-            fileType: data.fileType,
-            notes: data.notes
-        });
+        if(result.success) {
+            toast({
+                title: "Request Submitted!",
+                description: "We've received your tuning request. We will review your file and email you a quote shortly.",
+            });
+            form.reset({
+                name: '',
+                email: '',
+                vehicleMake: undefined,
+                otherVehicleMake: '',
+                vehicleModel: undefined,
+                otherVehicleModel: '',
+                vehicleYear: undefined,
+                otherVehicleYear: '',
+                vehicleEngine: undefined,
+                otherVehicleEngine: '',
+                serviceIds: [],
+                fileType: "flash",
+                file: null as any,
+                notes: ''
+            });
+            handleRemoveFile();
+        } else {
+             toast({
+                title: "Submission Failed",
+                description: result.error,
+                variant: "destructive"
+            });
+        }
         
-        toast({
-            title: "Request Submitted!",
-            description: "We've received your tuning request. We will review your file and email you a quote shortly.",
-        });
-        form.reset({
-            name: '',
-            email: '',
-            vehicleMake: undefined,
-            otherVehicleMake: '',
-            vehicleModel: undefined,
-            otherVehicleModel: '',
-            vehicleYear: undefined,
-            otherVehicleYear: '',
-            vehicleEngine: undefined,
-            otherVehicleEngine: '',
-            serviceIds: [],
-            fileType: "flash",
-            file: null,
-            notes: ''
-        });
-        setFileName(null);
         setIsSubmitting(false);
     }
     
@@ -400,7 +418,7 @@ export function EcuTuningForm() {
                         <FormField
                             control={form.control}
                             name="file"
-                            render={({ field }) => (
+                            render={() => (
                                 <FormItem>
                                     <FormLabel>ECU File Upload</FormLabel>
                                     <FormControl>
@@ -413,12 +431,12 @@ export function EcuTuningForm() {
                                                 ref={fileInputRef} 
                                                 className="hidden"
                                                 onChange={handleFileChange}
-                                                accept=".bin,.zip,.rar,.ori"
+                                                accept={ALLOWED_FILE_TYPES.join(',')}
                                             />
                                             <div className="flex flex-col items-center gap-2 text-muted-foreground">
                                                 <UploadCloud className="h-10 w-10"/>
                                                 <span>Click to upload or drag and drop</span>
-                                                <span className="text-xs">.bin, .ori, .zip, .rar files</span>
+                                                <span className="text-xs">{ALLOWED_FILE_TYPES.join(', ')} up to 50MB</span>
                                             </div>
                                         </div>
                                     </FormControl>
