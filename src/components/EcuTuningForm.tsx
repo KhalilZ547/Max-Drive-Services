@@ -80,6 +80,7 @@ export function EcuTuningForm() {
         serviceIds: z.array(z.string()).refine((value) => value.some((item) => item), {
             message: "You have to select at least one service.",
         }),
+        otherServiceDescription: z.string().optional(),
         radioSerialNumber: z.string().optional(),
         fileType: z.enum(["eeprom", "flash", "full_backup"], { required_error: "You need to select a file type." }).optional(),
         file: z
@@ -118,6 +119,11 @@ export function EcuTuningForm() {
                 }
             }
         }
+        
+        if (data.serviceIds.includes('other') && (!data.otherServiceDescription || data.otherServiceDescription.trim().length < 3)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: t('other_service_error'), path: ["otherServiceDescription"] });
+        }
+
     }), [t]);
 
     const form = useForm<z.infer<typeof EcuTuningFormSchema>>({
@@ -133,6 +139,7 @@ export function EcuTuningForm() {
             fileType: "flash",
             serviceIds: initialService ? [initialService] : [],
             radioSerialNumber: "",
+            otherServiceDescription: "",
         },
     });
 
@@ -147,6 +154,7 @@ export function EcuTuningForm() {
     const watchedModel = form.watch("vehicleModel");
     const watchedYear = form.watch("vehicleYear");
     const watchedServices = form.watch("serviceIds");
+    const isOtherServiceSelected = useMemo(() => watchedServices?.includes('other'), [watchedServices]);
     const isOnlyRadioPinSelected = useMemo(() => watchedServices?.length === 1 && watchedServices[0] === 'radio_pin', [watchedServices]);
 
     const models = useMemo(() => {
@@ -194,7 +202,11 @@ export function EcuTuningForm() {
         const year = data.vehicleYear === OTHER_VALUE ? data.otherVehicleYear : data.vehicleYear;
         const engine = data.vehicleEngine === OTHER_VALUE ? data.otherVehicleEngine : data.vehicleEngine;
         const vehicleDetails = [make, model, year, engine].filter(Boolean).join(' ');
-        let serviceNames = data.serviceIds.map(id => t(ecuServices.find(s => s.id === id)!.key as any)).join(', ');
+        
+        let serviceNames = data.serviceIds.map(id => {
+            if (id === 'other') return data.otherServiceDescription;
+            return t(ecuServices.find(s => s.id === id)!.key as any)
+        }).join(', ');
         
         const formData = new FormData();
         formData.append('name', data.name);
@@ -233,7 +245,8 @@ export function EcuTuningForm() {
                 fileType: "flash",
                 file: undefined,
                 notes: '',
-                radioSerialNumber: ''
+                radioSerialNumber: '',
+                otherServiceDescription: '',
             });
             handleRemoveFile();
         } else {
@@ -410,6 +423,22 @@ export function EcuTuningForm() {
                             )}
                         />
 
+                        {isOtherServiceSelected && (
+                             <FormField
+                                control={form.control}
+                                name="otherServiceDescription"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('other_service_label')}</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder={t('other_service_placeholder')} {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
+
                         {isOnlyRadioPinSelected ? (
                             <div className="space-y-4">
                                  <Alert>
@@ -550,3 +579,5 @@ export function EcuTuningForm() {
         </Card>
     );
 }
+
+    
