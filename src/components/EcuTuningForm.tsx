@@ -29,17 +29,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
-import { UploadCloud, File as FileIcon, X, Loader2 } from "lucide-react";
+import { UploadCloud, File as FileIcon, X, Loader2, AlertCircle } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { vehicleData } from "@/lib/mock-data";
 import { Checkbox } from "./ui/checkbox";
 import { addTuningRequest } from "@/app/admin/tuning/actions";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 
 const ecuServices = [
     { id: 'dtc_off', key: 'ecu_dtc_off_title' },
     { id: 'egr_off', key: 'ecu_egr_off_title' },
     { id: 'adblue_off', key: 'ecu_adblue_off_title' },
     { id: 'performance_tuning', key: 'ecu_performance_tuning_title' },
+    { id: 'flaps_off', key: 'ecu_flaps_off_title' },
+    { id: 'nox_off', key: 'ecu_nox_off_title' },
+    { id: 'tva_off', key: 'ecu_tva_off_title' },
+    { id: 'lambda_off', key: 'ecu_lambda_off_title' },
+    { id: 'radio_pin', key: 'ecu_radio_pin_title' },
     { id: 'other', key: 'service_other_title' },
 ];
 
@@ -74,15 +80,11 @@ export function EcuTuningForm() {
         serviceIds: z.array(z.string()).refine((value) => value.some((item) => item), {
             message: "You have to select at least one service.",
         }),
-        fileType: z.enum(["eeprom", "flash", "full_backup"], { required_error: "You need to select a file type." }),
+        radioSerialNumber: z.string().optional(),
+        fileType: z.enum(["eeprom", "flash", "full_backup"], { required_error: "You need to select a file type." }).optional(),
         file: z
             .custom<FileList>()
-            .refine(files => files?.length === 1, "ECU file is required.")
-            .refine(files => files?.[0]?.size <= MAX_FILE_SIZE, `File size should be less than 50 MB.`)
-            .refine(
-                files => ALLOWED_FILE_TYPES.some(type => files?.[0]?.name.endsWith(type)),
-                `Only .bin, .zip, .rar, .ori files are allowed.`
-            ),
+            .optional(),
         notes: z.string().optional(),
     }).superRefine((data, ctx) => {
         if (data.vehicleMake === OTHER_VALUE && (!data.otherVehicleMake || data.otherVehicleMake.trim().length < 2)) {
@@ -96,6 +98,25 @@ export function EcuTuningForm() {
         }
         if (data.vehicleEngine === OTHER_VALUE && (!data.otherVehicleEngine || data.otherVehicleEngine.trim().length < 2)) {
             ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please specify the vehicle engine (min 2 chars).", path: ["otherVehicleEngine"] });
+        }
+
+        const isOnlyRadioPin = data.serviceIds.length === 1 && data.serviceIds[0] === 'radio_pin';
+        if (isOnlyRadioPin) {
+            if (!data.radioSerialNumber || data.radioSerialNumber.trim().length < 5) {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Radio serial number is required (min 5 chars).", path: ["radioSerialNumber"] });
+            }
+        } else {
+            const files = data.file;
+            if (!files || files.length === 0) {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, message: "ECU file is required for this service.", path: ["file"] });
+            } else {
+                if(files[0].size > MAX_FILE_SIZE) {
+                    ctx.addIssue({ code: z.ZodIssueCode.custom, message: `File size should be less than 50 MB.`, path: ["file"] });
+                }
+                if(!ALLOWED_FILE_TYPES.some(type => files[0].name.endsWith(type))) {
+                     ctx.addIssue({ code: z.ZodIssueCode.custom, message: `Only .bin, .zip, .rar, .ori files are allowed.`, path: ["file"] });
+                }
+            }
         }
     }), [t]);
 
@@ -111,6 +132,7 @@ export function EcuTuningForm() {
             notes: "",
             fileType: "flash",
             serviceIds: initialService ? [initialService] : [],
+            radioSerialNumber: "",
         },
     });
 
@@ -124,6 +146,8 @@ export function EcuTuningForm() {
     const watchedMake = form.watch("vehicleMake");
     const watchedModel = form.watch("vehicleModel");
     const watchedYear = form.watch("vehicleYear");
+    const watchedServices = form.watch("serviceIds");
+    const isOnlyRadioPinSelected = useMemo(() => watchedServices?.length === 1 && watchedServices[0] === 'radio_pin', [watchedServices]);
 
     const models = useMemo(() => {
         return watchedMake && watchedMake !== OTHER_VALUE && vehicleData[watchedMake] ? vehicleData[watchedMake].models : [];
@@ -150,6 +174,7 @@ export function EcuTuningForm() {
         if (file) {
             setFileName(file.name);
             form.setValue("file", event.target.files as FileList);
+            form.trigger("file");
         }
     };
 
@@ -169,23 +194,29 @@ export function EcuTuningForm() {
         const year = data.vehicleYear === OTHER_VALUE ? data.otherVehicleYear : data.vehicleYear;
         const engine = data.vehicleEngine === OTHER_VALUE ? data.otherVehicleEngine : data.vehicleEngine;
         const vehicleDetails = [make, model, year, engine].filter(Boolean).join(' ');
-        const serviceNames = data.serviceIds.map(id => t(ecuServices.find(s => s.id === id)!.key as any)).join(', ');
-
+        let serviceNames = data.serviceIds.map(id => t(ecuServices.find(s => s.id === id)!.key as any)).join(', ');
+        
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('email', data.email);
         formData.append('vehicle', vehicleDetails);
-        formData.append('service', serviceNames);
-        formData.append('fileType', data.fileType);
         formData.append('notes', data.notes || '');
-        formData.append('file', data.file[0]);
+
+        if (isOnlyRadioPinSelected) {
+            formData.append('service', `${serviceNames} (Free)`);
+            formData.append('radioSerialNumber', data.radioSerialNumber!);
+        } else {
+            formData.append('service', serviceNames);
+            formData.append('fileType', data.fileType!);
+            formData.append('file', data.file![0]);
+        }
 
         const result = await addTuningRequest(formData);
         
         if(result.success) {
             toast({
                 title: "Request Submitted!",
-                description: "We've received your tuning request. We will review your file and email you a quote shortly.",
+                description: "We've received your request. We will review it and get back to you shortly.",
             });
             form.reset({
                 name: '',
@@ -201,7 +232,8 @@ export function EcuTuningForm() {
                 serviceIds: [],
                 fileType: "flash",
                 file: undefined,
-                notes: ''
+                notes: '',
+                radioSerialNumber: ''
             });
             handleRemoveFile();
         } else {
@@ -218,8 +250,8 @@ export function EcuTuningForm() {
     return (
         <Card className="max-w-2xl mx-auto">
             <CardHeader>
-                <CardTitle>Submit Your ECU File</CardTitle>
-                <CardDescription>Fill out the form to get a quote for your ECU modification. We'll get back to you with a price and a PayPal payment link.</CardDescription>
+                <CardTitle>Submit Your ECU Service Request</CardTitle>
+                <CardDescription>Fill out the form to get a quote or your free radio pin. We'll get back to you shortly.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
@@ -378,83 +410,110 @@ export function EcuTuningForm() {
                             )}
                         />
 
-                        <FormField
-                            control={form.control}
-                            name="fileType"
-                            render={({ field }) => (
-                                <FormItem className="space-y-3">
-                                <FormLabel>File Type</FormLabel>
-                                <FormControl>
-                                    <RadioGroup
-                                        onValueChange={field.onChange}
-                                        value={field.value}
-                                        className="flex flex-col space-y-1"
-                                    >
-                                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        {isOnlyRadioPinSelected ? (
+                            <div className="space-y-4">
+                                 <Alert>
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertTitle>Free Service!</AlertTitle>
+                                    <AlertDescription>
+                                       Radio Pin service is free. Please enter your radio's serial number below. No file upload is needed.
+                                    </AlertDescription>
+                                </Alert>
+                                <FormField
+                                    control={form.control}
+                                    name="radioSerialNumber"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Radio Serial Number</FormLabel>
                                             <FormControl>
-                                            <RadioGroupItem value="flash" />
+                                                <Input placeholder="e.g., VWZ1Z2A1234567" {...field} />
                                             </FormControl>
-                                            <FormLabel className="font-normal">Flash File</FormLabel>
+                                            <FormMessage />
                                         </FormItem>
-                                        <FormItem className="flex items-center space-x-3 space-y-0">
-                                            <FormControl>
-                                            <RadioGroupItem value="eeprom" />
-                                            </FormControl>
-                                            <FormLabel className="font-normal">EEPROM File</FormLabel>
-                                        </FormItem>
-                                        <FormItem className="flex items-center space-x-3 space-y-0">
-                                            <FormControl>
-                                            <RadioGroupItem value="full_backup" />
-                                            </FormControl>
-                                            <FormLabel className="font-normal">Full Backup (.rar/.zip)</FormLabel>
-                                        </FormItem>
-                                    </RadioGroup>
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="file"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>ECU File Upload</FormLabel>
-                                    <FormControl>
-                                        <div 
-                                            className="relative border-2 border-dashed border-muted-foreground/50 rounded-lg p-6 text-center cursor-pointer hover:border-primary transition-colors"
-                                            onClick={() => fileInputRef.current?.click()}
-                                        >
-                                            <input 
-                                                type="file" 
-                                                ref={fileInputRef} 
-                                                className="hidden"
-                                                onChange={handleFileChange}
-                                                accept={ALLOWED_FILE_TYPES.join(',')}
-                                            />
-                                            <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                                                <UploadCloud className="h-10 w-10"/>
-                                                <span>Click to upload or drag and drop</span>
-                                                <span className="text-xs">{ALLOWED_FILE_TYPES.join(', ')} up to 50MB</span>
-                                            </div>
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {fileName && (
-                            <div className="flex items-center justify-between rounded-lg border bg-muted/50 p-3">
-                                <div className="flex items-center gap-2">
-                                    <FileIcon className="h-5 w-5 text-primary"/>
-                                    <span className="text-sm font-medium">{fileName}</span>
-                                </div>
-                                <Button type="button" variant="ghost" size="icon" onClick={handleRemoveFile}>
-                                    <X className="h-4 w-4"/>
-                                </Button>
+                                    )}
+                                />
                             </div>
+                        ) : (
+                            <>
+                                <FormField
+                                    control={form.control}
+                                    name="fileType"
+                                    render={({ field }) => (
+                                        <FormItem className="space-y-3">
+                                        <FormLabel>File Type</FormLabel>
+                                        <FormControl>
+                                            <RadioGroup
+                                                onValueChange={field.onChange}
+                                                value={field.value}
+                                                className="flex flex-col space-y-1"
+                                            >
+                                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                                    <FormControl>
+                                                    <RadioGroupItem value="flash" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">Flash File</FormLabel>
+                                                </FormItem>
+                                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                                    <FormControl>
+                                                    <RadioGroupItem value="eeprom" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">EEPROM File</FormLabel>
+                                                </FormItem>
+                                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                                    <FormControl>
+                                                    <RadioGroupItem value="full_backup" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">Full Backup (.rar/.zip)</FormLabel>
+                                                </FormItem>
+                                            </RadioGroup>
+                                        </FormControl>
+                                        <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="file"
+                                    render={() => (
+                                        <FormItem>
+                                            <FormLabel>ECU File Upload</FormLabel>
+                                            <FormControl>
+                                                <div 
+                                                    className="relative border-2 border-dashed border-muted-foreground/50 rounded-lg p-6 text-center cursor-pointer hover:border-primary transition-colors"
+                                                    onClick={() => fileInputRef.current?.click()}
+                                                >
+                                                    <input 
+                                                        type="file" 
+                                                        ref={fileInputRef} 
+                                                        className="hidden"
+                                                        onChange={handleFileChange}
+                                                        accept={ALLOWED_FILE_TYPES.join(',')}
+                                                    />
+                                                    <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                                                        <UploadCloud className="h-10 w-10"/>
+                                                        <span>Click to upload or drag and drop</span>
+                                                        <span className="text-xs">{ALLOWED_FILE_TYPES.join(', ')} up to 50MB</span>
+                                                    </div>
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {fileName && (
+                                    <div className="flex items-center justify-between rounded-lg border bg-muted/50 p-3">
+                                        <div className="flex items-center gap-2">
+                                            <FileIcon className="h-5 w-5 text-primary"/>
+                                            <span className="text-sm font-medium">{fileName}</span>
+                                        </div>
+                                        <Button type="button" variant="ghost" size="icon" onClick={handleRemoveFile}>
+                                            <X className="h-4 w-4"/>
+                                        </Button>
+                                    </div>
+                                )}
+                            </>
                         )}
                         
                         <FormField
@@ -482,7 +541,7 @@ export function EcuTuningForm() {
                                     Submitting...
                                 </>
                             ) : (
-                                "Submit Tuning Request"
+                                "Submit Request"
                             )}
                         </Button>
                     </form>

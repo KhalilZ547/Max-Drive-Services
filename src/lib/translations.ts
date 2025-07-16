@@ -45,6 +45,16 @@ export const translations = {
     ecu_performance_tuning_title: "Performance Tuning",
     ecu_performance_tuning_desc: "Custom Stage 1 & 2 tuning to safely increase horsepower and torque.",
     ecu_upload_file_cta: "Upload Your File for a Quote",
+    ecu_flaps_off_title: "Flaps Off",
+    ecu_flaps_off_desc: "Disable intake manifold flaps (swirl flaps) to prevent future failures and improve airflow.",
+    ecu_nox_off_title: "NOx Off",
+    ecu_nox_off_desc: "Deactivate the NOx sensor system, a common failure point on modern diesel engines.",
+    ecu_tva_off_title: "TVA Off",
+    ecu_tva_off_desc: "Disable the Throttle Valve Actuator, useful for certain performance and delete modifications.",
+    ecu_lambda_off_title: "Lambda/O2 Off",
+    ecu_lambda_off_desc: "Remove the rear O2 sensor from the ECU for decat or sport cat setups, preventing check engine lights.",
+    ecu_radio_pin_title: "Radio Pin",
+    ecu_radio_pin_desc: "Lost your car radio's security code? We can retrieve it for you, often just from the serial number.",
 
 
     // Testimonials Section
@@ -228,6 +238,16 @@ export const translations = {
     ecu_performance_tuning_title: "Reprogrammation Moteur",
     ecu_performance_tuning_desc: "Reprogrammation personnalisée Stage 1 & 2 pour augmenter en toute sécurité la puissance et le couple.",
     ecu_upload_file_cta: "Envoyez votre fichier pour un devis",
+    ecu_flaps_off_title: "Flaps Off",
+    ecu_flaps_off_desc: "Désactivez les volets de turbulence pour prévenir les pannes futures et améliorer le flux d'air.",
+    ecu_nox_off_title: "NOx Off",
+    ecu_nox_off_desc: "Désactivez le système de capteur NOx, un point de défaillance courant sur les moteurs diesel modernes.",
+    ecu_tva_off_title: "TVA Off",
+    ecu_tva_off_desc: "Désactivez l'actionneur de papillon des gaz, utile pour certaines modifications de performance.",
+    ecu_lambda_off_title: "Lambda/O2 Off",
+    ecu_lambda_off_desc: "Supprimez le capteur O2 arrière de l'ECU pour les configurations decata, évitant les voyants moteur.",
+    ecu_radio_pin_title: "Code Pin Radio",
+    ecu_radio_pin_desc: "Code de sécurité de votre autoradio perdu ? Nous pouvons le récupérer pour vous, souvent juste avec le numéro de série.",
     
     // Testimonials Section
     testimonials_title: "Ce que disent nos clients",
@@ -411,6 +431,16 @@ export const translations = {
     ecu_performance_tuning_title: "ضبط الأداء",
     ecu_performance_tuning_desc: "ضبط مخصص للمرحلة 1 و 2 لزيادة القوة الحصانية وعزم الدوران بأمان.",
     ecu_upload_file_cta: "ارفع ملفك للحصول على عرض أسعار",
+    ecu_flaps_off_title: "إلغاء الفلابس",
+    ecu_flaps_off_desc: "قم بتعطيل لوحات السحب (لوحات الدوامة) لمنع الأعطال المستقبلية وتحسين تدفق الهواء.",
+    ecu_nox_off_title: "إلغاء حساس NOx",
+    ecu_nox_off_desc: "قم بإلغاء تنشيط نظام مستشعر أكاسيد النيتروجين (NOx) ، وهو نقطة فشل شائعة في محركات الديزل الحديثة.",
+    ecu_tva_off_title: "إلغاء صمام الخانق (TVA)",
+    ecu_tva_off_desc: "قم بتعطيل مشغل صمام الخانق ، وهو مفيد لبعض تعديلات الأداء والحذف.",
+    ecu_lambda_off_title: "إلغاء حساس لامدا/O2",
+    ecu_lambda_off_desc: "قم بإزالة مستشعر O2 الخلفي من وحدة التحكم الإلكترونية لإعدادات decat أو sport cat ، مما يمنع أضواء فحص المحرك.",
+    ecu_radio_pin_title: "كود الراديو",
+    ecu_radio_pin_desc: "هل فقدت رمز أمان راديو سيارتك؟ يمكننا استعادته لك ، غالبًا من الرقم التسلسلي فقط.",
     
     // Testimonials Section
     testimonials_title: "ماذا يقول عملاؤنا",

@@ -55,39 +55,52 @@ const CreateRequestFormSchema = z.object({
     email: z.string().email("Invalid email format"),
     vehicle: z.string().min(3, "Vehicle details are required"),
     service: z.string().min(3, "Service details are required"),
-    fileType: z.enum(['eeprom', 'flash', 'full_backup']),
     notes: z.string().optional(),
-    file: z.instanceof(File),
+    // Conditional fields
+    file: z.instanceof(File).optional(),
+    fileType: z.enum(['eeprom', 'flash', 'full_backup']).optional(),
+    radioSerialNumber: z.string().optional(),
 });
 
 export async function createRequest(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const isRadioPinOnly = formData.get('service') === 'Radio Pin (Free)';
+
     const parsed = CreateRequestFormSchema.safeParse({
         name: formData.get('name'),
         email: formData.get('email'),
         vehicle: formData.get('vehicle'),
         service: formData.get('service'),
-        fileType: formData.get('fileType'),
         notes: formData.get('notes'),
         file: formData.get('file'),
+        fileType: formData.get('fileType'),
+        radioSerialNumber: formData.get('radioSerialNumber'),
     });
 
     if (!parsed.success) {
         return { success: false, error: parsed.error.errors.map(e => e.message).join(', ') };
     }
 
-    const { name, email, vehicle, service, fileType, notes, file } = parsed.data;
+    const { name, email, vehicle, service, notes, file, fileType, radioSerialNumber } = parsed.data;
 
     try {
-        // Generate a unique file name to prevent overwrites in S3
-        const uniqueFileName = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
+        let fileUrl = null;
+        let finalNotes = notes || '';
 
-        // 1. Upload the file to S3
-        const fileUrl = await uploadFileToS3(file, uniqueFileName);
+        // Handle file upload for non-radio-pin services
+        if (!isRadioPinOnly && file) {
+            const uniqueFileName = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
+            fileUrl = await uploadFileToS3(file, uniqueFileName);
+        }
 
-        // 2. Insert the request details into the database
+        // Handle radio pin service
+        if (isRadioPinOnly && radioSerialNumber) {
+            finalNotes = `Radio Serial Number: ${radioSerialNumber}. ${notes || ''}`.trim();
+        }
+        
+        // Insert the request details into the database
         await db.execute(
-            'INSERT INTO tuning_requests (name, email, vehicle, service, file_type, notes, original_file_url) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [name, email, vehicle, service, fileType, notes, fileUrl]
+            'INSERT INTO tuning_requests (name, email, vehicle, service, file_type, notes, original_file_url, status, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [name, email, vehicle, service, fileType || null, finalNotes, fileUrl, isRadioPinOnly ? 'Completed' : 'Pending', isRadioPinOnly ? 0 : null]
         );
 
         // Optional: Send an email notification to the admin
@@ -101,10 +114,20 @@ export async function createRequest(formData: FormData): Promise<{ success: bool
                     <li><strong>Client:</strong> ${name} (${email})</li>
                     <li><strong>Vehicle:</strong> ${vehicle}</li>
                     <li><strong>Service:</strong> ${service}</li>
-                    <li><strong>File Link:</strong> <a href="${fileUrl}">${fileUrl}</a></li>
+                    ${fileUrl ? `<li><strong>File Link:</strong> <a href="${fileUrl}">${fileUrl}</a></li>` : ''}
+                    ${isRadioPinOnly ? `<li><strong>Radio Serial:</strong> ${radioSerialNumber}</li>` : ''}
                 </ul>
             `
         });
+
+        // If it's a free radio pin service, send the "complete" email immediately
+        if (isRadioPinOnly) {
+             await sendEmail({
+                to: email,
+                subject: `Your Radio Pin Request for ${vehicle}`,
+                html: `<h1>We've Received Your Request!</h1><p>Thank you for submitting your radio serial number. We will process it and send you the pin code in a separate email shortly. This is a free service.</p>`
+            });
+        }
 
         return { success: true };
     } catch (error) {
@@ -112,6 +135,7 @@ export async function createRequest(formData: FormData): Promise<{ success: bool
         return { success: false, error: "An unexpected server error occurred." };
     }
 }
+
 
 export async function updateRequestStatus(requestId: number, status: TuningRequest['status'], price?: number): Promise<{ success: boolean; error?: string }> {
     try {
