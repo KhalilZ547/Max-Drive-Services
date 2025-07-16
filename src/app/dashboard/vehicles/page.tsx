@@ -66,10 +66,12 @@ export default function VehiclesPage() {
                             <CardTitle>{t('tab_vehicles')}</CardTitle>
                             <CardDescription>{t('vehicles_page_description')}</CardDescription>
                         </div>
-                        <Button onClick={() => setIsAddDialogOpen(true)}>
-                            <PlusCircle className="mr-2 h-4 w-4" />
-                            {t('add_vehicle_button')}
-                        </Button>
+                        {vehicles.length > 0 && (
+                            <Button onClick={() => setIsAddDialogOpen(true)}>
+                                <PlusCircle className="mr-2 h-4 w-4" />
+                                {t('add_vehicle_button')}
+                            </Button>
+                        )}
                     </CardHeader>
                     <CardContent>
                         {vehicles.length > 0 ? (
