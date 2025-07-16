@@ -63,6 +63,13 @@ export function EcuTuningForm() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const searchParams = useSearchParams();
     const initialService = searchParams.get('service');
+    const [dynamicPlaceholder, setDynamicPlaceholder] = useState('e.g., Hardcut Limiter');
+
+    useEffect(() => {
+        const placeholders = ['e.g., Hardcut Limiter', 'e.g., Pop & Bang', 'e.g., Launch Control', 'e.g., VMAX Off'];
+        const randomIndex = Math.floor(Math.random() * placeholders.length);
+        setDynamicPlaceholder(placeholders[randomIndex]);
+    }, []);
 
     const EcuTuningFormSchema = useMemo(() => z.object({
         name: z.string().min(2, { message: t('contact_form_name') + " is required." }),
@@ -431,7 +438,7 @@ export function EcuTuningForm() {
                                     <FormItem>
                                         <FormLabel>{t('other_service_label')}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder={t('other_service_placeholder')} {...field} />
+                                            <Input placeholder={dynamicPlaceholder} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
