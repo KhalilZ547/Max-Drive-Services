@@ -1,34 +1,42 @@
 
+'use server';
+
 import db from '@/lib/db';
+import { revalidatePath } from 'next/cache';
 import { sendEmail } from '@/services/email';
 import type { Client } from '@/lib/mock-data'; // We can re-use the type for now
 
 export async function getClients(): Promise<Client[]> {
   try {
+    // Ensure you have a `clients` table with id, name, email, and registered columns.
     const [rows] = await db.execute("SELECT id, name, email, DATE_FORMAT(registered, '%Y-%m-%d') as registered FROM clients ORDER BY registered DESC");
     return rows as Client[];
   } catch (error) {
     console.error("Failed to fetch clients:", error);
-    throw new Error("Could not fetch clients.");
+    // In a real app, you might want to throw a more specific error or handle it differently.
+    throw new Error("Could not fetch clients. Please check database connection and table existence.");
   }
 }
 
 export async function addClient(newClientData: Omit<Client, 'id' | 'registered'>): Promise<{ success: boolean; error?: string }> {
   const { name, email } = newClientData;
-  const registered = new Date();
+  // The database will handle the `registered` timestamp with DEFAULT CURRENT_TIMESTAMP.
   
   try {
-    // Check if email already exists
+    // Check if email already exists to provide a friendly error message.
     const [existing] = await db.execute('SELECT id FROM clients WHERE email = ?', [email]);
     if ((existing as any[]).length > 0) {
       return { success: false, error: 'A client with this email address already exists.' };
     }
 
+    // Insert the new client. The password will be NULL until they set it.
     await db.execute(
-      'INSERT INTO clients (name, email, registered) VALUES (?, ?, ?)',
-      [name, email, registered]
+      'INSERT INTO clients (name, email, role) VALUES (?, ?, ?)',
+      [name, email, 'client']
     );
 
+    // Send an email to the client to set up their password.
+    // In production, get the base URL from environment variables.
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const setupLink = `${baseUrl}/reset-password?email=${encodeURIComponent(email)}`;
     
@@ -43,9 +51,11 @@ export async function addClient(newClientData: Omit<Client, 'id' | 'registered'>
       `
     });
 
+    revalidatePath('/admin/clients');
     return { success: true };
   } catch (error: any) {
     console.error("Failed to add client:", error);
+    // The ER_DUP_ENTRY error code is specific to MySQL for duplicate entries.
     if (error.code === 'ER_DUP_ENTRY') {
       return { success: false, error: 'A client with this email address already exists.' };
     }
@@ -59,6 +69,7 @@ export async function updateClient(updatedClient: Client): Promise<{ success: bo
             'UPDATE clients SET name = ?, email = ? WHERE id = ?',
             [updatedClient.name, updatedClient.email, updatedClient.id]
         );
+        revalidatePath('/admin/clients');
         return { success: true };
     } catch(error: any) {
         if (error.code === 'ER_DUP_ENTRY') {
@@ -75,6 +86,7 @@ export async function deleteClient(clientId: string): Promise<void> {
             'DELETE FROM clients WHERE id = ?',
             [clientId]
         );
+        revalidatePath('/admin/clients');
     } catch(error) {
         console.error("Failed to delete client:", error);
         throw new Error("Could not delete client.");

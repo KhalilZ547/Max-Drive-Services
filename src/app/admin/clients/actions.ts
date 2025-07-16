@@ -12,7 +12,7 @@ export async function getClients(): Promise<Client[]> {
 export async function addClient(newClientData: Omit<Client, 'id' | 'registered'>): Promise<{ success: boolean; error?: string }> {
     const result = await clientService.addClient(newClientData);
     if (result.success) {
-        revalidatePath('/admin/clients');
+        revalidatePath('/admin/clients'); // This re-fetches the data on the page.
     }
     return result;
 }
