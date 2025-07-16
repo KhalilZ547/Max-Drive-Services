@@ -130,7 +130,9 @@ export default function ClientsPage() {
                             <CardTitle>Clients</CardTitle>
                             <CardDescription>Manage your clients and view their details.</CardDescription>
                         </div>
-                        <Button onClick={() => setIsAddDialogOpen(true)}>Add New Client</Button>
+                        {clients.length > 0 && (
+                            <Button onClick={() => setIsAddDialogOpen(true)}>Add New Client</Button>
+                        )}
                     </CardHeader>
                     <CardContent>
                         {clients.length > 0 ? (
