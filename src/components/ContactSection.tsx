@@ -107,39 +107,39 @@ export function ContactSection() {
             </CardContent>
           </Card>
           <div className="flex flex-col md:flex-row justify-around gap-8">
-            <div className="flex items-start gap-4">
+            <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-4 group">
               <div className="bg-primary/10 p-3 rounded-full">
                 <MapPin className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Address</h3>
-                <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">Address</h3>
+                <p className="text-muted-foreground">
                   {address}
-                </a>
+                </p>
               </div>
-            </div>
-            <div className="flex items-start gap-4">
+            </a>
+            <a href={telLink} className="flex items-start gap-4 group">
               <div className="bg-primary/10 p-3 rounded-full">
                 <Phone className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Phone</h3>
-                 <a href={telLink} className="text-muted-foreground hover:text-primary transition-colors">
+                <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">Phone</h3>
+                 <p className="text-muted-foreground">
                   {phone}
-                </a>
+                </p>
               </div>
-            </div>
-            <div className="flex items-start gap-4">
+            </a>
+            <a href={mailtoLink} className="flex items-start gap-4 group">
               <div className="bg-primary/10 p-3 rounded-full">
                 <Mail className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Email</h3>
-                 <a href={mailtoLink} className="text-muted-foreground hover:text-primary transition-colors">
+                <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">Email</h3>
+                 <p className="text-muted-foreground">
                   {email}
-                </a>
+                </p>
               </div>
-            </div>
+            </a>
           </div>
         </div>
       </div>
