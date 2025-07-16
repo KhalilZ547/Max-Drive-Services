@@ -56,10 +56,16 @@ export default function ClientsPage() {
 
     const fetchClients = useCallback(async () => {
         setIsLoading(true);
-        const fetchedClients = await getClients();
-        setClients(fetchedClients);
-        setIsLoading(false);
-    }, []);
+        try {
+            const fetchedClients = await getClients();
+            setClients(fetchedClients);
+        } catch (error) {
+            console.error("Failed to fetch clients for page:", error);
+            toast({ title: "Error", description: "Could not fetch clients. Please try again later.", variant: "destructive" });
+        } finally {
+            setIsLoading(false);
+        }
+    }, [toast]);
 
     useEffect(() => {
         fetchClients();
@@ -76,16 +82,23 @@ export default function ClientsPage() {
 
     const confirmDelete = useCallback(async () => {
         if (!deletingClientId) return;
-        await deleteClient(deletingClientId);
-        toast({ title: "Client Deleted", description: "The client has been successfully removed.", variant: "destructive" });
-        setDeletingClientId(null);
-        fetchClients(); // Refresh the list
+        
+        try {
+            await deleteClient(deletingClientId);
+            toast({ title: "Client Deleted", description: "The client has been successfully removed." });
+            setDeletingClientId(null);
+            fetchClients(); // Refresh the list
+        } catch (error) {
+            console.error("Failed to delete client:", error);
+            toast({ title: "Error", description: "Could not delete client.", variant: "destructive" });
+        }
     }, [deletingClientId, fetchClients, toast]);
 
     const handleUpdateClient = useCallback(async (updatedClient: Client) => {
         const result = await updateClient(updatedClient);
         if (result.success) {
             toast({ title: "Client Updated", description: "The client's information has been successfully updated."});
+            setIsEditDialogOpen(false);
             setEditingClient(null);
             fetchClients();
         } else {
@@ -176,7 +189,10 @@ export default function ClientsPage() {
             {editingClient && (
                 <EditClientDialog
                     isOpen={isEditDialogOpen}
-                    onOpenChange={setIsEditDialogOpen}
+                    onOpenChange={(open) => {
+                      if (!open) setEditingClient(null);
+                      setIsEditDialogOpen(open);
+                    }}
                     client={editingClient}
                     onUpdateClient={handleUpdateClient}
                 />
