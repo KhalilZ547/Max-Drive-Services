@@ -67,7 +67,7 @@ export const translations = {
     contact_form_success_title: "Message Sent!",
     contact_form_success_desc: "Thank you for reaching out. We'll get back to you soon.",
     contact_info_address: "123 Auto Street, Tunis, Tunisia",
-    contact_info_phone: "+216 12 345 678",
+    contact_info_phone: "+216 92 266 384",
     contact_info_email: "contact@maxdrive.com",
 
     // AI Chat
@@ -154,7 +154,6 @@ export const translations = {
     donation_bank_tab: "Bank Transfer",
     donation_paypal_desc: "Click the button below to donate securely via PayPal.",
     donation_paypal_button: "Donate with PayPal",
-    donation_bank_desc: "You can make a direct bank transfer to the following account:",
     donation_bank_beneficiary: "Beneficiary",
     donation_bank_beneficiary_value: "Max-Drive-Services",
     donation_bank_name: "Bank Name",
@@ -250,7 +249,7 @@ export const translations = {
     contact_form_success_title: "Message envoyé !",
     contact_form_success_desc: "Merci de nous avoir contactés. Nous vous répondrons bientôt.",
     contact_info_address: "123 Rue de l'Auto, Tunis, Tunisie",
-    contact_info_phone: "+216 12 345 678",
+    contact_info_phone: "+216 92 266 384",
     contact_info_email: "contact@maxdrive.com",
 
     // AI Chat
@@ -433,7 +432,7 @@ export const translations = {
     contact_form_success_title: "تم إرسال الرسالة!",
     contact_form_success_desc: "شكرا لتواصلك معنا. سنرد عليك قريبا.",
     contact_info_address: "123 شارع السيارات، تونس، تونس",
-    contact_info_phone: "+216 12 345 678",
+    contact_info_phone: "+216 92 266 384",
     contact_info_email: "contact@maxdrive.com",
 
     // AI Chat
@@ -520,7 +519,6 @@ export const translations = {
     donation_bank_tab: "تحويل بنكي",
     donation_paypal_desc: "انقر على الزر أدناه للتبرع بأمان عبر باي بال.",
     donation_paypal_button: "تبرع بواسطة باي بال",
-    donation_bank_desc: "يمكنك إجراء تحويل بنكي مباشر إلى الحساب التالي:",
     donation_bank_beneficiary: "المستفيد",
     donation_bank_beneficiary_value: "ماكس-درايف-سيرفيسز",
     donation_bank_name: "اسم البنك",
