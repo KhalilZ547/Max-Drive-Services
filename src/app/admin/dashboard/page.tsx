@@ -6,8 +6,6 @@ import {
   Users,
   Car,
   Clock,
-  CheckCircle,
-  DollarSign
 } from "lucide-react";
 import {
   Card,
@@ -21,9 +19,9 @@ import { getTuningRequestStatusCounts, TuningRequestStatusCounts } from "@/servi
 import { ClientsChart } from "@/components/charts/ClientsChart";
 import { TuningRequestsChart } from "@/components/charts/TuningRequestsChart";
 import type { MonthlyClient } from "@/services/clients";
-import { Skeleton } from "@/components/ui/skeleton";
+import { LogoSpinner } from "@/components/LogoSpinner";
 
-function StatCard({ title, value, icon: Icon, description }: { title: string; value: string | number; icon: React.ElementType; description?: string }) {
+function StatCard({ title, value, icon: Icon }: { title: string; value: string | number; icon: React.ElementType; }) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -32,42 +30,9 @@ function StatCard({ title, value, icon: Icon, description }: { title: string; va
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
-        {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </CardContent>
     </Card>
   );
-}
-
-function DashboardSkeleton() {
-    return (
-        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-            <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-                <Skeleton className="h-[126px] w-full" />
-                <Skeleton className="h-[126px] w-full" />
-                <Skeleton className="h-[126px] w-full" />
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-1 lg:col-span-4">
-                    <CardHeader>
-                        <Skeleton className="h-6 w-32" />
-                        <Skeleton className="h-4 w-48" />
-                    </CardHeader>
-                    <CardContent className="pl-2">
-                        <Skeleton className="h-[350px] w-full" />
-                    </CardContent>
-                </Card>
-                <Card className="col-span-1 lg:col-span-3">
-                    <CardHeader>
-                        <Skeleton className="h-6 w-40" />
-                        <Skeleton className="h-4 w-56" />
-                    </CardHeader>
-                    <CardContent>
-                        <Skeleton className="h-[350px] w-full" />
-                    </CardContent>
-                </Card>
-            </div>
-        </main>
-    )
 }
 
 export default function AdminDashboardPage() {
@@ -99,7 +64,12 @@ export default function AdminDashboardPage() {
   }, []);
 
   if (isLoading) {
-    return <DashboardSkeleton />;
+    return (
+        <main className="flex flex-1 flex-col items-center justify-center gap-4 p-4 md:gap-8 md:p-8">
+            <LogoSpinner className="h-32 w-32" />
+            <p className="text-muted-foreground">Loading admin dashboard...</p>
+        </main>
+    )
   }
 
   const totalRequests = tuningStatusCounts 
