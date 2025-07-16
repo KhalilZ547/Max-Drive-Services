@@ -92,3 +92,34 @@ export async function deleteClient(clientId: string): Promise<void> {
         throw new Error("Could not delete client.");
     }
 }
+
+// Analytics Functions
+export type MonthlyClient = { month: string; total: number };
+
+export async function getClientsPerMonth(): Promise<MonthlyClient[]> {
+    try {
+        const query = `
+            SELECT 
+                DATE_FORMAT(registered, '%Y-%m') as month, 
+                COUNT(id) as total 
+            FROM clients 
+            GROUP BY month 
+            ORDER BY month ASC;
+        `;
+        const [rows] = await db.execute(query);
+        return rows as MonthlyClient[];
+    } catch (error) {
+        console.error("Failed to fetch monthly client data:", error);
+        throw new Error("Could not fetch monthly client data.");
+    }
+}
+
+export async function getTotalClientsCount(): Promise<number> {
+    try {
+        const [rows] = await db.execute("SELECT COUNT(id) as total FROM clients");
+        return (rows as any)[0].total;
+    } catch (error) {
+        console.error("Failed to fetch total clients count:", error);
+        throw new Error("Could not fetch total clients count.");
+    }
+}

@@ -1,13 +1,14 @@
 
-"use client";
+'use client';
 
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Users,
   Car,
-  CalendarCheck,
+  Clock,
+  CheckCircle,
+  DollarSign
 } from "lucide-react";
-import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -15,90 +16,126 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useAdminClients } from "@/hooks/use-admin-clients";
-import { LogoSpinner } from "@/components/LogoSpinner";
+import { getClientsPerMonth, getTotalClientsCount } from "@/services/clients";
+import { getTuningRequestStatusCounts, TuningRequestStatusCounts } from "@/services/tuning";
+import { ClientsChart } from "@/components/charts/ClientsChart";
+import { TuningRequestsChart } from "@/components/charts/TuningRequestsChart";
+import type { MonthlyClient } from "@/services/clients";
+import { Skeleton } from "@/components/ui/skeleton";
 
+function StatCard({ title, value, icon: Icon, description }: { title: string; value: string | number; icon: React.ElementType; description?: string }) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <Icon className="h-4 w-4 text-muted-foreground" />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{value}</div>
+        {description && <p className="text-xs text-muted-foreground">{description}</p>}
+      </CardContent>
+    </Card>
+  );
+}
+
+function DashboardSkeleton() {
+    return (
+        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+            <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+                <Skeleton className="h-[126px] w-full" />
+                <Skeleton className="h-[126px] w-full" />
+                <Skeleton className="h-[126px] w-full" />
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
+                <Card className="col-span-1 lg:col-span-4">
+                    <CardHeader>
+                        <Skeleton className="h-6 w-32" />
+                        <Skeleton className="h-4 w-48" />
+                    </CardHeader>
+                    <CardContent className="pl-2">
+                        <Skeleton className="h-[350px] w-full" />
+                    </CardContent>
+                </Card>
+                <Card className="col-span-1 lg:col-span-3">
+                    <CardHeader>
+                        <Skeleton className="h-6 w-40" />
+                        <Skeleton className="h-4 w-56" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-[350px] w-full" />
+                    </CardContent>
+                </Card>
+            </div>
+        </main>
+    )
+}
 
 export default function AdminDashboardPage() {
-  const { clients } = useAdminClients();
   const [isLoading, setIsLoading] = useState(true);
+  const [totalClients, setTotalClients] = useState(0);
+  const [clientsPerMonth, setClientsPerMonth] = useState<MonthlyClient[]>([]);
+  const [tuningStatusCounts, setTuningStatusCounts] = useState<TuningRequestStatusCounts | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
+    async function fetchData() {
+      setIsLoading(true);
+      try {
+        const [clientsCount, clientsData, statusCounts] = await Promise.all([
+          getTotalClientsCount(),
+          getClientsPerMonth(),
+          getTuningRequestStatusCounts(),
+        ]);
+        setTotalClients(clientsCount);
+        setClientsPerMonth(clientsData);
+        setTuningStatusCounts(statusCounts);
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+        // Optionally, show a toast notification for the error
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchData();
   }, []);
 
-  const stats = useMemo(() => ({
-    totalClients: clients.length,
-    totalVehicles: 78,
-    upcomingAppointments: 12,
-  }), [clients.length]);
-
   if (isLoading) {
-    return (
-      <main className="flex flex-1 flex-col items-center justify-center gap-4 p-4 md:gap-8 md:p-8">
-          <LogoSpinner className="h-32 w-32" />
-          <p className="text-muted-foreground">Loading dashboard...</p>
-      </main>
-    )
+    return <DashboardSkeleton />;
   }
+
+  const totalRequests = tuningStatusCounts 
+    ? tuningStatusCounts.Pending + tuningStatusCounts['Awaiting Payment'] + tuningStatusCounts.Completed
+    : 0;
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-        <CardHeader className="px-0">
-            <CardTitle>Admin Dashboard</CardTitle>
-            <CardDescription>Overview of the garage's activity.</CardDescription>
-        </CardHeader>
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalClients}</div>
-            <p className="text-xs text-muted-foreground">
-              +5 since last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Vehicles Serviced</CardTitle>
-            <Car className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalVehicles}</div>
-            <p className="text-xs text-muted-foreground">
-              Total vehicles in the system
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Upcoming Appointments</CardTitle>
-            <CalendarCheck className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.upcomingAppointments}</div>
-            <p className="text-xs text-muted-foreground">
-              In the next 7 days
-            </p>
-          </CardContent>
-        </Card>
+        <StatCard title="Total Clients" value={totalClients} icon={Users} />
+        <StatCard title="Total Tuning Requests" value={totalRequests} icon={Car} />
+        <StatCard title="Pending Requests" value={tuningStatusCounts?.Pending ?? 0} icon={Clock} />
       </div>
-       <div className="grid gap-4 md:grid-cols-1">
-        <Card>
-            <CardHeader>
-                <CardTitle>Client Management</CardTitle>
-                <CardDescription>View, add, or manage client information.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Button asChild>
-                    <Link href="/admin/clients">Go to Clients Page</Link>
-                </Button>
-            </CardContent>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-1 lg:col-span-4">
+          <CardHeader>
+            <CardTitle>New Clients Overview</CardTitle>
+            <CardDescription>
+              You've gained {totalClients} clients so far.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pl-2">
+            <ClientsChart data={clientsPerMonth} />
+          </CardContent>
+        </Card>
+        <Card className="col-span-1 lg:col-span-3">
+          <CardHeader>
+            <CardTitle>Tuning Requests</CardTitle>
+            <CardDescription>
+              A summary of all ECU tuning requests.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {tuningStatusCounts && <TuningRequestsChart data={tuningStatusCounts} />}
+          </CardContent>
         </Card>
       </div>
     </main>

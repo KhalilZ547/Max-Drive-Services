@@ -151,3 +151,33 @@ export async function deleteRequest(requestId: number): Promise<void> {
         throw new Error("Could not delete tuning request.");
     }
 }
+
+// Analytics Functions
+export type TuningRequestStatusCounts = {
+    Pending: number;
+    'Awaiting Payment': number;
+    Completed: number;
+};
+
+export async function getTuningRequestStatusCounts(): Promise<TuningRequestStatusCounts> {
+    try {
+        const query = `
+            SELECT
+                SUM(CASE WHEN status = 'Pending' THEN 1 ELSE 0 END) as Pending,
+                SUM(CASE WHEN status = 'Awaiting Payment' THEN 1 ELSE 0 END) as 'Awaiting Payment',
+                SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) as Completed
+            FROM tuning_requests;
+        `;
+        const [rows] = await db.execute(query);
+        const counts = (rows as any)[0];
+        // Ensure numbers are returned, not strings
+        return {
+            Pending: parseInt(counts.Pending, 10) || 0,
+            'Awaiting Payment': parseInt(counts['Awaiting Payment'], 10) || 0,
+            Completed: parseInt(counts.Completed, 10) || 0,
+        };
+    } catch (error) {
+        console.error("Failed to fetch tuning request status counts:", error);
+        throw new Error("Could not fetch tuning request status counts.");
+    }
+}
