@@ -44,7 +44,7 @@ export function ServicesSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((service) => (
             <Link key={service.id} href={`/service/${service.id}`} className="group block">
-              <Card className="text-center p-6 flex flex-col items-center h-full hover:shadow-lg transition-shadow duration-300">
+              <Card className="text-center p-6 flex flex-col items-center h-full border-2 border-transparent hover:border-primary hover:shadow-lg transition-all duration-300">
                 <CardHeader className="p-0 mb-4">
                   {service.icon}
                   <CardTitle>{service.title}</CardTitle>
