@@ -151,7 +151,7 @@ export const translations = {
     dashboard_no_recent_activity: "No recent activity.",
     dashboard_view_all_history: "View all history",
     other_service_label: "Please Specify Service",
-    other_service_placeholder: "e.g., Tire Rotation",
+    other_service_placeholder: "e.g., Hardcut Limiter",
     other_service_error: "Please specify your service (min 3 chars).",
     email_change_confirmation_title: "Email Change Pending",
     email_change_confirmation_desc: "A confirmation link has been sent to your new email address. Please verify to update your email.",
@@ -343,7 +343,7 @@ export const translations = {
     dashboard_no_recent_activity: "Aucune activité récente.",
     dashboard_view_all_history: "Voir tout l'historique",
     other_service_label: "Veuillez préciser le service",
-    other_service_placeholder: "ex: Rotation des pneus",
+    other_service_placeholder: "ex: Limiteur de régime (Hardcut)",
     other_service_error: "Veuillez préciser votre service (3 car. min).",
     email_change_confirmation_title: "Changement d'e-mail en attente",
     email_change_confirmation_desc: "Un lien de confirmation a été envoyé à votre nouvelle adresse e-mail. Veuillez vérifier pour mettre à jour votre e-mail.",
@@ -536,7 +536,7 @@ export const translations = {
     dashboard_no_recent_activity: "لا يوجد نشاط حديث.",
     dashboard_view_all_history: "عرض كل السجل",
     other_service_label: "يرجى تحديد الخدمة",
-    other_service_placeholder: "مثال: تدوير الإطارات",
+    other_service_placeholder: "مثال: محدد القطع (Hardcut)",
     other_service_error: "يرجى تحديد الخدمة (3 أحرف على الأقل).",
     email_change_confirmation_title: "تغيير البريد الإلكتروني معلق",
     email_change_confirmation_desc: "تم إرسال رابط تأكيد إلى عنوان بريدك الإلكتروني الجديد. يرجى التحقق لتحديث بريدك الإلكتروني.",
@@ -582,3 +582,5 @@ export const translations = {
 
 export type Language = keyof typeof translations;
 export type TranslationKey = keyof typeof translations['en'];
+
+    
