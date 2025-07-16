@@ -16,13 +16,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export function LoginForm() {
   const { t } = useTranslation();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const FormSchema = z.object({
     email: z.string().email(),
@@ -38,19 +39,19 @@ export function LoginForm() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    const callbackUrl = searchParams.get("callbackUrl");
+
     // Mock login logic with role-based routing
     if (data.email.toLowerCase() === 'admin@maxdrive.com') {
-      // This is an admin user
       if (typeof window !== 'undefined') {
         localStorage.setItem('userRole', 'admin');
       }
-      router.push("/admin/dashboard");
+      router.push(callbackUrl || "/admin/dashboard");
     } else {
-      // This is a regular client
        if (typeof window !== 'undefined') {
         localStorage.setItem('userRole', 'client');
       }
-      router.push("/dashboard");
+      router.push(callbackUrl || "/dashboard");
     }
   }
 

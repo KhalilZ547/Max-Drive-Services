@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTranslation } from '@/hooks/use-translation';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { memo, useMemo, useCallback, MouseEvent, useState, useEffect } from 'react';
 import { Logo } from '@/components/Logo';
@@ -87,6 +87,8 @@ export default function DashboardLayout({
 }) {
   const { t } = useTranslation();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [isAuthorized, setIsAuthorized] = useState(false);
 
@@ -94,12 +96,13 @@ export default function DashboardLayout({
     if (typeof window !== 'undefined') {
       const role = localStorage.getItem('userRole');
       if (role !== 'client') {
-        router.push('/login');
+        const callbackUrl = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
+        router.push(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
       } else {
         setIsAuthorized(true);
       }
     }
-  }, [router]);
+  }, [router, pathname, searchParams]);
   
   const handleLogout = useCallback(() => {
     if (typeof window !== 'undefined') {

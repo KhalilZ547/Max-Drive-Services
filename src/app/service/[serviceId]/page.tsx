@@ -76,7 +76,7 @@ export default function ServiceDetailPage() {
               </div>
               <div className="mt-8 flex gap-4">
                 <Button asChild size="lg">
-                  <Link href="/dashboard/appointment">{t('book_now_button')}</Link>
+                  <Link href={`/dashboard/appointment?service=${serviceId}`}>{t('book_now_button')}</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
                    <Link href="/#services">{t('back_to_services')}</Link>

@@ -1,12 +1,13 @@
 
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useSearchParams } from 'next/navigation';
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,16 +37,18 @@ import { Input } from "@/components/ui/input";
 import { sendEmail } from "@/services/email";
 
 const services = [
-    { id: 'oil_change', key: 'service_oil_change_title'},
-    { id: 'brake_repair', key: 'service_brake_repair_title' },
-    { id: 'engine_diagnostic', key: 'service_engine_diagnostic_title' },
-    { id: 'ecu_solutions', key: 'service_ecu_solutions_title' },
+    { id: 'oil-change', key: 'service_oil_change_title'},
+    { id: 'brake-repair', key: 'service_brake_repair_title' },
+    { id: 'engine-diagnostic', key: 'service_engine_diagnostic_title' },
+    { id: 'ecu-solutions', key: 'service_ecu_solutions_title' },
     { id: 'other', key: 'service_other_title' },
 ];
 
 export function AppointmentForm() {
     const { t } = useTranslation();
     const { toast } = useToast();
+    const searchParams = useSearchParams();
+    const initialService = searchParams.get('service');
 
     const AppointmentFormSchema = useMemo(() => z.object({
         serviceId: z.string({
@@ -71,11 +74,19 @@ export function AppointmentForm() {
     const form = useForm<z.infer<typeof AppointmentFormSchema>>({
         resolver: zodResolver(AppointmentFormSchema),
         defaultValues: {
+            serviceId: initialService || undefined,
             vehicle: "",
             notes: "",
             otherService: "",
         },
     });
+
+    useEffect(() => {
+        if (initialService) {
+            form.setValue('serviceId', initialService);
+        }
+    }, [initialService, form]);
+
 
     const selectedService = form.watch("serviceId");
 
@@ -144,7 +155,7 @@ export function AppointmentForm() {
                             render={({ field }) => (
                                 <FormItem>
                                 <FormLabel>{t('service_label')}</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                                     <FormControl>
                                     <SelectTrigger>
                                         <SelectValue placeholder={t('select_service_placeholder')} />
