@@ -1,12 +1,12 @@
 
 "use client";
 
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { useSearchParams } from 'next/navigation';
 
 import { cn } from "@/lib/utils";
@@ -29,6 +29,7 @@ import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { sendEmail } from "@/services/email";
+import { addVehicle } from "@/app/dashboard/vehicles/actions";
 
 const services = [
     { id: 'oil-change', key: 'service_oil_change_title'},
@@ -43,12 +44,15 @@ export function AppointmentForm() {
     const { toast } = useToast();
     const searchParams = useSearchParams();
     const initialService = searchParams.get('service');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const AppointmentFormSchema = useMemo(() => z.object({
         serviceIds: z.array(z.string()).refine((value) => value.some((item) => item), {
             message: "You have to select at least one service.",
         }),
-        vehicle: z.string({ required_error: "Please enter your vehicle details." }).min(3, { message: "Please enter at least 3 characters." }),
+        vehicleMake: z.string().min(2, "Make is required"),
+        vehicleModel: z.string().min(1, "Model is required"),
+        vehicleYear: z.coerce.number().min(1900).max(new Date().getFullYear() + 1),
         appointmentDate: z.date({
             required_error: "A date for the appointment is required.",
         }),
@@ -69,7 +73,8 @@ export function AppointmentForm() {
         resolver: zodResolver(AppointmentFormSchema),
         defaultValues: {
             serviceIds: initialService ? [initialService] : [],
-            vehicle: "",
+            vehicleMake: "",
+            vehicleModel: "",
             notes: "",
             otherService: "",
         },
@@ -85,10 +90,20 @@ export function AppointmentForm() {
     const selectedServices = form.watch("serviceIds");
 
     async function onSubmit(data: z.infer<typeof AppointmentFormSchema>) {
+        setIsSubmitting(true);
         const serviceNames = data.serviceIds.map(id => {
             if (id === 'other') return data.otherService;
             return t(services.find(s => s.id === id)?.key as any);
         }).join(', ');
+        
+        const vehicleDetails = {
+            make: data.vehicleMake,
+            model: data.vehicleModel,
+            year: data.vehicleYear,
+        };
+        
+        // Add vehicle to user's profile
+        await addVehicle(vehicleDetails);
         
         const formattedDate = format(data.appointmentDate, "PPP");
         const adminEmail = 'contact@maxdrive.com';
@@ -98,13 +113,13 @@ export function AppointmentForm() {
         // Email to Admin
         await sendEmail({
             to: adminEmail,
-            subject: `New Appointment Booking: ${serviceNames} for ${data.vehicle}`,
+            subject: `New Appointment Booking: ${serviceNames} for ${data.vehicleMake} ${data.vehicleModel}`,
             html: `
                 <h1>New Appointment Request</h1>
                 <p>A new appointment has been booked through the website.</p>
                 <ul>
                     <li><strong>Service(s):</strong> ${serviceNames}</li>
-                    <li><strong>Vehicle:</strong> ${data.vehicle}</li>
+                    <li><strong>Vehicle:</strong> ${data.vehicleMake} ${data.vehicleModel} ${data.vehicleYear}</li>
                     <li><strong>Requested Date:</strong> ${formattedDate}</li>
                     <li><strong>Notes:</strong> ${data.notes || 'None'}</li>
                 </ul>
@@ -120,7 +135,7 @@ export function AppointmentForm() {
                 <p>Thank you for booking with Max-Drive-Services. Your appointment details are below:</p>
                 <ul>
                     <li><strong>Service(s):</strong> ${serviceNames}</li>
-                    <li><strong>Vehicle:</strong> ${data.vehicle}</li>
+                    <li><strong>Vehicle:</strong> ${data.vehicleMake} ${data.vehicleModel} ${data.vehicleYear}</li>
                     <li><strong>Date:</strong> ${formattedDate}</li>
                 </ul>
                 <p>We look forward to seeing you!</p>
@@ -132,7 +147,8 @@ export function AppointmentForm() {
             title: t('appointment_booked_title'),
             description: `${t('appointment_booked_desc')} ${serviceNames} ${t('on')} ${formattedDate}.`,
         });
-        form.reset({ serviceIds: [] });
+        form.reset({ serviceIds: [], vehicleMake: "", vehicleModel: "", vehicleYear: undefined, notes: "", otherService: "" });
+        setIsSubmitting(false);
     }
     
     return (
@@ -211,20 +227,40 @@ export function AppointmentForm() {
                             />
                         )}
 
-                        <FormField
-                            control={form.control}
-                            name="vehicle"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>{t('vehicle_label')}</FormLabel>
-                                <FormControl>
-                                    <Input placeholder={t('vehicle_placeholder')} {...field} />
-                                </FormControl>
-                                <FormDescription>{t('vehicle_input_description')}</FormDescription>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="space-y-4 rounded-lg border p-4">
+                            <FormLabel>{t('vehicle_label')}</FormLabel>
+                             <FormDescription>{t('vehicle_input_description')}</FormDescription>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                               <FormField control={form.control} name="vehicleMake" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('vehicle_make')}</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="e.g., Toyota" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}/>
+                                 <FormField control={form.control} name="vehicleModel" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('vehicle_model')}</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="e.g., Camry" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}/>
+                                 <FormField control={form.control} name="vehicleYear" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('vehicle_year')}</FormLabel>
+                                        <FormControl>
+                                            <Input type="number" placeholder="e.g., 2021" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}/>
+                            </div>
+                        </div>
+
                          <FormField
                             control={form.control}
                             name="appointmentDate"
@@ -283,7 +319,10 @@ export function AppointmentForm() {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit">{t('book_now_button')}</Button>
+                        <Button type="submit" disabled={isSubmitting}>
+                            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {t('book_now_button')}
+                        </Button>
                     </form>
                 </Form>
             </CardContent>
