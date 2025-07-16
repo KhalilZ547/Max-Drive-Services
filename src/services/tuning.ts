@@ -30,7 +30,7 @@ export async function getRequests(): Promise<TuningRequest[]> {
     return rows as TuningRequest[];
   } catch (error) {
     console.error("Failed to fetch tuning requests:", error);
-    throw new Error("Could not fetch tuning requests.");
+    return [];
   }
 }
 
