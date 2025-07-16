@@ -28,7 +28,7 @@ export function Header() {
 
   const navLinks = useMemo(() => [
     { href: '/#services', label: t('nav_services') },
-    { href: '/ecu-tuning', label: t('nav_ecu_solutions') },
+    { href: '/#ecu', label: t('nav_ecu_solutions') },
     { href: '/#donation', label: t('nav_donation') },
     { href: '/#contact', label: t('nav_contact') },
   ], [t]);
@@ -38,7 +38,7 @@ export function Header() {
     const [path, id] = href.split('#');
     
     // If the link is for a section on the current page
-    if (pathname === path && id) {
+    if ((pathname === '/' || pathname === path) && id) {
       e.preventDefault();
       const element = document.getElementById(id);
       if (element) {
@@ -48,7 +48,7 @@ export function Header() {
         });
       }
     // If navigating to the homepage from another page to a section
-    } else if (path === '/' && id) {
+    } else if (path === '' && id) {
        e.preventDefault();
        router.push('/');
        // A small timeout allows the page to change before scrolling
@@ -62,7 +62,7 @@ export function Header() {
             }
        }, 100);
     }
-    // For regular links (like /ecu-tuning), let the default Link behavior handle it.
+    // For regular links that don't have a hash, let the default Link behavior handle it.
   };
 
   return (
@@ -78,12 +78,7 @@ export function Header() {
               key={link.href}
               href={link.href}
               onClick={(e) => handleNavClick(e, link.href)}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                link.href === '/ecu-tuning'
-                  ? 'text-primary font-semibold'
-                  : 'text-muted-foreground'
-              )}
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
             >
               {link.label}
             </Link>
@@ -121,12 +116,7 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className={cn(
-                  "text-lg font-medium hover:text-primary",
-                  link.href === '/ecu-tuning'
-                    ? 'text-primary font-semibold'
-                    : 'text-muted-foreground'
-                )}
+                className="text-lg font-medium text-muted-foreground hover:text-primary"
               >
                 {link.label}
               </Link>
