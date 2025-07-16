@@ -26,11 +26,9 @@ const ProfileFormSchema = z.object({
   email: z.string().email(),
 });
 
-// Mock user data, defined outside the component to prevent re-creation on re-renders
-const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-};
+// Mock user data has been removed.
+// In a real app, this would be fetched and pre-filled.
+const initialEmail = ""; // Example: could be fetched from user session
 
 export default function ProfilePage() {
     const { t } = useTranslation();
@@ -40,6 +38,7 @@ export default function ProfilePage() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        // In a real app, fetch user data here and then call form.reset()
         const timer = setTimeout(() => setIsLoading(false), 1000);
         return () => clearTimeout(timer);
     }, []);
@@ -47,23 +46,23 @@ export default function ProfilePage() {
     const form = useForm<z.infer<typeof ProfileFormSchema>>({
         resolver: zodResolver(ProfileFormSchema),
         defaultValues: {
-            name: user.name,
-            email: user.email,
+            name: "", // Default to empty
+            email: "", // Default to empty
         },
     });
 
     const watchedName = form.watch("name");
     
     const getAvatarFallback = useCallback((name: string | undefined): string => {
-        if (!name) return "";
+        if (!name) return "U"; // Default for 'User'
         const nameParts = name.trim().split(" ").filter(Boolean);
 
         if (nameParts.length > 1) {
             return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
-        } else if (nameParts.length === 1) {
+        } else if (nameParts.length === 1 && nameParts[0].length > 0) {
             return nameParts[0][0].toUpperCase();
         }
-        return "";
+        return "U";
     }, []);
 
     const avatarFallback = getAvatarFallback(watchedName);
@@ -92,7 +91,7 @@ export default function ProfilePage() {
 
     const onSubmit = useCallback((data: z.infer<typeof ProfileFormSchema>) => {
         console.log(data);
-        if (data.email !== user.email) {
+        if (data.email !== initialEmail) {
             toast({
                 title: t('email_change_confirmation_title'),
                 description: t('email_change_confirmation_desc'),

@@ -18,26 +18,19 @@ import {
 import { useTranslation } from "@/hooks/use-translation";
 import { Button } from "./ui/button";
 
-const vehicles: { make: string; model: string; year: number; vin: string; }[] = [
-    { make: 'Toyota', model: 'Camry', year: 2021, vin: '1234567890ABCDEFG' },
-    { make: 'Honda', model: 'Civic', year: 2019, vin: 'GFEDCBA0987654321' },
-];
+// All mock data has been removed to use real DB data.
+const vehicles: { make: string; model: string; year: number; vin: string; }[] = [];
+const serviceHistory: { vehicle: string; service: string; date: string; cost: number; }[] = [];
+const reminders: { title: string; date: string; details: string; }[] = [];
 
-const serviceHistory: { vehicle: string; service: string; date: string; cost: number; }[] = [
-    { vehicle: 'Toyota Camry 2021', service: 'Oil Change', date: '2023-10-26', cost: 50.00 },
-    { vehicle: 'Honda Civic 2019', service: 'Brake Repair', date: '2023-09-15', cost: 250.00 },
-    { vehicle: 'Toyota Camry 2021', service: 'Engine Diagnostic', date: '2023-11-05', cost: 100.00 },
-];
 const TND_TO_EUR_RATE = 0.3; // Approximate conversion rate
-
-const reminders: { title: string; date: string; details: string; }[] = [
-    { title: 'Oil Change due', date: '2024-08-15', details: 'Your Toyota Camry is due for an oil change.'}
-];
 
 export function DashboardClient() {
   const { t } = useTranslation();
 
-  if (vehicles.length === 0) {
+  // The component now checks if there's any data at all.
+  // If not, it shows a welcoming empty state.
+  if (vehicles.length === 0 && serviceHistory.length === 0 && reminders.length === 0) {
     return (
       <main className="flex flex-1 flex-col items-center justify-center gap-4 p-4 md:gap-8 md:p-8 text-center">
         <Card className="w-full max-w-lg">
@@ -47,7 +40,10 @@ export function DashboardClient() {
             </CardHeader>
             <CardContent>
                 <Button size="lg" asChild>
-                    <Link href="/dashboard/appointment">{t('book_appointment_cta')}</Link>
+                    <Link href="/dashboard/appointment">
+                        <CalendarPlus className="mr-2 h-5 w-5" />
+                        {t('book_appointment_cta')}
+                    </Link>
                 </Button>
             </CardContent>
         </Card>
@@ -55,6 +51,7 @@ export function DashboardClient() {
     )
   }
 
+  // This part will render when the user has actual data.
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">

@@ -19,12 +19,13 @@ import {
 } from "@/components/ui/table";
 import { useTranslation } from "@/hooks/use-translation";
 import { HistoryPageSkeleton } from '@/components/HistoryPageSkeleton';
+import { History } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
-const serviceHistory = [
-    { vehicle: 'Toyota Camry 2021', service: 'Oil Change', date: '2023-10-26', cost: 50.00 },
-    { vehicle: 'Honda Civic 2019', service: 'Brake Repair', date: '2023-09-15', cost: 250.00 },
-    { vehicle: 'Toyota Camry 2021', service: 'Engine Diagnostic', date: '2023-11-05', cost: 100.00 },
-];
+// Mock data has been removed to prepare for database integration.
+// In a real app, this data would be fetched based on the logged-in user.
+const serviceHistory: { vehicle: string; service: string; date: string; cost: number; }[] = [];
 
 const TND_TO_EUR_RATE = 0.3; // Approximate conversion rate
 
@@ -33,6 +34,8 @@ export default function HistoryPage() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        // In a real app, you would fetch user-specific data here.
+        // For now, we simulate loading.
         const timer = setTimeout(() => setIsLoading(false), 1000);
         return () => clearTimeout(timer);
     }, []);
@@ -71,7 +74,14 @@ export default function HistoryPage() {
                             </TableBody>
                         </Table>
                     ) : (
-                        <p>{t('history_page_no_history')}</p>
+                        <div className="text-center py-16">
+                            <History className="mx-auto h-12 w-12 text-muted-foreground" />
+                            <h3 className="mt-4 text-lg font-semibold">{t('history_page_no_history')}</h3>
+                            <p className="mt-2 text-sm text-muted-foreground">Your completed services will appear here.</p>
+                            <Button className="mt-4" asChild>
+                                <Link href="/dashboard/appointment">{t('book_appointment_cta')}</Link>
+                            </Button>
+                        </div>
                     )}
                 </CardContent>
             </Card>

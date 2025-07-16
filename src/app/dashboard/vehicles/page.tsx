@@ -11,18 +11,19 @@ import {
 } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
 import { VehiclesPageSkeleton } from '@/components/VehiclesPageSkeleton';
+import { Car, PlusCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-// Mock data, in a real app this would come from a database
-const vehicles = [
-    { make: 'Toyota', model: 'Camry', year: 2021, vin: '1234567890ABCDEFG' },
-    { make: 'Honda', model: 'Civic', year: 2019, vin: 'GFEDCBA0987654321' },
-];
+// Mock data has been removed to prepare for database integration.
+// In a real app, this data would be fetched based on the logged-in user.
+const vehicles: { make: string; model: string; year: number; vin: string; }[] = [];
 
 export default function VehiclesPage() {
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        // In a real app, you would fetch user-specific data here.
         const timer = setTimeout(() => setIsLoading(false), 1000);
         return () => clearTimeout(timer);
     }, []);
@@ -51,7 +52,15 @@ export default function VehiclesPage() {
                             ))}
                         </div>
                     ) : (
-                        <p>{t('vehicles_page_no_vehicles')}</p>
+                       <div className="text-center py-16">
+                            <Car className="mx-auto h-12 w-12 text-muted-foreground" />
+                            <h3 className="mt-4 text-lg font-semibold">{t('vehicles_page_no_vehicles')}</h3>
+                            <p className="mt-2 text-sm text-muted-foreground">Add your vehicle to easily book future appointments.</p>
+                            <Button className="mt-4">
+                                <PlusCircle className="mr-2 h-4 w-4" />
+                                {t('add_vehicle_button')}
+                            </Button>
+                        </div>
                     )}
                 </CardContent>
             </Card>
