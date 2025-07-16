@@ -26,9 +26,12 @@ const ProfileFormSchema = z.object({
   email: z.string().email(),
 });
 
-// Mock user data has been removed.
-// In a real app, this would be fetched and pre-filled.
-const initialEmail = ""; // Example: could be fetched from user session
+// Mock user data to simulate a logged-in user.
+// In a real app, this would come from a context or session.
+const mockUser = {
+  name: "Karim Ben Ahmed",
+  email: "karim@example.com",
+};
 
 export default function ProfilePage() {
     const { t } = useTranslation();
@@ -37,24 +40,26 @@ export default function ProfilePage() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        // In a real app, fetch user data here and then call form.reset()
-        const timer = setTimeout(() => setIsLoading(false), 1000);
-        return () => clearTimeout(timer);
-    }, []);
-
     const form = useForm<z.infer<typeof ProfileFormSchema>>({
         resolver: zodResolver(ProfileFormSchema),
         defaultValues: {
-            name: "", // Default to empty
-            email: "", // Default to empty
+            name: "", 
+            email: "",
         },
     });
+
+    useEffect(() => {
+        // Simulate fetching user data and then populating the form.
+        setTimeout(() => {
+            form.reset(mockUser);
+            setIsLoading(false);
+        }, 1000);
+    }, [form]);
 
     const watchedName = form.watch("name");
     
     const getAvatarFallback = useCallback((name: string | undefined): string => {
-        if (!name) return "U"; // Default for 'User'
+        if (!name) return "U";
         const nameParts = name.trim().split(" ").filter(Boolean);
 
         if (nameParts.length > 1) {
@@ -91,7 +96,7 @@ export default function ProfilePage() {
 
     const onSubmit = useCallback((data: z.infer<typeof ProfileFormSchema>) => {
         console.log(data);
-        if (data.email !== initialEmail) {
+        if (data.email !== mockUser.email) {
             toast({
                 title: t('email_change_confirmation_title'),
                 description: t('email_change_confirmation_desc'),
