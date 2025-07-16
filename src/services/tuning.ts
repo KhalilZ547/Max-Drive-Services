@@ -178,6 +178,10 @@ export async function getTuningRequestStatusCounts(): Promise<TuningRequestStatu
         };
     } catch (error) {
         console.error("Failed to fetch tuning request status counts:", error);
-        throw new Error("Could not fetch tuning request status counts.");
+        return {
+            Pending: 0,
+            'Awaiting Payment': 0,
+            Completed: 0,
+        };
     }
 }
