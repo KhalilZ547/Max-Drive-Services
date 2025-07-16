@@ -16,6 +16,7 @@ import { useTranslation } from '@/hooks/use-translation';
 import type { Language } from '@/lib/translations';
 import { useState, useMemo } from 'react';
 import { Logo } from './Logo';
+import { cn } from '@/lib/utils';
 
 export function Header() {
   const { t } = useTranslation();
@@ -41,14 +42,25 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-primary",
+                link.href === '/ecu-tuning'
+                  ? 'text-destructive'
+                  : 'text-muted-foreground'
+              )}
             >
               {link.label}
             </Link>
           ))}
         </nav>
         <div className="hidden md:flex items-center gap-2">
-          <Select value={language} onValueChange={(value) => setLanguage(value as Language)}>
+          <Button variant="ghost" asChild>
+            <Link href="/login">{t('nav_login')}</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/signup">{t('nav_signup')}</Link>
+          </Button>
+           <Select value={language} onValueChange={(value) => setLanguage(value as Language)}>
             <SelectTrigger className="w-28 text-sm">
               <SelectValue placeholder="Language" />
             </SelectTrigger>
@@ -58,12 +70,6 @@ export function Header() {
               <SelectItem value="ar">العربية</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="ghost" asChild>
-            <Link href="/login">{t('nav_login')}</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/signup">{t('nav_signup')}</Link>
-          </Button>
         </div>
         <div className="md:hidden">
           <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -78,7 +84,12 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-lg font-medium text-muted-foreground hover:text-primary"
+                className={cn(
+                  "text-lg font-medium hover:text-primary",
+                  link.href === '/ecu-tuning'
+                    ? 'text-destructive'
+                    : 'text-muted-foreground'
+                )}
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.label}
