@@ -117,9 +117,10 @@ export async function getClientsPerMonth(): Promise<MonthlyClient[]> {
 export async function getTotalClientsCount(): Promise<number> {
     try {
         const [rows] = await db.execute("SELECT COUNT(id) as total FROM clients");
-        return (rows as any)[0].total;
+        const total = (rows as any)[0]?.total;
+        return total ? Number(total) : 0;
     } catch (error) {
         console.error("Failed to fetch total clients count:", error);
-        throw new Error("Could not fetch total clients count.");
+        return 0; // Return 0 instead of throwing an error
     }
 }
