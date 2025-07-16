@@ -51,7 +51,7 @@ export function AddVehicleDialog({ isOpen, onOpenChange, onAddVehicle }: AddVehi
     defaultValues: {
       make: "",
       model: "",
-      year: undefined,
+      year: '' as any,
       vin: "",
     },
   });
