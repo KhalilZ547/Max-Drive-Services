@@ -13,8 +13,8 @@ export async function getClients(): Promise<Client[]> {
     return rows as Client[];
   } catch (error) {
     console.error("Failed to fetch clients:", error);
-    // In a real app, you might want to throw a more specific error or handle it differently.
-    throw new Error("Could not fetch clients. Please check database connection and table existence.");
+    // Return an empty array on error to prevent the page from crashing.
+    return [];
   }
 }
 
@@ -120,6 +120,6 @@ export async function getTotalClientsCount(): Promise<number> {
         return (rows as any)[0].total;
     } catch (error) {
         console.error("Failed to fetch total clients count:", error);
-        return 0;
+        throw new Error("Could not fetch total clients count.");
     }
 }
