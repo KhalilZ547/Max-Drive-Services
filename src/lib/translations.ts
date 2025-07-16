@@ -21,12 +21,16 @@ export const translations = {
     services_title: "Our Services",
     service_oil_change_title: "Oil Change",
     service_oil_change_desc: "Keep your engine healthy with our quick and reliable oil change service.",
+    service_oil_change_detail: "Regular oil changes are vital to the health of your vehicle. At Max-Drive-Services, we use only high-quality synthetic and conventional oils that meet or exceed your manufacturer's specifications. Our service includes a full oil and filter change, a check of all essential fluids, and a multi-point inspection to ensure your car is in top condition. This preventative maintenance helps improve performance, fuel economy, and extends the life of your engine.",
     service_brake_repair_title: "Brake Repair",
     service_brake_repair_desc: "Expert brake inspections and repairs for optimal stopping power.",
+    service_brake_repair_detail: "Your safety is our top priority. Our comprehensive brake service includes a thorough inspection of brake pads, rotors, calipers, and brake fluid. We use state-of-the-art equipment to diagnose any issues and provide high-quality replacement parts. Whether you need a simple pad replacement or a full brake system overhaul, our certified technicians will ensure your vehicle has the reliable stopping power it needs.",
     service_engine_diagnostic_title: "Engine Diagnostics",
     service_engine_diagnostic_desc: "Advanced diagnostics to identify and fix any engine issues.",
+    service_engine_diagnostic_detail: "Is your check engine light on? Don't ignore it. Our technicians use the latest diagnostic tools to accurately read trouble codes and pinpoint the exact cause of the issue. We handle everything from simple sensor replacements to complex engine repairs. We'll provide a clear explanation of the problem and a transparent quote before any work begins, getting you back on the road with confidence.",
     service_ecu_solutions_title: "ECU Solutions",
     service_ecu_solutions_desc: "Custom ECU tuning and remapping for enhanced performance and fuel efficiency.",
+    service_ecu_solutions_detail: "Unlock your vehicle's hidden potential with our professional ECU tuning services. We specialize in performance remapping (Stage 1 & 2), DPF/EGR/AdBlue solutions, and trouble code removal for modified vehicles. Our solutions are developed in-house to provide safe, reliable gains in horsepower, torque, and fuel efficiency. Contact us to learn what we can do for your specific vehicle.",
     service_other_title: "Other",
 
     // ECU Solutions Section
@@ -103,7 +107,7 @@ export const translations = {
     logout: "Logout",
     welcome_title: "Welcome to Max-Drive-Services!",
     welcome_subtitle: "It looks like you don't have any vehicles or services registered yet. Let's get you started by booking your first appointment.",
-    book_appointment_cta: "Book an Appointment",
+    book_appointment_cta: "Prendre rendez-vous",
     appointment_page_title: "Book an Appointment",
     appointment_page_subtitle: "Fill out the form below to schedule your service.",
     service_label: "Service",
@@ -141,6 +145,7 @@ export const translations = {
     other_service_error: "Please specify your service (min 3 chars).",
     email_change_confirmation_title: "Email Change Pending",
     email_change_confirmation_desc: "A confirmation link has been sent to your new email address. Please verify to update your email.",
+    back_to_services: "Back to Services",
 
     // Donation Section
     donation_title: "Support Our Mission",
@@ -200,12 +205,16 @@ export const translations = {
     services_title: "Nos Services",
     service_oil_change_title: "Vidange d'huile",
     service_oil_change_desc: "Gardez votre moteur en bonne santé avec notre service de vidange rapide et fiable.",
+    service_oil_change_detail: "Les vidanges d'huile régulières sont essentielles à la santé de votre véhicule. Chez Max-Drive-Services, nous n'utilisons que des huiles synthétiques et conventionnelles de haute qualité qui respectent ou dépassent les spécifications de votre constructeur. Notre service comprend une vidange complète de l'huile et du filtre, une vérification de tous les fluides essentiels et une inspection en plusieurs points pour garantir que votre voiture est en parfait état. Cet entretien préventif aide à améliorer les performances, l'économie de carburant et à prolonger la durée de vie de votre moteur.",
     service_brake_repair_title: "Réparation de Freins",
     service_brake_repair_desc: "Inspections et réparations expertes des freins pour une puissance de freinage optimale.",
+    service_brake_repair_detail: "Votre sécurité est notre priorité absolue. Notre service de freinage complet comprend une inspection approfondie des plaquettes, des disques, des étriers et du liquide de frein. Nous utilisons des équipements de pointe pour diagnostiquer tout problème et fournir des pièces de rechange de haute qualité. Que vous ayez besoin d'un simple remplacement de plaquettes ou d'une révision complète du système de freinage, nos techniciens certifiés veilleront à ce que votre véhicule dispose de la puissance de freinage fiable dont il a besoin.",
     service_engine_diagnostic_title: "Diagnostic Moteur",
     service_engine_diagnostic_desc: "Diagnostics avancés pour identifier et résoudre tout problème moteur.",
+    service_engine_diagnostic_detail: "Votre voyant moteur est-il allumé? Ne l'ignorez pas. Nos techniciens utilisent les derniers outils de diagnostic pour lire avec précision les codes d'anomalie et identifier la cause exacte du problème. Nous nous occupons de tout, du simple remplacement de capteurs aux réparations complexes du moteur. Nous vous fournirons une explication claire du problème et un devis transparent avant le début des travaux, pour que vous puissiez reprendre la route en toute confiance.",
     service_ecu_solutions_title: "Solutions ECU",
     service_ecu_solutions_desc: "Réglage et reprogrammation d'ECU sur mesure pour des performances et une efficacité énergétique améliorées.",
+    service_ecu_solutions_detail: "Libérez le potentiel caché de votre véhicule avec nos services professionnels de réglage d'ECU. Nous sommes spécialisés dans la reprogrammation des performances (Stage 1 & 2), les solutions DPF/EGR/AdBlue et la suppression des codes d'anomalie pour les véhicules modifiés. Nos solutions sont développées en interne pour fournir des gains sûrs et fiables en puissance, couple et efficacité énergétique. Contactez-nous pour savoir ce que nous pouvons faire pour votre véhicule spécifique.",
     service_other_title: "Autre",
 
     // ECU Solutions Section
@@ -319,6 +328,7 @@ export const translations = {
     other_service_error: "Veuillez préciser votre service (3 car. min).",
     email_change_confirmation_title: "Changement d'e-mail en attente",
     email_change_confirmation_desc: "Un lien de confirmation a été envoyé à votre nouvelle adresse e-mail. Veuillez vérifier pour mettre à jour votre e-mail.",
+    back_to_services: "Retour aux services",
 
     // Donation Section
     donation_title: "Soutenez Notre Mission",
@@ -378,12 +388,16 @@ export const translations = {
     services_title: "خدماتنا",
     service_oil_change_title: "تغيير الزيت",
     service_oil_change_desc: "حافظ على صحة محركك من خلال خدمة تغيير الزيت السريعة والموثوقة.",
+    service_oil_change_detail: "يعد تغيير الزيت بانتظام أمرًا حيويًا لصحة سيارتك. في Max-Drive-Services، نستخدم فقط الزيوت الاصطناعية والتقليدية عالية الجودة التي تلبي أو تتجاوز مواصفات الشركة المصنعة. تشمل خدمتنا تغييرًا كاملاً للزيت والفلتر، وفحصًا لجميع السوائل الأساسية، وفحصًا متعدد النقاط للتأكد من أن سيارتك في أفضل حالة. تساعد هذه الصيانة الوقائية على تحسين الأداء والاقتصاد في استهلاك الوقود وإطالة عمر المحرك.",
     service_brake_repair_title: "إصلاح الفرامل",
     service_brake_repair_desc: "فحص وإصلاحات متخصصة للفرامل لتحقيق قوة توقف مثالية.",
+    service_brake_repair_detail: "سلامتك هي أولويتنا القصوى. تشمل خدمة الفرامل الشاملة لدينا فحصًا شاملاً لوسادات الفرامل والدوارات والفرجار وسائل الفرامل. نستخدم أحدث المعدات لتشخيص أي مشكلات وتوفير قطع غيار عالية الجودة. سواء كنت بحاجة إلى استبدال بسيط للوسادة أو إصلاح شامل لنظام الفرامل، سيضمن الفنيون المعتمدون لدينا أن سيارتك تتمتع بقوة التوقف الموثوقة التي تحتاجها.",
     service_engine_diagnostic_title: "تشخيص المحرك",
     service_engine_diagnostic_desc: "تشخيصات متقدمة لتحديد وإصلاح أي مشاكل في المحرك.",
+    service_engine_diagnostic_detail: "هل ضوء فحص المحرك مضاء؟ لا تتجاهله. يستخدم الفنيون لدينا أحدث أدوات التشخيص لقراءة رموز الأعطال بدقة وتحديد السبب الدقيق للمشكلة. نحن نتعامل مع كل شيء بدءًا من استبدال المستشعرات البسيطة إلى إصلاحات المحرك المعقدة. سنقدم شرحًا واضحًا للمشكلة وعرض أسعار شفاف قبل بدء أي عمل، مما يجعلك تعود إلى الطريق بثقة.",
     service_ecu_solutions_title: "حلول وحدة التحكم الإلكترونية",
     service_ecu_solutions_desc: "ضبط وإعادة برمجة مخصصة لوحدة التحكم الإلكترونية (ECU) لتحسين الأداء وكفاءة استهلاك الوقود.",
+    service_ecu_solutions_detail: "أطلق العنان لإمكانيات سيارتك الخفية من خلال خدمات ضبط وحدة التحكم الإلكترونية الاحترافية لدينا. نحن متخصصون في إعادة برمجة الأداء (المرحلة 1 و 2)، وحلول DPF/EGR/AdBlue، وإزالة رموز الأعطال للمركبات المعدلة. تم تطوير حلولنا داخليًا لتوفير مكاسب آمنة وموثوقة في القوة الحصانية وعزم الدوران وكفاءة استهلاك الوقود. اتصل بنا لمعرفة ما يمكننا القيام به لسيارتك المحددة.",
     service_other_title: "أخرى",
 
     // ECU Solutions Section
@@ -497,6 +511,7 @@ export const translations = {
     other_service_error: "يرجى تحديد الخدمة (3 أحرف على الأقل).",
     email_change_confirmation_title: "تغيير البريد الإلكتروني معلق",
     email_change_confirmation_desc: "تم إرسال رابط تأكيد إلى عنوان بريدك الإلكتروني الجديد. يرجى التحقق لتحديث بريدك الإلكتروني.",
+    back_to_services: "العودة إلى الخدمات",
 
     // Donation Section
     donation_title: "ادعم مهمتنا",
