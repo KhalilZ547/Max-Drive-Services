@@ -120,6 +120,6 @@ export async function getTotalClientsCount(): Promise<number> {
         return (rows as any)[0].total;
     } catch (error) {
         console.error("Failed to fetch total clients count:", error);
-        throw new Error("Could not fetch total clients count.");
+        return 0;
     }
 }
