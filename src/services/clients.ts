@@ -110,7 +110,7 @@ export async function getClientsPerMonth(): Promise<MonthlyClient[]> {
         return rows as MonthlyClient[];
     } catch (error) {
         console.error("Failed to fetch monthly client data:", error);
-        throw new Error("Could not fetch monthly client data.");
+        return [];
     }
 }
 
