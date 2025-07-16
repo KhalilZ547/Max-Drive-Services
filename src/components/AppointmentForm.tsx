@@ -21,13 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -51,8 +45,8 @@ export function AppointmentForm() {
     const initialService = searchParams.get('service');
 
     const AppointmentFormSchema = useMemo(() => z.object({
-        serviceId: z.string({
-            required_error: "Please select a service.",
+        serviceIds: z.array(z.string()).refine((value) => value.some((item) => item), {
+            message: "You have to select at least one service.",
         }),
         vehicle: z.string({ required_error: "Please enter your vehicle details." }).min(3, { message: "Please enter at least 3 characters." }),
         appointmentDate: z.date({
@@ -61,7 +55,7 @@ export function AppointmentForm() {
         notes: z.string().optional(),
         otherService: z.string().optional(),
         }).refine((data) => {
-            if (data.serviceId === 'other') {
+            if (data.serviceIds.includes('other')) {
                 return data.otherService && data.otherService.trim().length > 2;
             }
             return true;
@@ -74,7 +68,7 @@ export function AppointmentForm() {
     const form = useForm<z.infer<typeof AppointmentFormSchema>>({
         resolver: zodResolver(AppointmentFormSchema),
         defaultValues: {
-            serviceId: initialService || undefined,
+            serviceIds: initialService ? [initialService] : [],
             vehicle: "",
             notes: "",
             otherService: "",
@@ -83,17 +77,18 @@ export function AppointmentForm() {
 
     useEffect(() => {
         if (initialService) {
-            form.setValue('serviceId', initialService);
+            form.setValue('serviceIds', [initialService]);
         }
     }, [initialService, form]);
 
 
-    const selectedService = form.watch("serviceId");
+    const selectedServices = form.watch("serviceIds");
 
     async function onSubmit(data: z.infer<typeof AppointmentFormSchema>) {
-        const serviceName = data.serviceId === 'other' 
-            ? data.otherService
-            : t(services.find(s => s.id === data.serviceId)?.key as any);
+        const serviceNames = data.serviceIds.map(id => {
+            if (id === 'other') return data.otherService;
+            return t(services.find(s => s.id === id)?.key as any);
+        }).join(', ');
         
         const formattedDate = format(data.appointmentDate, "PPP");
         const adminEmail = 'contact@maxdrive.com';
@@ -103,12 +98,12 @@ export function AppointmentForm() {
         // Email to Admin
         await sendEmail({
             to: adminEmail,
-            subject: `New Appointment Booking: ${serviceName} for ${data.vehicle}`,
+            subject: `New Appointment Booking: ${serviceNames} for ${data.vehicle}`,
             html: `
                 <h1>New Appointment Request</h1>
                 <p>A new appointment has been booked through the website.</p>
                 <ul>
-                    <li><strong>Service:</strong> ${serviceName}</li>
+                    <li><strong>Service(s):</strong> ${serviceNames}</li>
                     <li><strong>Vehicle:</strong> ${data.vehicle}</li>
                     <li><strong>Requested Date:</strong> ${formattedDate}</li>
                     <li><strong>Notes:</strong> ${data.notes || 'None'}</li>
@@ -124,7 +119,7 @@ export function AppointmentForm() {
                 <h1>Appointment Confirmed!</h1>
                 <p>Thank you for booking with Max-Drive-Services. Your appointment details are below:</p>
                 <ul>
-                    <li><strong>Service:</strong> ${serviceName}</li>
+                    <li><strong>Service(s):</strong> ${serviceNames}</li>
                     <li><strong>Vehicle:</strong> ${data.vehicle}</li>
                     <li><strong>Date:</strong> ${formattedDate}</li>
                 </ul>
@@ -135,9 +130,9 @@ export function AppointmentForm() {
 
         toast({
             title: t('appointment_booked_title'),
-            description: `${t('appointment_booked_desc')} ${serviceName} ${t('on')} ${formattedDate}.`,
+            description: `${t('appointment_booked_desc')} ${serviceNames} ${t('on')} ${formattedDate}.`,
         });
-        form.reset();
+        form.reset({ serviceIds: [] });
     }
     
     return (
@@ -151,30 +146,56 @@ export function AppointmentForm() {
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <FormField
                             control={form.control}
-                            name="serviceId"
-                            render={({ field }) => (
+                            name="serviceIds"
+                            render={() => (
                                 <FormItem>
-                                <FormLabel>{t('service_label')}</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                                    <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder={t('select_service_placeholder')} />
-                                    </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                    {services.map(service => (
-                                        <SelectItem key={service.id} value={service.id}>
-                                            {t(service.key as any)}
-                                        </SelectItem>
-                                    ))}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
+                                    <div className="mb-4">
+                                        <FormLabel>{t('service_label')}</FormLabel>
+                                        <FormDescription>
+                                            Select all services you require.
+                                        </FormDescription>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {services.map((item) => (
+                                            <FormField
+                                            key={item.id}
+                                            control={form.control}
+                                            name="serviceIds"
+                                            render={({ field }) => {
+                                                return (
+                                                <FormItem
+                                                    key={item.id}
+                                                    className="flex flex-row items-start space-x-3 space-y-0"
+                                                >
+                                                    <FormControl>
+                                                    <Checkbox
+                                                        checked={field.value?.includes(item.id)}
+                                                        onCheckedChange={(checked) => {
+                                                        return checked
+                                                            ? field.onChange([...(field.value || []), item.id])
+                                                            : field.onChange(
+                                                                field.value?.filter(
+                                                                (value) => value !== item.id
+                                                                )
+                                                            )
+                                                        }}
+                                                    />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">
+                                                        {t(item.key as any)}
+                                                    </FormLabel>
+                                                </FormItem>
+                                                )
+                                            }}
+                                            />
+                                        ))}
+                                    </div>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
 
-                        {selectedService === 'other' && (
+                        {selectedServices?.includes('other') && (
                             <FormField
                                 control={form.control}
                                 name="otherService"
