@@ -63,12 +63,33 @@ export function EcuTuningForm() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const searchParams = useSearchParams();
     const initialService = searchParams.get('service');
-    const [dynamicPlaceholder, setDynamicPlaceholder] = useState('e.g., Hardcut Limiter');
+    
+    // State for dynamic placeholders
+    const [otherServicePlaceholder, setOtherServicePlaceholder] = useState('e.g., Hardcut Limiter');
+    const [otherMakePlaceholder, setOtherMakePlaceholder] = useState('e.g., Lancia');
+    const [otherModelPlaceholder, setOtherModelPlaceholder] = useState('e.g., Delta Integrale');
+    const [otherYearPlaceholder, setOtherYearPlaceholder] = useState('e.g., 1992');
+    const [otherEnginePlaceholder, setOtherEnginePlaceholder] = useState('e.g., 2.0L 16V Turbo');
+    const [radioSerialPlaceholder, setRadioSerialPlaceholder] = useState('e.g., VWZ1Z2A1234567');
 
     useEffect(() => {
-        const placeholders = ['e.g., Hardcut Limiter', 'e.g., Pop & Bang', 'e.g., Launch Control', 'e.g., VMAX Off'];
-        const randomIndex = Math.floor(Math.random() * placeholders.length);
-        setDynamicPlaceholder(placeholders[randomIndex]);
+        const otherServiceExamples = ['e.g., Hardcut Limiter', 'e.g., Pop & Bang', 'e.g., Launch Control', 'e.g., VMAX Off'];
+        setOtherServicePlaceholder(otherServiceExamples[Math.floor(Math.random() * otherServiceExamples.length)]);
+        
+        const otherMakeExamples = ['e.g., Lancia', 'e.g., Seat', 'e.g., Alfa Romeo'];
+        setOtherMakePlaceholder(otherMakeExamples[Math.floor(Math.random() * otherMakeExamples.length)]);
+        
+        const otherModelExamples = ['e.g., Delta Integrale', 'e.g., Leon Cupra', 'e.g., Giulia QV'];
+        setOtherModelPlaceholder(otherModelExamples[Math.floor(Math.random() * otherModelExamples.length)]);
+
+        const otherYearExamples = ['e.g., 1992', 'e.g., 2018', 'e.g., 2023'];
+        setOtherYearPlaceholder(otherYearExamples[Math.floor(Math.random() * otherYearExamples.length)]);
+
+        const otherEngineExamples = ['e.g., 2.0L 16V Turbo', 'e.g., 1.9 TDI PD130', 'e.g., 2.9L V6 Bi-Turbo'];
+        setOtherEnginePlaceholder(otherEngineExamples[Math.floor(Math.random() * otherEngineExamples.length)]);
+
+        const radioSerialExamples = ['e.g., VWZ1Z2A1234567', 'e.g., AUZ1Z3B1234567', 'e.g., BP8273A1234567'];
+        setRadioSerialPlaceholder(radioSerialExamples[Math.floor(Math.random() * radioSerialExamples.length)]);
     }, []);
 
     const EcuTuningFormSchema = useMemo(() => z.object({
@@ -319,7 +340,7 @@ export function EcuTuningForm() {
                                     <FormField control={form.control} name="otherVehicleMake" render={({ field }) => (
                                        <FormItem className="md:col-span-2">
                                            <FormLabel>Specify Make</FormLabel>
-                                           <FormControl><Input placeholder="e.g., Lancia" {...field} /></FormControl>
+                                           <FormControl><Input placeholder={otherMakePlaceholder} {...field} /></FormControl>
                                            <FormMessage />
                                        </FormItem>
                                    )}/>
@@ -337,7 +358,7 @@ export function EcuTuningForm() {
                                         <FormField control={form.control} name="otherVehicleModel" render={({ field }) => (
                                            <FormItem>
                                                <FormLabel>Specify Model</FormLabel>
-                                               <FormControl><Input placeholder="e.g., Delta Integrale" {...field} /></FormControl>
+                                               <FormControl><Input placeholder={otherModelPlaceholder} {...field} /></FormControl>
                                                <FormMessage />
                                            </FormItem>
                                        )}/>
@@ -353,7 +374,7 @@ export function EcuTuningForm() {
                                         <FormField control={form.control} name="otherVehicleYear" render={({ field }) => (
                                            <FormItem>
                                                <FormLabel>Specify Year</FormLabel>
-                                               <FormControl><Input placeholder="e.g., 1992" {...field} /></FormControl>
+                                               <FormControl><Input placeholder={otherYearPlaceholder} {...field} /></FormControl>
                                                <FormMessage />
                                            </FormItem>
                                        )}/>
@@ -369,7 +390,7 @@ export function EcuTuningForm() {
                                          <FormField control={form.control} name="otherVehicleEngine" render={({ field }) => (
                                             <FormItem className="md:col-span-2">
                                                 <FormLabel>Specify Engine</FormLabel>
-                                                <FormControl><Input placeholder="e.g., 2.0L 16V Turbo" {...field} /></FormControl>
+                                                <FormControl><Input placeholder={otherEnginePlaceholder} {...field} /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}/>
@@ -438,7 +459,7 @@ export function EcuTuningForm() {
                                     <FormItem>
                                         <FormLabel>{t('other_service_label')}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder={dynamicPlaceholder} {...field} />
+                                            <Input placeholder={otherServicePlaceholder} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -462,7 +483,7 @@ export function EcuTuningForm() {
                                         <FormItem>
                                             <FormLabel>Radio Serial Number</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="e.g., VWZ1Z2A1234567" {...field} />
+                                                <Input placeholder={radioSerialPlaceholder} {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -586,5 +607,7 @@ export function EcuTuningForm() {
         </Card>
     );
 }
+
+    
 
     
