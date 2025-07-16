@@ -47,6 +47,7 @@ const NavContent = memo(() => {
     </nav>
   );
 });
+NavContent.displayName = 'NavContent';
 
 export default function AdminLayout({
   children,
@@ -54,7 +55,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isAuthorizing, setIsAuthorizing] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -63,7 +64,7 @@ export default function AdminLayout({
       if (role !== 'admin') {
         router.push('/login');
       } else {
-        setIsAuthorized(true);
+        setIsAuthorizing(false);
       }
     }
   }, [router]);
@@ -83,7 +84,7 @@ export default function AdminLayout({
     });
   }, [toast]);
 
-  if (!isAuthorized) {
+  if (isAuthorizing) {
       return (
         <div className="flex flex-1 flex-col items-center justify-center gap-4 p-4 md:gap-8 md:p-8 min-h-screen">
             <LogoSpinner className="h-32 w-32" />

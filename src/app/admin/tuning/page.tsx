@@ -144,7 +144,7 @@ export default function TuningRequestsPage() {
                                                         Set Price & Send Quote
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onSelect={() => handleMarkAsDone(request)} disabled={request.status !== 'Awaiting Payment'}>
-                                                         <Button variant="ghost" className="w-full justify-start p-0 h-auto font-normal">Mark as Completed</Button>
+                                                        Mark as Completed
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>

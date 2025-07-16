@@ -155,7 +155,7 @@ export function EcuTuningForm() {
 
     const handleRemoveFile = () => {
         setFileName(null);
-        form.setValue("file", null as any); // a bit of a hack for react-hook-form
+        form.setValue("file", null as any, { shouldValidate: true });
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -200,7 +200,7 @@ export function EcuTuningForm() {
                 otherVehicleEngine: '',
                 serviceIds: [],
                 fileType: "flash",
-                file: null as any,
+                file: undefined,
                 notes: ''
             });
             handleRemoveFile();

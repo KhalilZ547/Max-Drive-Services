@@ -18,8 +18,8 @@ const TuningRequestSchema = z.object({
     date: z.string(),
     status: z.enum(['Pending', 'Awaiting Payment', 'Completed']),
     price: z.number().nullable(),
-    original_file_url: z.string().nullable(),
-    modified_file_url: z.string().nullable(),
+    original_file_url: z.string().url().nullable(),
+    modified_file_url: z.string().url().nullable(),
     notes: z.string().nullable(),
 });
 
@@ -116,11 +116,11 @@ export async function updateRequestStatus(requestId: number, status: TuningReque
 
         await db.execute(
             'UPDATE tuning_requests SET status = ?, price = ?, modified_file_url = ? WHERE id = ?',
-            [status, price, modifiedFileUrl, requestId]
+            [status, price ?? null, modifiedFileUrl, requestId]
         );
 
         // Send email notifications based on status change
-        if (status === 'Awaiting Payment') {
+        if (status === 'Awaiting Payment' && price) {
             await sendEmail({
                 to: request.email,
                 subject: `Your Quote for ${request.vehicle} Tuning`,

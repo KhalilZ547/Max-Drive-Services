@@ -12,7 +12,7 @@ export type Client = (typeof clientsData)[0];
 
 export const tuningRequestsData = [
     { 
-        id: 'req_1', 
+        id: 1, 
         name: 'Jane Doe', 
         email: 'jane.doe@example.com',
         vehicle: 'VW Golf 7 GTI 2019 2.0 TSI',
@@ -21,12 +21,12 @@ export const tuningRequestsData = [
         date: '2024-05-18T10:00:00Z', 
         status: 'Awaiting Payment' as const, 
         price: 250.00,
-        originalFileUrl: '#',
+        original_file_url: '#',
         modifiedFileUrl: null,
         notes: 'Looking for a Stage 1 tune for better daily driving.'
     },
     { 
-        id: 'req_2', 
+        id: 2, 
         name: 'Carlos Rey', 
         email: 'carlos.rey@example.com',
         vehicle: 'BMW 330d 2020 3.0L',
@@ -35,12 +35,12 @@ export const tuningRequestsData = [
         date: '2024-05-20T14:30:00Z', 
         status: 'Pending' as const, 
         price: null,
-        originalFileUrl: '#',
+        original_file_url: '#',
         modifiedFileUrl: null,
         notes: ''
     },
     { 
-        id: 'req_3', 
+        id: 3, 
         name: 'Frederic Dubois', 
         email: 'frederic.dubois@example.com',
         vehicle: 'Audi A3 2018 2.0 TDI',
@@ -49,7 +49,7 @@ export const tuningRequestsData = [
         date: '2024-05-21T11:00:00Z', 
         status: 'Completed' as const, 
         price: 150.00,
-        originalFileUrl: '#',
+        original_file_url: '#',
         modifiedFileUrl: '#',
         notes: 'Please remove P0401.'
     },
