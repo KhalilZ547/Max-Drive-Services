@@ -40,6 +40,13 @@ export function ContactSection() {
     });
     form.reset();
   }
+  
+  const address = t('contact_info_address');
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+  const phone = t('contact_info_phone');
+  const telLink = `tel:${phone.replace(/\s/g, '')}`;
+  const email = t('contact_info_email');
+  const mailtoLink = `mailto:${email}`;
 
   return (
     <section id="contact" className="py-20 bg-background">
@@ -106,7 +113,9 @@ export function ContactSection() {
               </div>
               <div>
                 <h3 className="font-semibold text-lg">Address</h3>
-                <p className="text-muted-foreground">{t('contact_info_address')}</p>
+                <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                  {address}
+                </a>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -115,7 +124,9 @@ export function ContactSection() {
               </div>
               <div>
                 <h3 className="font-semibold text-lg">Phone</h3>
-                <p className="text-muted-foreground">{t('contact_info_phone')}</p>
+                 <a href={telLink} className="text-muted-foreground hover:text-primary transition-colors">
+                  {phone}
+                </a>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -124,7 +135,9 @@ export function ContactSection() {
               </div>
               <div>
                 <h3 className="font-semibold text-lg">Email</h3>
-                <p className="text-muted-foreground">{t('contact_info_email')}</p>
+                 <a href={mailtoLink} className="text-muted-foreground hover:text-primary transition-colors">
+                  {email}
+                </a>
               </div>
             </div>
           </div>
