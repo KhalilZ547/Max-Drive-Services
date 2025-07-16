@@ -45,7 +45,7 @@ export function Header() {
               className={cn(
                 "text-sm font-medium transition-colors hover:text-primary",
                 link.href === '/ecu-tuning'
-                  ? 'text-destructive'
+                  ? 'text-primary font-semibold'
                   : 'text-muted-foreground'
               )}
             >
@@ -87,7 +87,7 @@ export function Header() {
                 className={cn(
                   "text-lg font-medium hover:text-primary",
                   link.href === '/ecu-tuning'
-                    ? 'text-destructive'
+                    ? 'text-primary font-semibold'
                     : 'text-muted-foreground'
                 )}
                 onClick={() => setIsMenuOpen(false)}
