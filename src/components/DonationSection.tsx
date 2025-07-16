@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useTranslation } from '@/hooks/use-translation';
@@ -12,6 +13,9 @@ export function DonationSection() {
   const { toast } = useToast();
 
   const iban = t('donation_bank_iban_value');
+  const paypalEmail = 'lili912009@live.com';
+  const donationUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=${encodeURIComponent(paypalEmail)}&item_name=Donation+to+Max-Drive-Services&currency_code=USD`;
+
 
   const handleCopy = () => {
     navigator.clipboard.writeText(iban);
@@ -43,7 +47,7 @@ export function DonationSection() {
                   <div className="space-y-4">
                       <p className="text-muted-foreground">{t('donation_paypal_desc')}</p>
                       <Button asChild size="lg" className="w-full max-w-xs mx-auto bg-[#00457C] hover:bg-[#003057]">
-                          <a href="https://www.paypal.com/donate" target="_blank" rel="noopener noreferrer">
+                          <a href={donationUrl} target="_blank" rel="noopener noreferrer">
                               <span>{t('donation_paypal_button')}</span>
                           </a>
                       </Button>

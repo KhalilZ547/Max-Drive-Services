@@ -26,8 +26,23 @@ const TuningRequestSchema = z.object({
 // We are now fetching from the DB, so the return type will match the schema
 export async function getRequests(): Promise<TuningRequest[]> {
   try {
-    const [rows] = await db.execute("SELECT id, name, email, vehicle, service, file_type as fileType, DATE_FORMAT(date, '%Y-%m-%d') as date, status, price, original_file_url as originalFileUrl, modified_file_url as modifiedFileUrl, notes FROM tuning_requests ORDER BY date DESC");
-    return rows as TuningRequest[];
+    const [rows] = await db.execute("SELECT id, name, email, vehicle, service, file_type as fileType, DATE_FORMAT(date, '%Y-%m-%d') as date, status, price, original_file_url, modified_file_url, notes FROM tuning_requests ORDER BY date DESC");
+    
+    // Map database result to camelCase fields if necessary
+    return (rows as any[]).map(row => ({
+        id: row.id,
+        name: row.name,
+        email: row.email,
+        vehicle: row.vehicle,
+        service: row.service,
+        fileType: row.fileType,
+        date: row.date,
+        status: row.status,
+        price: row.price,
+        original_file_url: row.original_file_url,
+        modifiedFileUrl: row.modified_file_url, // This field is now correctly named `modified_file_url` in the DB
+        notes: row.notes,
+    })) as TuningRequest[];
   } catch (error) {
     console.error("Failed to fetch tuning requests:", error);
     return [];
@@ -101,7 +116,7 @@ export async function createRequest(formData: FormData): Promise<{ success: bool
 export async function updateRequestStatus(requestId: number, status: TuningRequest['status'], price?: number): Promise<{ success: boolean; error?: string }> {
     try {
         // Fetch the request to get client email for notification
-        const [rows] = await db.execute('SELECT email, vehicle, service FROM tuning_requests WHERE id = ?', [requestId]);
+        const [rows] = await db.execute('SELECT email, name, vehicle, service FROM tuning_requests WHERE id = ?', [requestId]);
         const request = (rows as any[])[0];
 
         if (!request) {
@@ -121,10 +136,24 @@ export async function updateRequestStatus(requestId: number, status: TuningReque
 
         // Send email notifications based on status change
         if (status === 'Awaiting Payment' && price) {
+            const paypalEmail = 'lili912009@live.com';
+            const itemName = `ECU Tuning: ${request.service} for ${request.vehicle}`;
+            const paymentLink = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(paypalEmail)}&item_name=${encodeURIComponent(itemName)}&amount=${price.toFixed(2)}&currency_code=USD&no_shipping=1`;
+
             await sendEmail({
                 to: request.email,
                 subject: `Your Quote for ${request.vehicle} Tuning`,
-                html: `<h1>Your Quote is Ready</h1><p>The price for the service "${request.service}" on your ${request.vehicle} is <strong>$${price?.toFixed(2)}</strong>. Please follow the instructions sent in a separate email to complete payment.</p>`
+                html: `
+                    <h1>Hello ${request.name},</h1>
+                    <p>Your quote for the service "<strong>${request.service}</strong>" on your <strong>${request.vehicle}</strong> is ready.</p>
+                    <p>The total price is <strong>$${price.toFixed(2)} USD</strong>.</p>
+                    <p>To proceed, please complete the payment using the secure link below:</p>
+                    <p style="text-align:center;">
+                        <a href="${paymentLink}" target="_blank" style="display:inline-block;padding:12px 24px;background-color:#0070ba;color:white;text-decoration:none;border-radius:5px;font-size:16px;">Pay Now with PayPal</a>
+                    </p>
+                    <p>Once payment is confirmed, we will begin working on your file and notify you upon completion.</p>
+                    <p>Thank you,<br/>Max-Drive-Services</p>
+                `
             });
         } else if (status === 'Completed') {
             await sendEmail({
