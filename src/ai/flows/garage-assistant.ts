@@ -2,8 +2,6 @@
 'use server';
 /**
  * @fileOverview A smart garage assistant that can answer questions and help users take action.
- *
- * - garageAssistantFlow - The main Genkit flow for the assistant.
  */
 
 import {ai} from '@/ai/genkit';
@@ -57,21 +55,14 @@ const assistantPrompt = ai.definePrompt({
     `,
 });
 
-export const garageAssistantFlow = ai.defineFlow(
-  {
-    name: 'garageAssistantFlow',
-    inputSchema: z.object({
-        history: z.array(MessageData),
-        message: z.string(),
-    }),
-    outputSchema: z.custom<Part>(),
-  },
-  async (input) => {
-    const history = input.history;
-    const response = await assistantPrompt({
-      history: history,
-      prompt: input.message,
-    });
-    return response.output!.message.content[0];
-  }
-);
+export async function invokeGarageAssistant(
+  prevState: Part | null,
+  { message, history }: { message: string; history: MessageData[] }
+): Promise<Part> {
+  const response = await assistantPrompt({
+    history: history,
+    prompt: message,
+  });
+
+  return response.output!.message.content[0];
+}

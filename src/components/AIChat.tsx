@@ -15,9 +15,8 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageSquare, Bot, User, CornerDownLeft, Loader2, CalendarCheck } from 'lucide-react';
 import { useTranslation } from '@/hooks/use-translation';
-import { invokeGarageAssistant } from '@/app/actions';
-import { MessageData } from 'genkit';
-
+import { invokeGarageAssistant } from '@/ai/flows/garage-assistant';
+import { MessageData, Part } from 'genkit';
 
 type ToolResponse = {
   name: 'bookAppointment';
@@ -42,7 +41,7 @@ export function AIChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const { t } = useTranslation();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -53,12 +52,13 @@ export function AIChat() {
   }, [messages]);
 
   const handleSend = useCallback(async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isPending) return;
 
     const userMessage: Message = { type: 'text', sender: 'user', text: input };
     setMessages((prev) => [...prev, userMessage]);
-    
-    // Convert our message history to the format Genkit expects
+    setInput('');
+    setIsPending(true);
+
     const history: MessageData[] = messages.map(m => {
         if (m.type === 'text') {
             return {
@@ -66,46 +66,39 @@ export function AIChat() {
                 content: [{ text: m.text }]
             };
         }
-        // Simplified history for tool calls
         return {
             role: 'model',
             content: [{ text: `Tool call: ${m.response.name}`}]
         }
     }).filter(Boolean) as MessageData[];
 
-    setInput('');
-    setIsLoading(true);
-
     try {
-      const result = await invokeGarageAssistant({ message: input, history });
+      const responsePart = await invokeGarageAssistant(null, { message: input, history });
 
-      if (result.text) {
-          const botMessage: Message = { type: 'text', sender: 'bot', text: result.text };
+      if (responsePart) {
+        if (responsePart.text) {
+          const botMessage: Message = { type: 'text', sender: 'bot', text: responsePart.text };
           setMessages((prev) => [...prev, botMessage]);
-      } else if (result.toolRequest) {
-          const toolResponse: Message = { 
-              type: 'tool', 
-              sender: 'bot', 
-              response: {
-                name: result.toolRequest.name as ToolResponse['name'],
-                output: result.toolRequest.input as ToolResponse['output'],
-              }
+        } else if (responsePart.toolRequest) {
+          const toolResponse: Message = {
+            type: 'tool',
+            sender: 'bot',
+            response: {
+              name: responsePart.toolRequest.name as ToolResponse['name'],
+              output: responsePart.toolRequest.input as ToolResponse['output'],
+            }
           };
           setMessages((prev) => [...prev, toolResponse]);
+        }
       }
-
     } catch (error) {
-      console.error("Chat error:", error);
-      const errorMessage: Message = {
-        type: 'text',
-        sender: 'bot',
-        text: 'Sorry, I encountered an error. Please try again.',
-      };
+      console.error("Failed to invoke assistant:", error);
+      const errorMessage: Message = { type: 'text', sender: 'bot', text: "Sorry, I'm having a little trouble right now. Please try again later." };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
-      setIsLoading(false);
+      setIsPending(false);
     }
-  }, [input, messages]);
+  }, [input, messages, isPending]);
 
   const handleOpenChange = useCallback((open: boolean) => {
     setIsOpen(open);
@@ -175,7 +168,7 @@ export function AIChat() {
                   )}
                 </div>
               ))}
-              {isLoading && (
+              {isPending && (
                  <div className="flex items-start gap-3">
                     <AvatarIcon><Bot className="h-6 w-6 text-primary" /></AvatarIcon>
                     <div className="rounded-lg px-4 py-2 bg-muted flex items-center">
@@ -198,7 +191,7 @@ export function AIChat() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={t('ai_chat_placeholder')}
                 className="flex-1"
-                disabled={isLoading}
+                disabled={isPending}
                 onKeyDown={(e) => {
                     if(e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
@@ -206,7 +199,7 @@ export function AIChat() {
                     }
                 }}
               />
-              <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
+              <Button type="submit" size="icon" disabled={isPending || !input.trim()}>
                 <CornerDownLeft className="h-4 w-4" />
               </Button>
             </form>
