@@ -10,6 +10,8 @@ import { Bot, Send, X, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { usePathname } from 'next/navigation';
+import { askGarageExpert } from "@/app/actions";
+import { toast } from "@/hooks/use-toast";
 
 type Message = {
   id: string;
@@ -58,7 +60,7 @@ export function AIChat() {
     }
   }, [messages, isOpen, isTyping]);
 
-  const sendMessage = (messageText: string) => {
+  const sendMessage = async (messageText: string) => {
     if (!messageText.trim()) return;
 
     const userMessage: Message = { id: Date.now().toString(), role: 'user', text: messageText };
@@ -66,12 +68,22 @@ export function AIChat() {
     setInput("");
     setIsTyping(true);
 
-    // Mock assistant response
-    setTimeout(() => {
-        const assistantResponse: Message = { id: (Date.now() + 1).toString(), role: 'assistant', text: "This is a placeholder response." };
-        setIsTyping(false);
+    try {
+        const response = await askGarageExpert({ query: messageText });
+        const assistantResponse: Message = { id: (Date.now() + 1).toString(), role: 'assistant', text: response.answer };
         setMessages(prev => [...prev, assistantResponse]);
-    }, 2000);
+    } catch (error) {
+        console.error("Error calling AI assistant:", error);
+        toast({
+            title: "Error",
+            description: "Sorry, I couldn't get a response. Please try again.",
+            variant: "destructive"
+        });
+        // Remove the user's message if the AI fails
+        setMessages(prev => prev.slice(0, -1));
+    } finally {
+        setIsTyping(false);
+    }
   };
   
   const handleSubmit = (e: FormEvent) => {
@@ -115,7 +127,7 @@ export function AIChat() {
 
       <Card
         className={cn(
-            "fixed bottom-6 right-6 z-50 w-full max-w-sm shadow-xl rounded-lg flex-col transition-opacity duration-300 ease-in-out",
+            "fixed bottom-6 right-6 z-50 w-full max-w-sm shadow-xl rounded-lg flex-col",
             isOpen ? "flex" : "hidden"
         )}
       >
@@ -171,9 +183,9 @@ export function AIChat() {
                         </AvatarFallback>
                     </Avatar>
                     <div className="max-w-[75%] rounded-lg px-3 py-2 text-sm bg-muted flex items-center space-x-1">
-                        <span className="h-2 w-2 bg-muted-foreground/50 rounded-full animate-typing-dot [animation-delay:0s]"></span>
-                        <span className="h-2 w-2 bg-muted-foreground/50 rounded-full animate-typing-dot [animation-delay:0.2s]"></span>
-                        <span className="h-2 w-2 bg-muted-foreground/50 rounded-full animate-typing-dot [animation-delay:0.4s]"></span>
+                        <span className="h-2 w-2 bg-muted-foreground/50 rounded-full animate-pulse" style={{animationDelay: '0s'}}></span>
+                        <span className="h-2 w-2 bg-muted-foreground/50 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></span>
+                        <span className="h-2 w-2 bg-muted-foreground/50 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></span>
                     </div>
                 </div>
               )}

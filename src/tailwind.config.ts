@@ -96,14 +96,6 @@ export default {
           from: { opacity: '0.3' },
           to: { opacity: '1' },
         },
-        'chat-open': {
-          from: { opacity: '0', transform: 'translateY(20px) scale(0.95)' },
-          to: { opacity: '1', transform: 'translateY(0) scale(1)' },
-        },
-        'chat-close': {
-          from: { opacity: '1', transform: 'translateY(0) scale(1)' },
-          to: { opacity: '0', transform: 'translateY(20px) scale(0.95)' },
-        },
         'typing-dot': {
           '0%, 80%, 100%': { transform: 'scale(0)' },
           '40%': { transform: 'scale(1.0)' },
@@ -114,8 +106,6 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
         sweep: 'sweep 1.5s ease-in-out infinite alternate',
         blink: 'blink 0.75s ease-in-out infinite alternate',
-        'chat-open': 'chat-open 0.3s ease-out forwards',
-        'chat-close': 'chat-close 0.3s ease-in forwards',
         'typing-dot': 'typing-dot 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite',
       },
     },
