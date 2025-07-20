@@ -55,7 +55,7 @@ export default function VehiclesPage() {
             const fetchedVehicles = await getVehicles();
             setVehicles(fetchedVehicles as VehicleData[]);
         } catch (error) {
-            toast({ title: "Error", description: "Could not fetch vehicles.", variant: "destructive" });
+            toast({ title: "Error", description: "Could not fetch your vehicles. Please try refreshing the page.", variant: "destructive" });
         } finally {
             setIsLoading(false);
         }
@@ -68,7 +68,7 @@ export default function VehiclesPage() {
     const handleAddVehicle = useCallback(async (data: Omit<Vehicle, 'id'>) => {
         const result = await addVehicle(data);
         if (result.success) {
-            toast({ title: "Vehicle Added", description: "Your vehicle has been successfully registered." });
+            toast({ title: "Vehicle Added", description: `Your ${data.make} ${data.model} has been successfully registered.` });
             setIsAddDialogOpen(false);
             fetchVehicles(); // Refresh list
         } else {
@@ -91,7 +91,7 @@ export default function VehiclesPage() {
         if (!deletingVehicleId) return;
         const result = await deleteVehicle(deletingVehicleId);
         if(result.success) {
-            toast({ title: "Vehicle Deleted", description: "The vehicle has been removed from your list." });
+            toast({ title: "Vehicle Deleted", description: "The vehicle has been removed from your garage." });
             setDeletingVehicleId(null);
             fetchVehicles();
         } else {

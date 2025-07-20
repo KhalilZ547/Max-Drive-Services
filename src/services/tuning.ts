@@ -63,7 +63,7 @@ const CreateRequestFormSchema = z.object({
 });
 
 export async function createRequest(formData: FormData): Promise<{ success: boolean; error?: string }> {
-    const isRadioPinOnly = formData.get('service') === 'Radio Pin (Free)';
+    const isRadioPinOnly = formData.get('service')?.toString().includes('Radio Pin');
 
     const parsed = CreateRequestFormSchema.safeParse({
         name: formData.get('name'),
@@ -126,6 +126,12 @@ export async function createRequest(formData: FormData): Promise<{ success: bool
                 to: email,
                 subject: `Your Radio Pin Request for ${vehicle}`,
                 html: `<h1>We've Received Your Request!</h1><p>Thank you for submitting your radio serial number. We will process it and send you the pin code in a separate email shortly. This is a free service.</p>`
+            });
+        } else {
+             await sendEmail({
+                to: email,
+                subject: `We've Received Your Tuning Request for ${vehicle}`,
+                html: `<h1>Request Received!</h1><p>Thank you, ${name}. We have received your request for the "<strong>${service}</strong>" service for your <strong>${vehicle}</strong>. We will review your file and send you a quote shortly.</p>`
             });
         }
 

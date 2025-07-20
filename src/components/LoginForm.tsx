@@ -51,6 +51,10 @@ export function LoginForm() {
     const result = await loginUser(data);
 
     if (result.success && result.user) {
+      toast({
+        title: "Login Successful",
+        description: `Welcome back! Redirecting you to your dashboard...`,
+      });
       if (typeof window !== 'undefined') {
         localStorage.setItem('userId', result.user.id);
         localStorage.setItem('userRole', result.user.role);

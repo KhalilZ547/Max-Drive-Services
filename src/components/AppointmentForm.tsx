@@ -91,64 +91,73 @@ export function AppointmentForm() {
 
     async function onSubmit(data: z.infer<typeof AppointmentFormSchema>) {
         setIsSubmitting(true);
-        const serviceNames = data.serviceIds.map(id => {
-            if (id === 'other') return data.otherService;
-            return t(services.find(s => s.id === id)?.key as any);
-        }).join(', ');
-        
-        const vehicleDetails = {
-            make: data.vehicleMake,
-            model: data.vehicleModel,
-            year: data.vehicleYear,
-        };
-        
-        // Add vehicle to user's profile
-        await addVehicle(vehicleDetails);
-        
-        const formattedDate = format(data.appointmentDate, "PPP");
-        const adminEmail = 'contact@maxdrive.com';
-        // This should be replaced with the actual logged-in user's email in a real app
-        const userEmail = 'john.doe@example.com'; 
+        try {
+            const serviceNames = data.serviceIds.map(id => {
+                if (id === 'other') return data.otherService;
+                return t(services.find(s => s.id === id)?.key as any);
+            }).join(', ');
+            
+            const vehicleDetails = {
+                make: data.vehicleMake,
+                model: data.vehicleModel,
+                year: data.vehicleYear,
+            };
+            
+            // Add vehicle to user's profile
+            await addVehicle(vehicleDetails);
+            
+            const formattedDate = format(data.appointmentDate, "PPP");
+            const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'contact@maxdrive.com';
+            // This should be replaced with the actual logged-in user's email in a real app
+            const userEmail = 'john.doe@example.com'; 
 
-        // Email to Admin
-        await sendEmail({
-            to: adminEmail,
-            subject: `New Appointment Booking: ${serviceNames} for ${data.vehicleMake} ${data.vehicleModel}`,
-            html: `
-                <h1>New Appointment Request</h1>
-                <p>A new appointment has been booked through the website.</p>
-                <ul>
-                    <li><strong>Service(s):</strong> ${serviceNames}</li>
-                    <li><strong>Vehicle:</strong> ${data.vehicleMake} ${data.vehicleModel} ${data.vehicleYear}</li>
-                    <li><strong>Requested Date:</strong> ${formattedDate}</li>
-                    <li><strong>Notes:</strong> ${data.notes || 'None'}</li>
-                </ul>
-            `
-        });
+            // Email to Admin
+            await sendEmail({
+                to: adminEmail,
+                subject: `New Appointment Booking: ${serviceNames} for ${data.vehicleMake} ${data.vehicleModel}`,
+                html: `
+                    <h1>New Appointment Request</h1>
+                    <p>A new appointment has been booked through the website.</p>
+                    <ul>
+                        <li><strong>Service(s):</strong> ${serviceNames}</li>
+                        <li><strong>Vehicle:</strong> ${data.vehicleMake} ${data.vehicleModel} ${data.vehicleYear}</li>
+                        <li><strong>Requested Date:</strong> ${formattedDate}</li>
+                        <li><strong>Notes:</strong> ${data.notes || 'None'}</li>
+                    </ul>
+                `
+            });
 
-        // Confirmation Email to User
-        await sendEmail({
-            to: userEmail,
-            subject: `Your Appointment Confirmation with Max-Drive-Services`,
-            html: `
-                <h1>Appointment Confirmed!</h1>
-                <p>Thank you for booking with Max-Drive-Services. Your appointment details are below:</p>
-                <ul>
-                    <li><strong>Service(s):</strong> ${serviceNames}</li>
-                    <li><strong>Vehicle:</strong> ${data.vehicleMake} ${data.vehicleModel} ${data.vehicleYear}</li>
-                    <li><strong>Date:</strong> ${formattedDate}</li>
-                </ul>
-                <p>We look forward to seeing you!</p>
-            `
-        });
+            // Confirmation Email to User
+            await sendEmail({
+                to: userEmail,
+                subject: `Your Appointment Confirmation with Max-Drive-Services`,
+                html: `
+                    <h1>Appointment Confirmed!</h1>
+                    <p>Thank you for booking with Max-Drive-Services. Your appointment details are below:</p>
+                    <ul>
+                        <li><strong>Service(s):</strong> ${serviceNames}</li>
+                        <li><strong>Vehicle:</strong> ${data.vehicleMake} ${data.vehicleModel} ${data.vehicleYear}</li>
+                        <li><strong>Date:</strong> ${formattedDate}</li>
+                    </ul>
+                    <p>We will contact you shortly to confirm the exact time. We look forward to seeing you!</p>
+                `
+            });
 
-
-        toast({
-            title: t('appointment_booked_title'),
-            description: `${t('appointment_booked_desc')} ${serviceNames} ${t('on')} ${formattedDate}.`,
-        });
-        form.reset({ serviceIds: [], vehicleMake: "", vehicleModel: "", vehicleYear: undefined, notes: "", otherService: "" });
-        setIsSubmitting(false);
+            toast({
+                title: t('appointment_booked_title'),
+                description: `${t('appointment_booked_desc')} ${serviceNames} ${t('on')} ${formattedDate}.`,
+            });
+            form.reset({ serviceIds: [], vehicleMake: "", vehicleModel: "", vehicleYear: undefined, notes: "", otherService: "" });
+        } catch (error) {
+            console.error("Appointment submission error:", error);
+            toast({
+                title: "Booking Failed",
+                description: "We couldn't schedule your appointment. Please try again or contact us directly.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
     }
     
     return (

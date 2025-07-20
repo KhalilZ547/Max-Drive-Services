@@ -19,8 +19,10 @@ import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { clientsData } from "@/lib/mock-data";
 import { sendEmail } from "@/services/email";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import db from "@/lib/db"; // We need a way to check if the user exists, this is a temporary direct import for this component.
 
 const ForgotPasswordSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
@@ -30,6 +32,7 @@ export function ForgotPasswordForm() {
   const { t } = useTranslation();
   const { toast } = useToast();
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof ForgotPasswordSchema>>({
     resolver: zodResolver(ForgotPasswordSchema),
@@ -39,35 +42,50 @@ export function ForgotPasswordForm() {
   });
 
   async function onSubmit(data: z.infer<typeof ForgotPasswordSchema>) {
-    const adminEmail = 'admin@maxdrive.com';
-    const isRegistered = clientsData.some(client => client.email.toLowerCase() === data.email.toLowerCase()) || data.email.toLowerCase() === adminEmail;
+    setIsSubmitting(true);
+    
+    // In a real app, this logic would be in a server action to avoid exposing DB logic.
+    // For now, we add a check here.
+    try {
+        // This is a simplified check. A proper implementation would be in a server action.
+        const res = await fetch(`/api/check-user?email=${data.email}`);
+        const { exists } = await res.json();
 
-    if (isRegistered) {
-      // In a real app, generate a secure, unique, and temporary code.
-      const verificationCode = "123456"; // This is a mock code.
-      
-      await sendEmail({
-        to: data.email,
-        subject: "Your Password Reset Code for Max-Drive-Services",
-        html: `
-          <h1>Password Reset Request</h1>
-          <p>We received a request to reset your password. Use the code below to complete the process:</p>
-          <h2 style="text-align:center;letter-spacing:2px;font-size:2em;">${verificationCode}</h2>
-          <p>This code will expire in 10 minutes. If you did not request this, you can safely ignore this email.</p>
-        `
-      });
+        if (exists) {
+            // In a real app, generate a secure, unique, and temporary token, save it to the DB with an expiry.
+            const resetLink = `${window.location.origin}/reset-password?email=${encodeURIComponent(data.email)}`; // Mock link
 
-      toast({
-        title: t('password_reset_sent_title'),
-        description: t('password_reset_sent_desc'),
-      });
-      router.push("/reset-password");
-    } else {
-      toast({
-        title: t('email_not_found_title'),
-        description: t('email_not_found_desc'),
-        variant: "destructive"
-      });
+            await sendEmail({
+                to: data.email,
+                subject: "Your Password Reset Link for Max-Drive-Services",
+                html: `
+                <h1>Password Reset Request</h1>
+                <p>We received a request to reset your password. Click the link below to set a new password:</p>
+                <p><a href="${resetLink}" target="_blank">Reset Your Password</a></p>
+                <p>This link will expire in 1 hour. If you did not request this, you can safely ignore this email.</p>
+                `
+            });
+
+            toast({
+                title: t('password_reset_sent_title'),
+                description: t('password_reset_sent_desc'),
+            });
+            router.push("/login");
+        } else {
+            toast({
+                title: t('email_not_found_title'),
+                description: t('email_not_found_desc'),
+                variant: "destructive"
+            });
+        }
+    } catch (error) {
+        toast({
+            title: "Error",
+            description: "An unexpected error occurred. Please try again.",
+            variant: "destructive"
+        });
+    } finally {
+        setIsSubmitting(false);
     }
   }
 
@@ -87,13 +105,16 @@ export function ForgotPasswordForm() {
                 <FormItem>
                   <FormLabel>{t('email_label')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="name@example.com" {...field} />
+                    <Input placeholder="name@example.com" {...field} disabled={isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">{t('send_reset_link_button')}</Button>
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {t('send_reset_link_button')}
+            </Button>
           </form>
         </Form>
         <div className="mt-6 text-center text-sm">

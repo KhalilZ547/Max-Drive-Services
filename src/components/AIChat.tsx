@@ -55,6 +55,22 @@ export function AIChat() {
         setClient(null);
     }
   }, []);
+
+  // Effect to listen for avatar changes in other tabs/windows
+  useEffect(() => {
+      const handleStorageChange = () => {
+        // A simple way to re-trigger the fetch, assuming the avatar change
+        // is part of a larger profile update reflected in the DB.
+        fetchClientData();
+      };
+      
+      window.addEventListener('storage', handleStorageChange);
+      
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+      };
+  }, [fetchClientData]);
+  
   
   // Fetch client data on component mount if on a client-facing page
   useEffect(() => {
@@ -91,8 +107,8 @@ export function AIChat() {
     } catch (error) {
         console.error("Error calling AI assistant:", error);
         toast({
-            title: "Error",
-            description: "Sorry, I couldn't get a response. Please try again.",
+            title: "Assistant Unavailable",
+            description: "Sorry, I couldn't get a response from the AI assistant. Please try again in a moment.",
             variant: "destructive"
         });
         // Remove the user's message if the AI fails

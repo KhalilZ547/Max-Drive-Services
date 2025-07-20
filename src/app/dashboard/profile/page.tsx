@@ -58,7 +58,7 @@ export default function ProfilePage() {
             }
         } catch (error) {
             console.error("Failed to fetch profile", error);
-            toast({ title: "Error", description: "Could not load your profile.", variant: "destructive"});
+            toast({ title: "Error", description: "Could not load your profile. Please try refreshing the page.", variant: "destructive"});
         } finally {
             setIsLoading(false);
         }
@@ -122,7 +122,7 @@ export default function ProfilePage() {
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('email', data.email);
-        if (data.avatar) {
+        if (data.avatar instanceof File) {
             formData.append('avatar', data.avatar);
         }
 

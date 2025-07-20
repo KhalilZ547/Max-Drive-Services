@@ -248,7 +248,9 @@ export function EcuTuningForm() {
         } else {
             formData.append('service', serviceNames);
             formData.append('fileType', data.fileType!);
-            formData.append('file', data.file![0]);
+            if (data.file && data.file.length > 0) {
+                formData.append('file', data.file[0]);
+            }
         }
 
         const result = await addTuningRequest(formData);
@@ -280,7 +282,7 @@ export function EcuTuningForm() {
         } else {
              toast({
                 title: "Submission Failed",
-                description: result.error,
+                description: result.error || "An unknown error occurred. Please try again.",
                 variant: "destructive"
             });
         }
