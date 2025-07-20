@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Bot, Send, X, User } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 import { usePathname } from 'next/navigation';
 
 type Message = {
@@ -17,10 +17,15 @@ type Message = {
   text: string;
 };
 
-// Mock user data for demonstration when logged in
 const mockUser = {
   name: "Karim Ben Ahmed",
 };
+
+const examplePrompts = [
+    "What services do you offer?",
+    "How much is an oil change?",
+    "What are your hours?",
+];
 
 export function AIChat() {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,6 +33,7 @@ export function AIChat() {
     { id: '1', role: 'assistant', text: "Hello! I'm the Max Drive assistant. How can I help you today?" }
   ]);
   const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
 
@@ -37,11 +43,9 @@ export function AIChat() {
   const isDashboardPage = pathname.startsWith('/admin') || pathname.startsWith('/dashboard');
 
   useEffect(() => {
-    // This check runs only on the client-side
     const userRole = localStorage.getItem('userRole');
     if (userRole) {
       setIsLoggedIn(true);
-      // In a real app, you'd fetch the user's name from your backend/context
       setUserName(mockUser.name);
     }
   }, []);
@@ -52,21 +56,31 @@ export function AIChat() {
         scrollAreaViewportRef.current!.scrollTop = scrollAreaViewportRef.current!.scrollHeight;
       }, 100);
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, isTyping]);
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+  const sendMessage = (messageText: string) => {
+    if (!messageText.trim()) return;
 
-    const userMessage: Message = { id: Date.now().toString(), role: 'user', text: input };
+    const userMessage: Message = { id: Date.now().toString(), role: 'user', text: messageText };
     setMessages(prev => [...prev, userMessage]);
     setInput("");
+    setIsTyping(true);
 
     // Mock assistant response
     setTimeout(() => {
         const assistantResponse: Message = { id: (Date.now() + 1).toString(), role: 'assistant', text: "This is a placeholder response." };
+        setIsTyping(false);
         setMessages(prev => [...prev, assistantResponse]);
-    }, 1000);
+    }, 2000);
+  };
+  
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    sendMessage(input);
+  };
+  
+  const handlePromptClick = (prompt: string) => {
+    sendMessage(prompt);
   };
 
   const getAvatarFallback = (name: string): string => {
@@ -86,24 +100,22 @@ export function AIChat() {
 
   return (
     <>
-      <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", {
-        "scale-0 opacity-0": isOpen,
-        "scale-100 opacity-100": !isOpen
-      })}>
+      <div className="fixed bottom-6 right-6 z-50">
         <Button
           size="icon"
-          className="h-16 w-16 rounded-full shadow-lg"
+          className="h-16 w-16 rounded-full shadow-lg data-[state=open]:scale-0 data-[state=closed]:scale-100 transition-transform duration-300 ease-in-out"
           onClick={() => setIsOpen(true)}
+          data-state={isOpen ? 'open' : 'closed'}
         >
           <Bot className="h-8 w-8" />
           <span className="sr-only">Open Chat</span>
         </Button>
       </div>
 
-      <Card className={cn("fixed bottom-6 right-6 z-50 w-full max-w-sm transform-gpu transition-all duration-300 ease-in-out shadow-xl", {
-        "translate-y-0 opacity-100": isOpen,
-        "translate-y-16 opacity-0 pointer-events-none": !isOpen,
-      })}>
+      <Card
+        data-state={isOpen ? 'open' : 'closed'} 
+        className="fixed bottom-6 right-6 z-50 w-full max-w-sm shadow-xl rounded-lg data-[state=closed]:animate-chat-close data-[state=open]:animate-chat-open"
+      >
         <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
           <div className="flex items-center gap-3">
             <Avatar>
@@ -133,12 +145,12 @@ export function AIChat() {
                         </AvatarFallback>
                     </Avatar>
                   )}
-                  <p className={cn("max-w-[75%] rounded-lg px-3 py-2 text-sm", {
+                  <div className={cn("max-w-[75%] rounded-lg px-3 py-2 text-sm", {
                     "bg-primary text-primary-foreground": message.role === "user",
                     "bg-muted": message.role === "assistant"
                   })}>
                     {message.text}
-                  </p>
+                  </div>
                   {message.role === 'user' && (
                      <Avatar className="h-8 w-8">
                         <AvatarFallback>
@@ -148,6 +160,32 @@ export function AIChat() {
                   )}
                 </div>
               ))}
+              {isTyping && (
+                <div className="flex items-end gap-2 justify-start">
+                    <Avatar className="h-8 w-8">
+                       <AvatarFallback className="bg-primary/10">
+                            <Bot className="h-5 w-5 text-primary" />
+                        </AvatarFallback>
+                    </Avatar>
+                    <div className="max-w-[75%] rounded-lg px-3 py-2 text-sm bg-muted flex items-center space-x-1">
+                        <span className="h-2 w-2 bg-muted-foreground/50 rounded-full animate-typing-dot [animation-delay:0s]"></span>
+                        <span className="h-2 w-2 bg-muted-foreground/50 rounded-full animate-typing-dot [animation-delay:0.2s]"></span>
+                        <span className="h-2 w-2 bg-muted-foreground/50 rounded-full animate-typing-dot [animation-delay:0.4s]"></span>
+                    </div>
+                </div>
+              )}
+               {messages.length === 1 && !isTyping && (
+                    <div className="space-y-2 pt-4">
+                        <p className="text-xs text-center text-muted-foreground">Or try one of these prompts:</p>
+                        <div className="flex flex-col gap-2">
+                        {examplePrompts.map(prompt => (
+                            <Button key={prompt} variant="outline" size="sm" className="h-auto py-2" onClick={() => handlePromptClick(prompt)}>
+                                {prompt}
+                            </Button>
+                        ))}
+                        </div>
+                    </div>
+                )}
             </div>
           </ScrollArea>
         </CardContent>
@@ -160,8 +198,9 @@ export function AIChat() {
               autoComplete="off"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              disabled={isTyping}
             />
-            <Button type="submit" size="icon">
+            <Button type="submit" size="icon" disabled={isTyping || !input.trim()}>
               <Send className="h-4 w-4" />
               <span className="sr-only">Send</span>
             </Button>
