@@ -75,7 +75,7 @@ export function EcuSolutionsSection({ isPageHeader = false }: EcuSolutionsSectio
   ], [t]);
   
   const handleCardClick = (serviceId: string) => {
-    router.push(`/ecu-tuning?service=${serviceId}`);
+    router.push(`/ecu-tuning?service=${serviceId}#form-section`);
   };
 
   return (
