@@ -15,16 +15,8 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageSquare, Bot, User, CornerDownLeft, Loader2, CalendarCheck } from 'lucide-react';
 import { useTranslation } from '@/hooks/use-translation';
-import { chat } from '@/ai/flows/garage-assistant';
+import { invoke } from '@/ai/flows/garage-assistant';
 import { MessageData } from 'genkit';
-import { z } from 'zod';
-
-
-const ChatInputSchema = z.object({
-  history: z.array(MessageData),
-  message: z.string(),
-});
-export type ChatInput = z.infer<typeof ChatInputSchema>;
 
 
 type ToolResponse = {
@@ -85,7 +77,7 @@ export function AIChat() {
     setIsLoading(true);
 
     try {
-      const result = await chat({ message: input, history });
+      const result = await invoke({ message: input, history });
 
       if (result.text) {
           const botMessage: Message = { type: 'text', sender: 'bot', text: result.text };
