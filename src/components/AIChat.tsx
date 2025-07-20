@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Bot, Send, X, User } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { usePathname } from 'next/navigation';
 import { askGarageExpert } from "@/app/actions";
 import { toast } from "@/hooks/use-toast";
@@ -38,18 +38,35 @@ export function AIChat() {
   const [isTyping, setIsTyping] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
   const pathname = usePathname();
   const scrollAreaViewportRef = useRef<HTMLDivElement>(null);
   
   const isAdminPage = pathname.startsWith('/admin');
+  const isDashboardPage = pathname.startsWith('/dashboard');
 
   useEffect(() => {
     const userRole = localStorage.getItem('userRole');
     if (userRole === 'client') {
       setIsLoggedIn(true);
       setUserName(mockUser.name);
+      const savedAvatar = localStorage.getItem('userAvatar');
+      if (savedAvatar) {
+        setUserAvatar(savedAvatar);
+      }
     }
+  }, []);
+  
+  // Listen for storage changes to update avatar in real-time
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedAvatar = localStorage.getItem('userAvatar');
+      setUserAvatar(savedAvatar);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   useEffect(() => {
@@ -106,7 +123,7 @@ export function AIChat() {
       return "U";
   };
   
-  if (isAdminPage) {
+  if (isAdminPage || (!isDashboardPage && !isOpen)) {
     return null;
   }
 
@@ -168,6 +185,7 @@ export function AIChat() {
                   </div>
                   {message.role === 'user' && (
                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={isLoggedIn ? userAvatar || undefined : undefined} />
                         <AvatarFallback>
                           {isLoggedIn ? getAvatarFallback(userName) : <User className="h-5 w-5" />}
                         </AvatarFallback>

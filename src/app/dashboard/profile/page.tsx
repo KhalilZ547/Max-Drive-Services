@@ -52,6 +52,11 @@ export default function ProfilePage() {
         // Simulate fetching user data and then populating the form.
         setTimeout(() => {
             form.reset(mockUser);
+            // On load, check localStorage for a saved avatar
+            const savedAvatar = localStorage.getItem('userAvatar');
+            if (savedAvatar) {
+                setAvatarPreview(savedAvatar);
+            }
             setIsLoading(false);
         }, 1000);
     }, [form]);
@@ -77,7 +82,9 @@ export default function ProfilePage() {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setAvatarPreview(reader.result as string);
+                const dataUrl = reader.result as string;
+                setAvatarPreview(dataUrl);
+                localStorage.setItem('userAvatar', dataUrl);
             };
             reader.readAsDataURL(file);
         }
@@ -89,6 +96,7 @@ export default function ProfilePage() {
 
     const handleDeleteAvatar = useCallback(() => {
         setAvatarPreview(null);
+        localStorage.removeItem('userAvatar');
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
