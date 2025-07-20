@@ -1,4 +1,6 @@
 
+'use server';
+
 /**
  * @fileOverview A smart garage assistant that can answer questions and help users take action.
  */
@@ -58,10 +60,14 @@ export async function invokeGarageAssistant(
   prevState: Part | null,
   { message, history }: { message: string; history: MessageData[] }
 ): Promise<Part> {
-  const response = await assistantPrompt({
+  const { output } = await assistantPrompt({
     history: history,
     prompt: message,
   });
 
-  return response.output!.message.content[0];
+  if (!output || !output.message.content.length) {
+    throw new Error('AI assistant did not return a valid response.');
+  }
+
+  return output.message.content[0];
 }
