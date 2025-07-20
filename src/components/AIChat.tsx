@@ -102,8 +102,9 @@ export function AIChat() {
     <>
       <div className="fixed bottom-6 right-6 z-50">
         <Button
+          variant="outline"
           size="icon"
-          className="h-16 w-16 rounded-full shadow-lg"
+          className="h-16 w-16 rounded-full shadow-lg hover:bg-primary hover:text-primary-foreground"
           onClick={() => setIsOpen(true)}
           aria-expanded={isOpen}
         >
@@ -114,8 +115,8 @@ export function AIChat() {
 
       <Card
         className={cn(
-            "fixed bottom-6 right-6 z-50 w-full max-w-sm shadow-xl rounded-lg flex flex-col transition-transform duration-300 ease-in-out",
-            isOpen ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"
+            "fixed bottom-6 right-6 z-50 w-full max-w-sm shadow-xl rounded-lg flex-col transition-opacity duration-300 ease-in-out",
+            isOpen ? "flex" : "hidden"
         )}
       >
         <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
