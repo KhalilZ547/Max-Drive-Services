@@ -50,7 +50,9 @@ export function ForgotPasswordForm() {
         // This is a simplified check. A proper implementation would be in a server action.
         const res = await fetch(`/api/check-user?email=${data.email}`);
         const { exists } = await res.json();
-
+        
+        // We always show a success message to prevent user enumeration.
+        // The email is only sent if the user actually exists.
         if (exists) {
             // In a real app, generate a secure, unique, and temporary token, save it to the DB with an expiry.
             const resetLink = `${window.location.origin}/reset-password?email=${encodeURIComponent(data.email)}`; // Mock link
@@ -65,19 +67,14 @@ export function ForgotPasswordForm() {
                 <p>This link will expire in 1 hour. If you did not request this, you can safely ignore this email.</p>
                 `
             });
-
-            toast({
-                title: t('password_reset_sent_title'),
-                description: t('password_reset_sent_desc'),
-            });
-            router.push("/login");
-        } else {
-            toast({
-                title: t('email_not_found_title'),
-                description: t('email_not_found_desc'),
-                variant: "destructive"
-            });
         }
+        
+        toast({
+            title: t('password_reset_sent_title'),
+            description: t('password_reset_sent_desc'),
+        });
+        router.push("/login");
+
     } catch (error) {
         toast({
             title: "Error",
