@@ -116,7 +116,7 @@ export default {
         blink: 'blink 0.75s ease-in-out infinite alternate',
         'chat-open': 'chat-open 0.3s ease-out forwards',
         'chat-close': 'chat-close 0.3s ease-in forwards',
-        'typing-dot': 'typing-dot 1s cubic-bezier(0, 0.5, 0.5, 1) infinite',
+        'typing-dot': 'typing-dot 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite',
       },
     },
   },

@@ -96,12 +96,17 @@ export default {
           from: { opacity: '0.3' },
           to: { opacity: '1' },
         },
+        'typing-dot': {
+          '0%, 80%, 100%': { transform: 'scale(0)' },
+          '40%': { transform: 'scale(1.0)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         sweep: 'sweep 1.5s ease-in-out infinite alternate',
         blink: 'blink 0.75s ease-in-out infinite alternate',
+        'typing-dot': 'typing-dot 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite',
       },
     },
   },
