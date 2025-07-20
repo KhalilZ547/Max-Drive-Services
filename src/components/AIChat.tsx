@@ -42,11 +42,11 @@ export function AIChat() {
   const pathname = usePathname();
   const scrollAreaViewportRef = useRef<HTMLDivElement>(null);
   
-  const isDashboardPage = pathname.startsWith('/admin') || pathname.startsWith('/dashboard');
+  const isAdminPage = pathname.startsWith('/admin');
 
   useEffect(() => {
     const userRole = localStorage.getItem('userRole');
-    if (userRole) {
+    if (userRole === 'client') {
       setIsLoggedIn(true);
       setUserName(mockUser.name);
     }
@@ -106,7 +106,7 @@ export function AIChat() {
       return "U";
   };
   
-  if (isDashboardPage) {
+  if (isAdminPage) {
     return null;
   }
 
