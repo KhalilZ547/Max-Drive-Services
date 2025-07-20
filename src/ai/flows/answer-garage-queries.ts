@@ -2,7 +2,7 @@
 'use server';
 
 /**
- * @fileOverview AI assistant for answering garage-related queries.
+ * @fileOverview AI agent for answering garage-related queries.
  *
  * - answerGarageQuery - A function that takes a user query and returns an answer.
  * - AnswerGarageQueryInput - The input type for the answerGarageQuery function.

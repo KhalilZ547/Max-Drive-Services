@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageSquare, Bot, User, CornerDownLeft, Loader2, CalendarCheck } from 'lucide-react';
 import { useTranslation } from '@/hooks/use-translation';
-import { invoke } from '@/ai/flows/garage-assistant';
+import { invokeGarageAssistant } from '@/app/actions';
 import { MessageData } from 'genkit';
 
 
@@ -77,7 +77,7 @@ export function AIChat() {
     setIsLoading(true);
 
     try {
-      const result = await invoke({ message: input, history });
+      const result = await invokeGarageAssistant({ message: input, history });
 
       if (result.text) {
           const botMessage: Message = { type: 'text', sender: 'bot', text: result.text };

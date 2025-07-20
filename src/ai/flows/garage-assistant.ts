@@ -3,7 +3,7 @@
 /**
  * @fileOverview A smart garage assistant that can answer questions and help users take action.
  *
- * - invoke - The main function to interact with the assistant.
+ * - garageAssistantFlow - The main Genkit flow for the assistant.
  */
 
 import {ai} from '@/ai/genkit';
@@ -57,7 +57,7 @@ const assistantPrompt = ai.definePrompt({
     `,
 });
 
-const garageAssistantFlow = ai.defineFlow(
+export const garageAssistantFlow = ai.defineFlow(
   {
     name: 'garageAssistantFlow',
     inputSchema: z.object({
@@ -75,8 +75,3 @@ const garageAssistantFlow = ai.defineFlow(
     return response.output!.message.content[0];
   }
 );
-
-
-export async function invoke(input: { history: MessageData[], message: string }): Promise<Part> {
-  return garageAssistantFlow(input);
-}
