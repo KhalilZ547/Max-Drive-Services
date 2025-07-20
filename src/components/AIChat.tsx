@@ -60,9 +60,10 @@ export function AIChat() {
   
   // Listen for storage changes to update avatar in real-time
   useEffect(() => {
-    const handleStorageChange = () => {
-      const savedAvatar = localStorage.getItem('userAvatar');
-      setUserAvatar(savedAvatar);
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'userAvatar') {
+        setUserAvatar(event.newValue);
+      }
     };
 
     window.addEventListener('storage', handleStorageChange);
@@ -123,13 +124,15 @@ export function AIChat() {
       return "U";
   };
   
-  if (isAdminPage || (!isDashboardPage && !isOpen)) {
+  if (isAdminPage) {
     return null;
   }
 
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className={cn("fixed bottom-6 right-6 z-50", {
+        'hidden': isOpen
+      })}>
         <Button
           variant="outline"
           size="icon"
