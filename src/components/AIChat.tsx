@@ -103,9 +103,9 @@ export function AIChat() {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           size="icon"
-          className="h-16 w-16 rounded-full shadow-lg data-[state=open]:scale-0 data-[state=closed]:scale-100 transition-transform duration-300 ease-in-out"
+          className="h-16 w-16 rounded-full shadow-lg"
           onClick={() => setIsOpen(true)}
-          data-state={isOpen ? 'open' : 'closed'}
+          aria-expanded={isOpen}
         >
           <Bot className="h-8 w-8" />
           <span className="sr-only">Open Chat</span>
@@ -113,8 +113,10 @@ export function AIChat() {
       </div>
 
       <Card
-        data-state={isOpen ? 'open' : 'closed'} 
-        className="fixed bottom-6 right-6 z-50 w-full max-w-sm shadow-xl rounded-lg data-[state=closed]:animate-chat-close data-[state=open]:animate-chat-open"
+        className={cn(
+            "fixed bottom-6 right-6 z-50 w-full max-w-sm shadow-xl rounded-lg flex flex-col transition-transform duration-300 ease-in-out",
+            isOpen ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"
+        )}
       >
         <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
           <div className="flex items-center gap-3">
@@ -130,7 +132,7 @@ export function AIChat() {
             <span className="sr-only">Close chat</span>
           </Button>
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent className="p-0 flex-1">
           <ScrollArea className="h-80" viewportRef={scrollAreaViewportRef}>
             <div className="p-4 space-y-4">
               {messages.map((message) => (
