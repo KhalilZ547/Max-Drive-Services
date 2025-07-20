@@ -1,5 +1,4 @@
 
-'use server';
 /**
  * @fileOverview A smart garage assistant that can answer questions and help users take action.
  */

@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, FormEvent } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageSquare, Bot, User, CornerDownLeft, Loader2, CalendarCheck } from 'lucide-react';
 import { useTranslation } from '@/hooks/use-translation';
-import { invokeGarageAssistant } from '@/ai/flows/garage-assistant';
+import { invokeGarageAssistant } from '@/app/actions';
 import { MessageData, Part } from 'genkit';
 
 type ToolResponse = {
@@ -50,12 +50,14 @@ export function AIChat() {
       scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
     }
   }, [messages]);
-
-  const handleSend = useCallback(async () => {
+  
+  const handleSubmit = useCallback(async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (!input.trim() || isPending) return;
 
     const userMessage: Message = { type: 'text', sender: 'user', text: input };
     setMessages((prev) => [...prev, userMessage]);
+    const currentInput = input;
     setInput('');
     setIsPending(true);
 
@@ -66,15 +68,16 @@ export function AIChat() {
                 content: [{ text: m.text }]
             };
         }
+        // Simplified history representation for tool responses
         return {
             role: 'model',
-            content: [{ text: `Tool call: ${m.response.name}`}]
+            content: [{ text: `(Tool call: ${m.response.name} for ${m.response.output.serviceName})` }]
         }
     }).filter(Boolean) as MessageData[];
 
     try {
-      const responsePart = await invokeGarageAssistant(null, { message: input, history });
-
+      const responsePart = await invokeGarageAssistant({ message: currentInput, history });
+      
       if (responsePart) {
         if (responsePart.text) {
           const botMessage: Message = { type: 'text', sender: 'bot', text: responsePart.text };
@@ -180,10 +183,7 @@ export function AIChat() {
           </ScrollArea>
           <DialogFooter>
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSend();
-              }}
+              onSubmit={handleSubmit}
               className="flex w-full items-center space-x-2"
             >
               <Input
@@ -192,12 +192,6 @@ export function AIChat() {
                 placeholder={t('ai_chat_placeholder')}
                 className="flex-1"
                 disabled={isPending}
-                onKeyDown={(e) => {
-                    if(e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSend();
-                    }
-                }}
               />
               <Button type="submit" size="icon" disabled={isPending || !input.trim()}>
                 <CornerDownLeft className="h-4 w-4" />
