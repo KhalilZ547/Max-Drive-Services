@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -16,10 +17,12 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { resetPassword } from "@/app/reset-password/actions";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const ResetPasswordSchema = z.object({
-  code: z.string().min(6, { message: "Please enter the 6-digit code." }),
   password: z.string().min(8, { message: "Password must be at least 8 characters." }),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -27,29 +30,52 @@ const ResetPasswordSchema = z.object({
   path: ["confirmPassword"],
 });
 
-
 export function ResetPasswordForm() {
   const { t } = useTranslation();
   const { toast } = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof ResetPasswordSchema>>({
     resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
-      code: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  function onSubmit(data: z.infer<typeof ResetPasswordSchema>) {
-    console.log("Password reset successful:", data.code);
-    // In a real app, you would verify the code and update the password.
-    toast({
-      title: t('password_reset_success_title'),
-      description: t('password_reset_success_desc'),
-    });
-    router.push("/login");
+  async function onSubmit(data: z.infer<typeof ResetPasswordSchema>) {
+    setIsSubmitting(true);
+    const email = searchParams.get('email');
+
+    if (!email) {
+      toast({
+        title: "Error",
+        description: "Invalid or expired password reset link.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+    
+    const result = await resetPassword({ email, password: data.password });
+
+    if (result.success) {
+        toast({
+          title: t('password_reset_success_title'),
+          description: t('password_reset_success_desc'),
+        });
+        router.push("/login");
+    } else {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        });
+    }
+
+    setIsSubmitting(false);
   }
 
   return (
@@ -63,25 +89,12 @@ export function ResetPasswordForm() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="code"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('reset_code_label')}</FormLabel>
-                  <FormControl>
-                    <Input placeholder="123456" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('new_password_label')}</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" {...field} disabled={isSubmitting}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -94,13 +107,16 @@ export function ResetPasswordForm() {
                 <FormItem>
                   <FormLabel>{t('confirm_new_password_label')}</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" {...field} disabled={isSubmitting}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">{t('reset_password_button')}</Button>
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
+                {t('reset_password_button')}
+            </Button>
           </form>
         </Form>
       </CardContent>

@@ -17,20 +17,22 @@ import {
 } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
 import { Button } from "./ui/button";
-
-// All data will now be fetched from the database, not mock files.
-const vehicles: { make: string; model: string; year: number; vin: string; }[] = [];
-const serviceHistory: { vehicle: string; service: string; date: string; cost: number; }[] = [];
-const reminders: { title: string; date: string; details: string; }[] = [];
+import type { VehicleData } from "@/app/dashboard/vehicles/actions";
+import type { ServiceHistoryItem } from "@/app/dashboard/history/actions";
 
 const TND_TO_EUR_RATE = 0.3; // Approximate conversion rate
 
-export function DashboardClient() {
+type DashboardClientProps = {
+    vehicles: VehicleData[];
+    serviceHistory: ServiceHistoryItem[];
+    // Reminders would be calculated based on service history and vehicle type
+    reminders: { title: string; date: string; details: string; }[];
+}
+
+export function DashboardClient({ vehicles, serviceHistory, reminders }: DashboardClientProps) {
   const { t } = useTranslation();
 
-  // The component now checks if there's any data at all.
-  // If not, it shows a welcoming empty state.
-  if (vehicles.length === 0 && serviceHistory.length === 0 && reminders.length === 0) {
+  if (vehicles.length === 0 && serviceHistory.length === 0) {
     return (
       <main className="flex flex-1 flex-col items-center justify-center gap-4 p-4 md:gap-8 md:p-8 text-center">
         <Card className="w-full max-w-lg">
@@ -51,7 +53,6 @@ export function DashboardClient() {
     )
   }
 
-  // This part will render when the user has actual data.
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">

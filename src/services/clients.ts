@@ -37,6 +37,19 @@ export async function getClientById(clientId: string): Promise<Client | null> {
     }
 }
 
+export async function getClientByEmail(email: string): Promise<Client | null> {
+    try {
+        const [rows] = await db.execute("SELECT id, name, email, DATE_FORMAT(registered, '%Y-%m-%d') as registered, avatar_url, role, password FROM clients WHERE email = ?", [email]);
+        if((rows as any[]).length > 0) {
+            return (rows as any[])[0] as Client;
+        }
+        return null;
+    } catch (error) {
+        console.error(`Failed to fetch client with email ${email}:`, error);
+        return null;
+    }
+}
+
 export async function addClient(newClientData: Omit<Client, 'id' | 'registered' | 'avatar_url' | 'role'>): Promise<{ success: boolean; error?: string }> {
   const { name, email } = newClientData;
   

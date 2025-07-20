@@ -1,13 +1,13 @@
 
 "use client";
 
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format } from "date-fns";
-import { CalendarIcon, Loader2 } from "lucide-react";
-import { useSearchParams } from 'next/navigation';
+import { CalendarIcon, Loader2, PlusCircle, Car } from "lucide-react";
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -28,8 +35,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
-import { sendEmail } from "@/services/email";
+import { addAppointment } from "@/services/appointments";
+import type { VehicleData } from "@/app/dashboard/vehicles/actions";
+import { AddVehicleDialog } from "./AddVehicleDialog";
 import { addVehicle } from "@/app/dashboard/vehicles/actions";
+
 
 const services = [
     { id: 'oil-change', key: 'service_oil_change_title'},
@@ -39,20 +49,23 @@ const services = [
     { id: 'other', key: 'service_other_title' },
 ];
 
-export function AppointmentForm() {
+const NEW_VEHICLE_VALUE = 'add_new_vehicle';
+
+export function AppointmentForm({ userVehicles }: { userVehicles: VehicleData[] }) {
     const { t } = useTranslation();
     const { toast } = useToast();
+    const router = useRouter();
     const searchParams = useSearchParams();
     const initialService = searchParams.get('service');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isAddVehicleDialogOpen, setIsAddVehicleDialogOpen] = useState(false);
+    const [vehicles, setVehicles] = useState(userVehicles);
 
     const AppointmentFormSchema = useMemo(() => z.object({
         serviceIds: z.array(z.string()).refine((value) => value.some((item) => item), {
             message: "You have to select at least one service.",
         }),
-        vehicleMake: z.string().min(2, "Make is required"),
-        vehicleModel: z.string().min(1, "Model is required"),
-        vehicleYear: z.coerce.number().min(1900).max(new Date().getFullYear() + 1),
+        vehicleId: z.string({ required_error: "Please select a vehicle."}),
         appointmentDate: z.date({
             required_error: "A date for the appointment is required.",
         }),
@@ -73,8 +86,6 @@ export function AppointmentForm() {
         resolver: zodResolver(AppointmentFormSchema),
         defaultValues: {
             serviceIds: initialService ? [initialService] : [],
-            vehicleMake: "",
-            vehicleModel: "",
             notes: "",
             otherService: "",
         },
@@ -88,6 +99,32 @@ export function AppointmentForm() {
 
 
     const selectedServices = form.watch("serviceIds");
+    const selectedVehicleId = form.watch("vehicleId");
+    
+    useEffect(() => {
+        if (selectedVehicleId === NEW_VEHICLE_VALUE) {
+            setIsAddVehicleDialogOpen(true);
+            // Reset the form value if dialog is closed without adding
+            form.setValue('vehicleId', '');
+        }
+    }, [selectedVehicleId, form]);
+
+    const handleAddVehicle = useCallback(async (newVehicleData: Omit<VehicleData, 'id'>) => {
+        const result = await addVehicle(newVehicleData);
+        if (result.success && result.newVehicleId) {
+            toast({ title: "Vehicle Added", description: `Your ${newVehicleData.make} ${newVehicleData.model} has been successfully registered.` });
+            
+            const newVehicleEntry = { ...newVehicleData, id: result.newVehicleId };
+            const updatedVehicles = [...vehicles, newVehicleEntry];
+            setVehicles(updatedVehicles);
+
+            form.setValue('vehicleId', result.newVehicleId);
+            setIsAddVehicleDialogOpen(false);
+        } else {
+            toast({ title: "Failed to Add Vehicle", description: result.error, variant: "destructive" });
+        }
+    }, [vehicles, form, toast]);
+
 
     async function onSubmit(data: z.infer<typeof AppointmentFormSchema>) {
         setIsSubmitting(true);
@@ -97,57 +134,18 @@ export function AppointmentForm() {
                 return t(services.find(s => s.id === id)?.key as any);
             }).join(', ');
             
-            const vehicleDetails = {
-                make: data.vehicleMake,
-                model: data.vehicleModel,
-                year: data.vehicleYear,
-            };
-            
-            // Add vehicle to user's profile
-            await addVehicle(vehicleDetails);
-            
-            const formattedDate = format(data.appointmentDate, "PPP");
-            const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'contact@maxdrive.com';
-            // This should be replaced with the actual logged-in user's email in a real app
-            const userEmail = 'john.doe@example.com'; 
+            const result = await addAppointment({ ...data, services: serviceNames });
 
-            // Email to Admin
-            await sendEmail({
-                to: adminEmail,
-                subject: `New Appointment Booking: ${serviceNames} for ${data.vehicleMake} ${data.vehicleModel}`,
-                html: `
-                    <h1>New Appointment Request</h1>
-                    <p>A new appointment has been booked through the website.</p>
-                    <ul>
-                        <li><strong>Service(s):</strong> ${serviceNames}</li>
-                        <li><strong>Vehicle:</strong> ${data.vehicleMake} ${data.vehicleModel} ${data.vehicleYear}</li>
-                        <li><strong>Requested Date:</strong> ${formattedDate}</li>
-                        <li><strong>Notes:</strong> ${data.notes || 'None'}</li>
-                    </ul>
-                `
-            });
-
-            // Confirmation Email to User
-            await sendEmail({
-                to: userEmail,
-                subject: `Your Appointment Confirmation with Max-Drive-Services`,
-                html: `
-                    <h1>Appointment Confirmed!</h1>
-                    <p>Thank you for booking with Max-Drive-Services. Your appointment details are below:</p>
-                    <ul>
-                        <li><strong>Service(s):</strong> ${serviceNames}</li>
-                        <li><strong>Vehicle:</strong> ${data.vehicleMake} ${data.vehicleModel} ${data.vehicleYear}</li>
-                        <li><strong>Date:</strong> ${formattedDate}</li>
-                    </ul>
-                    <p>We will contact you shortly to confirm the exact time. We look forward to seeing you!</p>
-                `
-            });
-
-            toast({
-                title: t('appointment_booked_title'),
-                description: `${t('appointment_booked_desc')} ${serviceNames} ${t('on')} ${formattedDate}.`,
-            });
-            form.reset({ serviceIds: [], vehicleMake: "", vehicleModel: "", vehicleYear: undefined, notes: "", otherService: "" });
+            if(result.success) {
+                const formattedDate = format(data.appointmentDate, "PPP");
+                toast({
+                    title: t('appointment_booked_title'),
+                    description: `${t('appointment_booked_desc')} ${serviceNames} ${t('on')} ${formattedDate}.`,
+                });
+                router.push('/dashboard');
+            } else {
+                toast({ title: "Booking Failed", description: result.error, variant: "destructive" });
+            }
         } catch (error) {
             console.error("Appointment submission error:", error);
             toast({
@@ -161,6 +159,7 @@ export function AppointmentForm() {
     }
     
     return (
+        <>
         <Card>
             <CardHeader>
                 <CardTitle>{t('appointment_page_title')}</CardTitle>
@@ -236,39 +235,34 @@ export function AppointmentForm() {
                             />
                         )}
 
-                        <div className="space-y-4 rounded-lg border p-4">
-                            <FormLabel>{t('vehicle_label')}</FormLabel>
-                             <FormDescription>{t('vehicle_input_description')}</FormDescription>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                               <FormField control={form.control} name="vehicleMake" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('vehicle_make')}</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="e.g., Toyota" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}/>
-                                 <FormField control={form.control} name="vehicleModel" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('vehicle_model')}</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="e.g., Camry" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}/>
-                                 <FormField control={form.control} name="vehicleYear" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('vehicle_year')}</FormLabel>
-                                        <FormControl>
-                                            <Input type="number" placeholder="e.g., 2021" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}/>
-                            </div>
-                        </div>
+                        <FormField
+                            control={form.control}
+                            name="vehicleId"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Vehicle</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a registered vehicle" />
+                                    </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {vehicles.map(vehicle => (
+                                            <SelectItem key={vehicle.id} value={vehicle.id}>
+                                               <span className="flex items-center"><Car className="mr-2 h-4 w-4" /> {vehicle.make} {vehicle.model} ({vehicle.year})</span>
+                                            </SelectItem>
+                                        ))}
+                                        <SelectItem value={NEW_VEHICLE_VALUE}>
+                                           <span className="flex items-center text-primary"><PlusCircle className="mr-2 h-4 w-4" /> Add a new vehicle...</span>
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        
 
                          <FormField
                             control={form.control}
@@ -336,5 +330,11 @@ export function AppointmentForm() {
                 </Form>
             </CardContent>
         </Card>
+        <AddVehicleDialog 
+            isOpen={isAddVehicleDialogOpen}
+            onOpenChange={setIsAddVehicleDialogOpen}
+            onAddVehicle={handleAddVehicle}
+        />
+        </>
     )
 }

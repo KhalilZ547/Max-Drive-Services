@@ -18,6 +18,7 @@ export function HeroSection() {
           layout="fill"
           objectFit="cover"
           className="opacity-10"
+          data-ai-hint="car repair"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
       </div>
@@ -33,6 +34,7 @@ export function HeroSection() {
             width={150}
             height={150}
             className="rounded-full border-4 border-primary/50 shadow-lg"
+            data-ai-hint="mechanic tools"
           />
         </div>
 

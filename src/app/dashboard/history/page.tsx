@@ -22,22 +22,35 @@ import { HistoryPageSkeleton } from '@/components/HistoryPageSkeleton';
 import { History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-
-// All data will now be fetched from the database, not mock files.
-const serviceHistory: { vehicle: string; service: string; date: string; cost: number; }[] = [];
+import { getServiceHistory, type ServiceHistoryItem } from './actions';
+import { useToast } from '@/hooks/use-toast';
 
 const TND_TO_EUR_RATE = 0.3; // Approximate conversion rate
 
 export default function HistoryPage() {
     const { t } = useTranslation();
+    const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(true);
+    const [serviceHistory, setServiceHistory] = useState<ServiceHistoryItem[]>([]);
 
     useEffect(() => {
-        // In a real app, you would fetch user-specific data here.
-        // For now, we simulate loading.
-        const timer = setTimeout(() => setIsLoading(false), 1000);
-        return () => clearTimeout(timer);
-    }, []);
+        async function loadHistory() {
+            try {
+                const history = await getServiceHistory();
+                setServiceHistory(history);
+            } catch (error) {
+                console.error("Failed to fetch service history:", error);
+                toast({
+                    title: "Error",
+                    description: "Could not fetch your service history. Please try again later.",
+                    variant: "destructive"
+                });
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        loadHistory();
+    }, [toast]);
 
     if (isLoading) {
         return <HistoryPageSkeleton />;

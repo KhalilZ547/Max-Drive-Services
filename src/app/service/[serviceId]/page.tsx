@@ -12,26 +12,30 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { TranslationKey } from '@/lib/translations';
 
-const serviceData: Record<string, { titleKey: TranslationKey; detailKey: TranslationKey; image: string; }> = {
+const serviceData: Record<string, { titleKey: TranslationKey; detailKey: TranslationKey; image: string; imageHint: string }> = {
   'oil-change': {
     titleKey: 'service_oil_change_title',
     detailKey: 'service_oil_change_detail',
     image: 'https://placehold.co/1200x600.png',
+    imageHint: 'oil change',
   },
   'brake-repair': {
     titleKey: 'service_brake_repair_title',
     detailKey: 'service_brake_repair_detail',
     image: 'https://placehold.co/1200x600.png',
+    imageHint: 'brake repair',
   },
   'engine-diagnostic': {
     titleKey: 'service_engine_diagnostic_title',
     detailKey: 'service_engine_diagnostic_detail',
     image: 'https://placehold.co/1200x600.png',
+    imageHint: 'engine diagnostic',
   },
   'ecu-solutions': {
     titleKey: 'service_ecu_solutions_title',
     detailKey: 'service_ecu_solutions_detail',
     image: 'https://placehold.co/1200x600.png',
+    imageHint: 'car tuning',
   },
 };
 
@@ -59,6 +63,7 @@ export default function ServiceDetailPage() {
                   alt={t(service.titleKey)}
                   layout="fill"
                   objectFit="cover"
+                  data-ai-hint={service.imageHint}
                 />
               </div>
               <CardTitle className="text-4xl text-primary">{t(service.titleKey)}</CardTitle>

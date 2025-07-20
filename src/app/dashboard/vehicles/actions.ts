@@ -30,7 +30,7 @@ export async function getVehicles(): Promise<VehicleData[]> {
     }
 }
 
-export async function addVehicle(data: unknown): Promise<{ success: boolean; error?: string }> {
+export async function addVehicle(data: unknown): Promise<{ success: boolean; error?: string; newVehicleId?: string; }> {
     const validated = VehicleSchema.safeParse(data);
     if (!validated.success) {
         return { success: false, error: validated.error.errors.map(e => e.message).join(', ') };
@@ -44,12 +44,16 @@ export async function addVehicle(data: unknown): Promise<{ success: boolean; err
     const { make, model, year, vin } = validated.data;
 
     try {
-        await db.execute(
+        const [result] = await db.execute(
             'INSERT INTO vehicles (user_id, make, model, year, vin) VALUES (?, ?, ?, ?, ?)', 
             [userId, make, model, year, vin || '']
         );
+        
+        const newId = (result as any).insertId;
+
         revalidatePath('/dashboard/vehicles');
-        return { success: true };
+        revalidatePath('/dashboard/appointment');
+        return { success: true, newVehicleId: newId.toString() };
     } catch (error) {
         console.error("Failed to add vehicle:", error);
         return { success: false, error: 'An unexpected server error occurred.' };
@@ -104,6 +108,7 @@ export async function deleteVehicle(vehicleId: string): Promise<{ success: boole
         }
 
         revalidatePath('/dashboard/vehicles');
+        revalidatePath('/dashboard/appointment');
         return { success: true };
     } catch (error) {
         console.error("Failed to delete vehicle:", error);
