@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bot, Send, X } from "lucide-react";
+import { Bot, Send, X, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { usePathname } from 'next/navigation';
@@ -17,22 +17,42 @@ type Message = {
   text: string;
 };
 
+// Mock user data for demonstration when logged in
+const mockUser = {
+  name: "Karim Ben Ahmed",
+};
+
 export function AIChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { id: '1', role: 'assistant', text: "Hello! I'm the garage assistant. How can I help you with your car today?" }
+    { id: '1', role: 'assistant', text: "Hello! I'm the Max Drive assistant. How can I help you today?" }
   ]);
   const [input, setInput] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
+
   const pathname = usePathname();
   const scrollAreaViewportRef = useRef<HTMLDivElement>(null);
   
   const isDashboardPage = pathname.startsWith('/admin') || pathname.startsWith('/dashboard');
 
   useEffect(() => {
-    if (scrollAreaViewportRef.current) {
-      scrollAreaViewportRef.current.scrollTop = scrollAreaViewportRef.current.scrollHeight;
+    // This check runs only on the client-side
+    const userRole = localStorage.getItem('userRole');
+    if (userRole) {
+      setIsLoggedIn(true);
+      // In a real app, you'd fetch the user's name from your backend/context
+      setUserName(mockUser.name);
     }
-  }, [messages]);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen && scrollAreaViewportRef.current) {
+      setTimeout(() => {
+        scrollAreaViewportRef.current!.scrollTop = scrollAreaViewportRef.current!.scrollHeight;
+      }, 100);
+    }
+  }, [messages, isOpen]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -47,6 +67,17 @@ export function AIChat() {
         const assistantResponse: Message = { id: (Date.now() + 1).toString(), role: 'assistant', text: "This is a placeholder response." };
         setMessages(prev => [...prev, assistantResponse]);
     }, 1000);
+  };
+
+  const getAvatarFallback = (name: string): string => {
+      if (!name) return "U";
+      const nameParts = name.trim().split(" ").filter(Boolean);
+      if (nameParts.length > 1) {
+          return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+      } else if (nameParts.length === 1 && nameParts[0].length > 0) {
+          return nameParts[0][0].toUpperCase();
+      }
+      return "U";
   };
   
   if (isDashboardPage) {
@@ -76,9 +107,11 @@ export function AIChat() {
         <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
           <div className="flex items-center gap-3">
             <Avatar>
-                <AvatarFallback>GA</AvatarFallback>
+                <AvatarFallback className="bg-primary/10">
+                    <Bot className="h-6 w-6 text-primary" />
+                </AvatarFallback>
             </Avatar>
-            <CardTitle className="text-lg">Garage Assistant</CardTitle>
+            <CardTitle className="text-lg">Max Drive Assistant</CardTitle>
           </div>
           <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
             <X className="h-4 w-4" />
@@ -95,7 +128,9 @@ export function AIChat() {
                 })}>
                   {message.role === 'assistant' && (
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback>GA</AvatarFallback>
+                       <AvatarFallback className="bg-primary/10">
+                            <Bot className="h-5 w-5 text-primary" />
+                        </AvatarFallback>
                     </Avatar>
                   )}
                   <p className={cn("max-w-[75%] rounded-lg px-3 py-2 text-sm", {
@@ -104,6 +139,13 @@ export function AIChat() {
                   })}>
                     {message.text}
                   </p>
+                  {message.role === 'user' && (
+                     <Avatar className="h-8 w-8">
+                        <AvatarFallback>
+                          {isLoggedIn ? getAvatarFallback(userName) : <User className="h-5 w-5" />}
+                        </AvatarFallback>
+                    </Avatar>
+                  )}
                 </div>
               ))}
             </div>
