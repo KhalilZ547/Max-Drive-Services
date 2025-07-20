@@ -72,6 +72,7 @@ export default function AdminLayout({
   const handleLogout = useCallback(() => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('userRole');
+      localStorage.removeItem('userId');
     }
     router.push('/login');
   }, [router]);

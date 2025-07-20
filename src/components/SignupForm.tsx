@@ -18,51 +18,50 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useTranslation } from "@/hooks/use-translation";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { sendEmail } from "@/services/email";
+import { signupUser } from "@/services/auth";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 export function SignupForm() {
   const { t } = useTranslation();
   const router = useRouter();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const FormSchema = z.object({
+    name: z.string().min(2, { message: "Name must be at least 2 characters." }),
     email: z.string().email({ message: "Please enter a valid email." }),
     password: z.string().min(8, { message: "Password must be at least 8 characters." }),
-    confirmPassword: z.string(),
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    // In a real app, generate a unique verification link.
-    const verificationLink = `${window.location.origin}/login?verified=true`; // Mock link
-
-    await sendEmail({
-      to: data.email,
-      subject: "Welcome to Max-Drive-Services! Please Verify Your Email",
-      html: `
-        <h1>Welcome!</h1>
-        <p>Thank you for signing up. Please click the link below to verify your email address and activate your account:</p>
-        <a href="${verificationLink}" target="_blank" style="display:inline-block;padding:10px 20px;background-color:#2563eb;color:white;text-decoration:none;border-radius:5px;">Verify Email</a>
-        <p>If you did not sign up for this account, you can ignore this email.</p>
-      `
-    });
+    setIsSubmitting(true);
+    const result = await signupUser(data);
     
-    toast({
-        title: t('signup_confirmation_title'),
-        description: t('signup_confirmation_desc'),
-    });
-    router.push("/login");
+    if (result.success) {
+      toast({
+          title: t('signup_confirmation_title'),
+          description: t('signup_confirmation_desc'),
+      });
+      router.push("/login");
+    } else {
+       toast({
+          title: 'Signup Failed',
+          description: result.error,
+          variant: 'destructive',
+      });
+    }
+    setIsSubmitting(false);
   }
 
   return (
@@ -73,7 +72,20 @@ export function SignupForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+             <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('contact_form_name')}</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your full name" {...field} disabled={isSubmitting} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
@@ -81,7 +93,7 @@ export function SignupForm() {
                 <FormItem>
                   <FormLabel>{t('email_label')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="name@example.com" {...field} />
+                    <Input placeholder="name@example.com" {...field} disabled={isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -94,28 +106,24 @@ export function SignupForm() {
                 <FormItem>
                   <FormLabel>{t('password_label')}</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" {...field} disabled={isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('confirm_password_label')}</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full">{t('nav_signup')}</Button>
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {t('nav_signup')}
+            </Button>
           </form>
         </Form>
+        <div className="mt-6 text-center text-sm">
+          Already have an account?{' '}
+          <Link href="/login" className="underline font-semibold text-primary">
+            {t('nav_login')}
+          </Link>
+        </div>
       </CardContent>
     </Card>
   );

@@ -107,6 +107,9 @@ export default function DashboardLayout({
   const handleLogout = useCallback(() => {
     if (typeof window !== 'undefined') {
         localStorage.removeItem('userRole');
+        localStorage.removeItem('userId');
+        // This triggers the event listener in AIChat to clear user data
+        window.dispatchEvent(new CustomEvent('authChange', { detail: { userId: null } }));
     }
     router.push('/login');
   }, [router]);

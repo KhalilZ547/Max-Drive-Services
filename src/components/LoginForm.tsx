@@ -19,15 +19,21 @@ import { useTranslation } from "@/hooks/use-translation";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { loginUser } from "@/services/auth";
+import { Loader2 } from "lucide-react";
 
 export function LoginForm() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const FormSchema = z.object({
     email: z.string().email(),
-    password: z.string().min(6),
+    password: z.string().min(1, "Password is required"),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -38,21 +44,33 @@ export function LoginForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    setIsSubmitting(true);
     const callbackUrl = searchParams.get("callbackUrl");
 
-    // Mock login logic with role-based routing
-    if (data.email.toLowerCase() === 'admin@maxdrive.com') {
+    const result = await loginUser(data);
+
+    if (result.success && result.user) {
       if (typeof window !== 'undefined') {
-        localStorage.setItem('userRole', 'admin');
+        localStorage.setItem('userId', result.user.id);
+        localStorage.setItem('userRole', result.user.role);
+        // This triggers the event listener in AIChat
+        window.dispatchEvent(new CustomEvent('authChange', { detail: { userId: result.user.id } }));
       }
-      router.push(callbackUrl || "/admin/dashboard");
+      
+      if (result.user.role === 'admin') {
+         router.push(callbackUrl || "/admin/dashboard");
+      } else {
+         router.push(callbackUrl || "/dashboard");
+      }
     } else {
-       if (typeof window !== 'undefined') {
-        localStorage.setItem('userRole', 'client');
-      }
-      router.push(callbackUrl || "/dashboard");
+      toast({
+        title: "Login Failed",
+        description: result.error,
+        variant: "destructive"
+      });
     }
+    setIsSubmitting(false);
   }
 
   return (
@@ -71,7 +89,7 @@ export function LoginForm() {
                 <FormItem>
                   <FormLabel>{t('email_label')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="name@example.com" {...field} />
+                    <Input placeholder="name@example.com" {...field} disabled={isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -84,7 +102,7 @@ export function LoginForm() {
                 <FormItem>
                   <FormLabel>{t('password_label')}</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" {...field} disabled={isSubmitting} />
                   </FormControl>
                   <div className="flex justify-end">
                      <Link href="/forgot-password" className={cn(buttonVariants({ variant: "link" }), "p-0 h-auto text-xs")}>
@@ -95,7 +113,10 @@ export function LoginForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">{t('nav_login')}</Button>
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {t('nav_login')}
+            </Button>
           </form>
         </Form>
         <div className="mt-6 text-center text-sm">
