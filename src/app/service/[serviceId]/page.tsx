@@ -17,25 +17,25 @@ const serviceData: Record<string, { titleKey: TranslationKey; detailKey: Transla
     titleKey: 'service_oil_change_title',
     detailKey: 'service_oil_change_detail',
     image: 'https://placehold.co/1200x600.png',
-    hint: 'engine oil'
+    hint: 'engine maintenance'
   },
   'brake-repair': {
     titleKey: 'service_brake_repair_title',
     detailKey: 'service_brake_repair_detail',
     image: 'https://placehold.co/1200x600.png',
-    hint: 'car brakes'
+    hint: 'brake disc'
   },
   'engine-diagnostic': {
     titleKey: 'service_engine_diagnostic_title',
     detailKey: 'service_engine_diagnostic_detail',
     image: 'https://placehold.co/1200x600.png',
-    hint: 'car engine'
+    hint: 'glowing engine'
   },
   'ecu-solutions': {
     titleKey: 'service_ecu_solutions_title',
     detailKey: 'service_ecu_solutions_detail',
     image: 'https://placehold.co/1200x600.png',
-    hint: 'car computer'
+    hint: 'circuit board'
   },
 };
 
