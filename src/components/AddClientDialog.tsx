@@ -24,7 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { Client } from "@/lib/mock-data";
+import type { Client } from "@/services/clients";
 import { Loader2 } from "lucide-react";
 
 const AddClientFormSchema = z.object({
@@ -32,7 +32,7 @@ const AddClientFormSchema = z.object({
   email: z.string().email(),
 });
 
-type NewClientData = Omit<Client, 'id' | 'registered'>;
+type NewClientData = Omit<Client, 'id' | 'registered' | 'avatar_url' | 'role'>;
 
 type AddClientDialogProps = {
     isOpen: boolean;

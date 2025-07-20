@@ -18,7 +18,7 @@ import {
 import { useTranslation } from "@/hooks/use-translation";
 import { Button } from "./ui/button";
 
-// All mock data has been removed to use real DB data.
+// All data will now be fetched from the database, not mock files.
 const vehicles: { make: string; model: string; year: number; vin: string; }[] = [];
 const serviceHistory: { vehicle: string; service: string; date: string; cost: number; }[] = [];
 const reminders: { title: string; date: string; details: string; }[] = [];

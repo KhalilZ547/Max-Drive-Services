@@ -24,7 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { Client } from "@/lib/mock-data";
+import type { Client } from "@/services/clients";
 import { Loader2 } from "lucide-react";
 
 const EditClientFormSchema = z.object({
@@ -37,7 +37,7 @@ type EditClientDialogProps = {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
     client: Client | null;
-    onUpdateClient: (client: Client) => Promise<void>;
+    onUpdateClient: (client: Omit<Client, 'registered' | 'avatar_url' | 'role'>) => Promise<void>;
 };
 
 
@@ -65,7 +65,7 @@ export function EditClientDialog({ isOpen, onOpenChange, client, onUpdateClient 
 
   async function onSubmit(data: z.infer<typeof EditClientFormSchema>) {
     setIsSubmitting(true);
-    const updatedClient = { ...client!, ...data };
+    const updatedClient = { ...client, ...data };
     await onUpdateClient(updatedClient);
     setIsSubmitting(false);
   }

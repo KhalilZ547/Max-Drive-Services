@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useRef, useEffect, FormEvent } from "react";
+import { useState, useRef, useEffect, FormEvent, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,15 +12,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { usePathname } from 'next/navigation';
 import { askGarageExpert } from "@/app/actions";
 import { toast } from "@/hooks/use-toast";
+import type { Client } from "@/services/clients";
+import { getClientById } from "@/services/clients";
+import { getUserId } from "@/services/auth";
 
 type Message = {
   id: string;
   role: "user" | "assistant";
   text: string;
-};
-
-const mockUser = {
-  name: "Karim Ben Ahmed",
 };
 
 const examplePrompts = [
@@ -36,39 +35,38 @@ export function AIChat() {
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState('');
-  const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [client, setClient] = useState<Client | null>(null);
 
   const pathname = usePathname();
   const scrollAreaViewportRef = useRef<HTMLDivElement>(null);
   
   const isAdminPage = pathname.startsWith('/admin');
-  const isDashboardPage = pathname.startsWith('/dashboard');
-
-  useEffect(() => {
-    const userRole = localStorage.getItem('userRole');
-    if (userRole === 'client') {
-      setIsLoggedIn(true);
-      setUserName(mockUser.name);
-      const savedAvatar = localStorage.getItem('userAvatar');
-      if (savedAvatar) {
-        setUserAvatar(savedAvatar);
+  
+  const fetchClientData = useCallback(async () => {
+    const userId = await getUserId();
+    if (userId) {
+      try {
+        const clientData = await getClientById(userId);
+        setClient(clientData);
+      } catch (error) {
+        console.error("Failed to fetch client data for chat:", error);
       }
+    } else {
+        setClient(null);
     }
   }, []);
   
-  // Listen for storage changes to update avatar in real-time
+  // Fetch client data on component mount if on a client-facing page
   useEffect(() => {
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === 'userAvatar') {
-        setUserAvatar(event.newValue);
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+    if(!isAdminPage) {
+        fetchClientData();
+    }
+  }, [isAdminPage, fetchClientData]);
+  
+  // Re-fetch data when user navigates between dashboard pages
+  useEffect(() => {
+    fetchClientData();
+  }, [pathname, fetchClientData]);
 
   useEffect(() => {
     if (isOpen && scrollAreaViewportRef.current) {
@@ -113,7 +111,7 @@ export function AIChat() {
     sendMessage(prompt);
   };
 
-  const getAvatarFallback = (name: string): string => {
+  const getAvatarFallback = (name?: string): string => {
       if (!name) return "U";
       const nameParts = name.trim().split(" ").filter(Boolean);
       if (nameParts.length > 1) {
@@ -188,9 +186,9 @@ export function AIChat() {
                   </div>
                   {message.role === 'user' && (
                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={isLoggedIn ? userAvatar || undefined : undefined} />
+                        <AvatarImage src={client?.avatar_url || undefined} />
                         <AvatarFallback>
-                          {isLoggedIn ? getAvatarFallback(userName) : <User className="h-5 w-5" />}
+                          {client ? getAvatarFallback(client.name) : <User className="h-5 w-5" />}
                         </AvatarFallback>
                     </Avatar>
                   )}

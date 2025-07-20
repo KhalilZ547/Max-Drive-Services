@@ -23,8 +23,7 @@ import { History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-// Mock data has been removed to prepare for database integration.
-// In a real app, this data would be fetched based on the logged-in user.
+// All data will now be fetched from the database, not mock files.
 const serviceHistory: { vehicle: string; service: string; date: string; cost: number; }[] = [];
 
 const TND_TO_EUR_RATE = 0.3; // Approximate conversion rate

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -20,25 +20,25 @@ import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useRef, ChangeEvent, useCallback, useEffect } from "react";
 import { ProfilePageSkeleton } from "@/components/ProfilePageSkeleton";
+import { getClientProfile, updateClientProfile, deleteClientAvatar } from "./actions";
+import type { Client } from "@/services/clients";
+import { Loader2 } from "lucide-react";
 
 const ProfileFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email(),
+  avatar: z.any().optional(), // For the file input
 });
 
-// Mock user data to simulate a logged-in user.
-// In a real app, this would come from a context or session.
-const mockUser = {
-  name: "Karim Ben Ahmed",
-  email: "karim@example.com",
-};
 
 export default function ProfilePage() {
     const { t } = useTranslation();
     const { toast } = useToast();
+    const [client, setClient] = useState<Client | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<z.infer<typeof ProfileFormSchema>>({
         resolver: zodResolver(ProfileFormSchema),
@@ -48,18 +48,25 @@ export default function ProfilePage() {
         },
     });
 
-    useEffect(() => {
-        // Simulate fetching user data and then populating the form.
-        setTimeout(() => {
-            form.reset(mockUser);
-            // On load, check localStorage for a saved avatar
-            const savedAvatar = localStorage.getItem('userAvatar');
-            if (savedAvatar) {
-                setAvatarPreview(savedAvatar);
+    const fetchProfile = useCallback(async () => {
+        try {
+            const clientData = await getClientProfile();
+            if(clientData){
+                setClient(clientData);
+                form.reset({ name: clientData.name, email: clientData.email });
+                setAvatarPreview(clientData.avatar_url);
             }
+        } catch (error) {
+            console.error("Failed to fetch profile", error);
+            toast({ title: "Error", description: "Could not load your profile.", variant: "destructive"});
+        } finally {
             setIsLoading(false);
-        }, 1000);
-    }, [form]);
+        }
+    }, [form, toast]);
+
+    useEffect(() => {
+        fetchProfile();
+    }, [fetchProfile]);
 
     const watchedName = form.watch("name");
     
@@ -80,42 +87,66 @@ export default function ProfilePage() {
     const handleAvatarChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
+            form.setValue('avatar', file);
             const reader = new FileReader();
             reader.onloadend = () => {
-                const dataUrl = reader.result as string;
-                setAvatarPreview(dataUrl);
-                localStorage.setItem('userAvatar', dataUrl);
+                setAvatarPreview(reader.result as string);
             };
             reader.readAsDataURL(file);
         }
-    }, []);
+    }, [form]);
 
     const handleButtonClick = useCallback(() => {
         fileInputRef.current?.click();
     }, []);
 
-    const handleDeleteAvatar = useCallback(() => {
-        setAvatarPreview(null);
-        localStorage.removeItem('userAvatar');
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-        }
-    }, []);
-
-    const onSubmit = useCallback((data: z.infer<typeof ProfileFormSchema>) => {
-        console.log(data);
-        if (data.email !== mockUser.email) {
-            toast({
-                title: t('email_change_confirmation_title'),
-                description: t('email_change_confirmation_desc'),
-            });
+    const handleDeleteAvatar = useCallback(async () => {
+        setIsSubmitting(true);
+        const result = await deleteClientAvatar();
+        if(result.success) {
+            setAvatarPreview(null);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
+            form.setValue('avatar', null);
+            toast({ title: "Avatar Removed", description: "Your profile picture has been removed." });
         } else {
-            toast({
-                title: t('profile_update_success_title'),
-                description: t('profile_update_success_desc'),
-            });
+            toast({ title: "Error", description: result.error, variant: "destructive" });
         }
-    }, [t, toast]);
+        setIsSubmitting(false);
+    }, [form, toast]);
+
+    const onSubmit = useCallback(async (data: z.infer<typeof ProfileFormSchema>) => {
+        setIsSubmitting(true);
+        
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('email', data.email);
+        if (data.avatar) {
+            formData.append('avatar', data.avatar);
+        }
+
+        const result = await updateClientProfile(formData);
+        
+        if (result.success) {
+            if (client?.email !== data.email) {
+                 toast({
+                    title: t('email_change_confirmation_title'),
+                    description: t('email_change_confirmation_desc'),
+                });
+            } else {
+                toast({
+                    title: t('profile_update_success_title'),
+                    description: t('profile_update_success_desc'),
+                });
+            }
+            fetchProfile(); // Re-fetch to get the latest data, including new S3 URL
+        } else {
+            toast({ title: "Update Failed", description: result.error, variant: "destructive" });
+        }
+        
+        setIsSubmitting(false);
+    }, [client, fetchProfile, t, toast]);
 
     if (isLoading) {
         return <ProfilePageSkeleton />;
@@ -136,16 +167,27 @@ export default function ProfilePage() {
                                     <AvatarImage src={avatarPreview || undefined} />
                                     <AvatarFallback>{avatarFallback}</AvatarFallback>
                                 </Avatar>
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    onChange={handleAvatarChange}
-                                    className="hidden"
-                                    accept="image/*"
+                                <Controller
+                                    name="avatar"
+                                    control={form.control}
+                                    render={() => (
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={handleAvatarChange}
+                                            className="hidden"
+                                            accept="image/*"
+                                            disabled={isSubmitting}
+                                        />
+                                    )}
                                 />
-                                <Button type="button" variant="outline" onClick={handleButtonClick}>{t('change_photo_button')}</Button>
+                                <Button type="button" variant="outline" onClick={handleButtonClick} disabled={isSubmitting}>
+                                    {t('change_photo_button')}
+                                </Button>
                                 {avatarPreview && (
-                                    <Button type="button" variant="destructive" onClick={handleDeleteAvatar}>{t('delete_photo_button')}</Button>
+                                    <Button type="button" variant="destructive" onClick={handleDeleteAvatar} disabled={isSubmitting}>
+                                        {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin"/> : t('delete_photo_button')}
+                                    </Button>
                                 )}
                             </div>
                              <FormField
@@ -155,7 +197,7 @@ export default function ProfilePage() {
                                     <FormItem>
                                         <FormLabel>{t('contact_form_name')}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Your Name" {...field} />
+                                            <Input placeholder="Your Name" {...field} disabled={isSubmitting}/>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -168,13 +210,16 @@ export default function ProfilePage() {
                                     <FormItem>
                                         <FormLabel>{t('email_label')}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="name@example.com" {...field} />
+                                            <Input placeholder="name@example.com" {...field} disabled={isSubmitting}/>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit">{t('profile_save_button')}</Button>
+                            <Button type="submit" disabled={isSubmitting}>
+                                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
+                                {t('profile_save_button')}
+                            </Button>
                         </form>
                     </Form>
                 </CardContent>

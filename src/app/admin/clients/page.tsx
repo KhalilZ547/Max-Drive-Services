@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { MoreHorizontal, Users } from "lucide-react";
+import { MoreHorizontal, Users, User } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -40,8 +40,9 @@ import { useToast } from "@/hooks/use-toast";
 import { EditClientDialog } from "@/components/EditClientDialog";
 import { AddClientDialog } from "@/components/AddClientDialog";
 import { AdminClientsSkeleton } from "@/components/AdminClientsSkeleton";
-import type { Client } from "@/lib/mock-data";
+import type { Client } from "@/services/clients";
 import { getClients, addClient, updateClient, deleteClient } from "./actions";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 
 export default function ClientsPage() {
@@ -70,6 +71,17 @@ export default function ClientsPage() {
     useEffect(() => {
         fetchClients();
     }, [fetchClients]);
+    
+    const getAvatarFallback = useCallback((name: string | undefined): string => {
+        if (!name) return "?";
+        const nameParts = name.trim().split(" ").filter(Boolean);
+        if (nameParts.length > 1) {
+            return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length > 0) {
+            return nameParts[0][0].toUpperCase();
+        }
+        return "?";
+    }, []);
 
     const handleEdit = useCallback((client: Client) => {
         setEditingClient(client);
@@ -94,8 +106,8 @@ export default function ClientsPage() {
         }
     }, [deletingClientId, fetchClients, toast]);
 
-    const handleUpdateClient = useCallback(async (updatedClient: Client) => {
-        const result = await updateClient(updatedClient);
+    const handleUpdateClient = useCallback(async (updatedClientData: Omit<Client, 'registered' | 'avatar_url' | 'role'>) => {
+        const result = await updateClient(updatedClientData);
         if (result.success) {
             toast({ title: "Client Updated", description: "The client's information has been successfully updated."});
             setIsEditDialogOpen(false);
@@ -106,7 +118,7 @@ export default function ClientsPage() {
         }
     }, [toast, fetchClients]);
     
-    const handleAddClient = useCallback(async (newClientData: Omit<Client, 'id' | 'registered'>) => {
+    const handleAddClient = useCallback(async (newClientData: Omit<Client, 'id' | 'registered' | 'avatar_url' | 'role'>) => {
         const result = await addClient(newClientData);
         if(result.success) {
             toast({ title: "Client Added", description: `An invitation email has been sent to ${newClientData.email}.`});
@@ -139,6 +151,7 @@ export default function ClientsPage() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
+                                        <TableHead className="w-[80px]">Avatar</TableHead>
                                         <TableHead>Name</TableHead>
                                         <TableHead>Email</TableHead>
                                         <TableHead>Registered On</TableHead>
@@ -150,6 +163,12 @@ export default function ClientsPage() {
                                 <TableBody>
                                     {clients.map((client) => (
                                         <TableRow key={client.id}>
+                                            <TableCell>
+                                                <Avatar>
+                                                    <AvatarImage src={client.avatar_url || undefined} alt={client.name} />
+                                                    <AvatarFallback>{getAvatarFallback(client.name)}</AvatarFallback>
+                                                </Avatar>
+                                            </TableCell>
                                             <TableCell className="font-medium">{client.name}</TableCell>
                                             <TableCell>{client.email}</TableCell>
                                             <TableCell>{client.registered}</TableCell>
