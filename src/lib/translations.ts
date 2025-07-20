@@ -63,7 +63,7 @@ export const translations = {
     testimonial_1_author: "Ahmed Ben Ali",
     testimonial_2_text: "Fast, reliable, and fair pricing. I highly recommend Max-Drive-Services for any car troubles.",
     testimonial_2_author: "Fatima Dubois",
-    testimonial_3_text: "The online chat assistant helped me figure out the issue before I even came in. Very helpful feature!",
+    testimonial_3_text: "The website's help feature was surprisingly smart and helped me book the right service without having to call.",
     testimonial_3_author: "John Smith",
 
     // Contact Section
@@ -81,9 +81,9 @@ export const translations = {
     contact_info_email: "contact@maxdrive.com",
 
     // AI Chat
-    ai_chat_title: "Help Assistant",
-    ai_chat_placeholder: "Ask about our services...",
-    ai_chat_welcome: "Hello! How can I help you with your car today?",
+    ai_chat_title: "Garage Assistant",
+    ai_chat_placeholder: "Ask about services or book an appointment...",
+    ai_chat_welcome: "Hello! I'm the garage assistant. How can I help you with your car today? Feel free to ask about our services or book an appointment.",
 
     // Auth
     login_title: "Welcome Back!",
@@ -255,7 +255,7 @@ export const translations = {
     testimonial_1_author: "Ahmed Ben Ali",
     testimonial_2_text: "Rapide, fiable et à un prix juste. Je recommande vivement Max-Drive-Services.",
     testimonial_2_author: "Fatima Dubois",
-    testimonial_3_text: "L'assistant de chat en ligne m'a aidé à identifier le problème avant même ma visite. Fonctionnalité très utile !",
+    testimonial_3_text: "La fonction d'aide du site web était étonnamment intelligente et m'a aidé à réserver le bon service sans avoir à appeler.",
     testimonial_3_author: "John Smith",
 
     // Contact Section
@@ -273,9 +273,9 @@ export const translations = {
     contact_info_email: "contact@maxdrive.com",
 
     // AI Chat
-    ai_chat_title: "Assistant d'aide",
-    ai_chat_placeholder: "Posez une question sur nos services...",
-    ai_chat_welcome: "Bonjour ! Comment puis-je vous aider avec votre voiture aujourd'hui ?",
+    ai_chat_title: "Assistant de garage",
+    ai_chat_placeholder: "Renseignez-vous sur les services ou prenez rendez-vous...",
+    ai_chat_welcome: "Bonjour ! Je suis l'assistant de garage. Comment puis-je vous aider avec votre voiture aujourd'hui ? N'hésitez pas à poser des questions sur nos services ou à prendre rendez-vous.",
     
     // Auth
     login_title: "Content de vous revoir !",
@@ -448,7 +448,7 @@ export const translations = {
     testimonial_1_author: "أحمد بن علي",
     testimonial_2_text: "خدمة سريعة وموثوقة وبأسعار معقولة. أوصي بشدة بخدمات ماكس-درايف.",
     testimonial_2_author: "فاطمة دوبوا",
-    testimonial_3_text: "ساعدني مساعد الدردشة عبر الإنترنت في معرفة المشكلة حتى قبل مجيئي. ميزة مفيدة جدًا!",
+    testimonial_3_text: "كانت ميزة المساعدة في الموقع ذكية بشكل مدهش وساعدتني في حجز الخدمة المناسبة دون الحاجة إلى الاتصال.",
     testimonial_3_author: "جون سميث",
     
     // Contact Section
@@ -466,9 +466,9 @@ export const translations = {
     contact_info_email: "contact@maxdrive.com",
 
     // AI Chat
-    ai_chat_title: "مساعد الدعم",
-    ai_chat_placeholder: "اسأل عن خدماتنا...",
-    ai_chat_welcome: "مرحباً! كيف يمكنني مساعدتك بخصوص سيارتك اليوم؟",
+    ai_chat_title: "مساعد الكراج",
+    ai_chat_placeholder: "اسأل عن الخدمات أو احجز موعدًا...",
+    ai_chat_welcome: "مرحباً! أنا مساعد الكراج. كيف يمكنني مساعدتك بخصوص سيارتك اليوم؟ لا تتردد في طرح الأسئلة حول خدماتنا أو حجز موعد.",
 
     // Auth
     login_title: "مرحبًا بعودتك!",
