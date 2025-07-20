@@ -18,27 +18,22 @@ const images = [
   {
     src: 'https://placehold.co/800x450.png',
     alt: 'A modern car garage with several cars being serviced.',
-    hint: 'car garage',
   },
   {
     src: 'https://placehold.co/800x450.png',
     alt: 'A mechanic using diagnostic tools on a car engine.',
-    hint: 'mechanic diagnostic',
   },
   {
     src: 'https://placehold.co/800x450.png',
     alt: 'A close-up of a perfectly balanced tire.',
-    hint: 'car tire',
   },
   {
     src: 'https://placehold.co/800x450.png',
     alt: 'A clean and organized workshop with tools on the wall.',
-    hint: 'workshop tools',
   },
   {
     src: 'https://placehold.co/800x450.png',
     alt: 'A shiny red sports car in the garage.',
-    hint: 'sports car',
   },
 ];
 
@@ -89,7 +84,6 @@ export function ImageCarousel() {
                         alt={image.alt}
                         fill
                         className="object-cover"
-                        data-ai-hint={image.hint}
                       />
                     </CardContent>
                   </Card>

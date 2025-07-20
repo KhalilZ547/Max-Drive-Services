@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -30,7 +31,7 @@ const prompt = ai.definePrompt({
   model: 'googleai/gemini-2.0-flash',
   input: {schema: AnswerGarageQueryInputSchema},
   output: {schema: AnswerGarageQueryOutputSchema},
-  prompt: `You are a helpful AI assistant specializing in answering questions about garage services.
+  prompt: `You are a helpful garage expert specializing in answering questions about car services.
   Use your knowledge to provide accurate and helpful answers to the following query:
   
   Query: {{{query}}}

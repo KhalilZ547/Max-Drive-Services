@@ -63,7 +63,7 @@ export const translations = {
     testimonial_1_author: "Ahmed Ben Ali",
     testimonial_2_text: "Fast, reliable, and fair pricing. I highly recommend Max-Drive-Services for any car troubles.",
     testimonial_2_author: "Fatima Dubois",
-    testimonial_3_text: "The AI assistant helped me figure out the issue before I even came in. Very innovative!",
+    testimonial_3_text: "The online chat assistant helped me figure out the issue before I even came in. Very helpful feature!",
     testimonial_3_author: "John Smith",
 
     // Contact Section
@@ -81,7 +81,7 @@ export const translations = {
     contact_info_email: "contact@maxdrive.com",
 
     // AI Chat
-    ai_chat_title: "AI Assistant",
+    ai_chat_title: "Help Assistant",
     ai_chat_placeholder: "Ask about our services...",
     ai_chat_welcome: "Hello! How can I help you with your car today?",
 
@@ -255,7 +255,7 @@ export const translations = {
     testimonial_1_author: "Ahmed Ben Ali",
     testimonial_2_text: "Rapide, fiable et à un prix juste. Je recommande vivement Max-Drive-Services.",
     testimonial_2_author: "Fatima Dubois",
-    testimonial_3_text: "L'assistant IA m'a aidé à identifier le problème avant même ma visite. Très innovant !",
+    testimonial_3_text: "L'assistant de chat en ligne m'a aidé à identifier le problème avant même ma visite. Fonctionnalité très utile !",
     testimonial_3_author: "John Smith",
 
     // Contact Section
@@ -273,7 +273,7 @@ export const translations = {
     contact_info_email: "contact@maxdrive.com",
 
     // AI Chat
-    ai_chat_title: "Assistant IA",
+    ai_chat_title: "Assistant d'aide",
     ai_chat_placeholder: "Posez une question sur nos services...",
     ai_chat_welcome: "Bonjour ! Comment puis-je vous aider avec votre voiture aujourd'hui ?",
     
@@ -448,7 +448,7 @@ export const translations = {
     testimonial_1_author: "أحمد بن علي",
     testimonial_2_text: "خدمة سريعة وموثوقة وبأسعار معقولة. أوصي بشدة بخدمات ماكس-درايف.",
     testimonial_2_author: "فاطمة دوبوا",
-    testimonial_3_text: "ساعدني المساعد الذكي في تحديد المشكلة حتى قبل أن أحضر. مبتكر جدا!",
+    testimonial_3_text: "ساعدني مساعد الدردشة عبر الإنترنت في معرفة المشكلة حتى قبل مجيئي. ميزة مفيدة جدًا!",
     testimonial_3_author: "جون سميث",
     
     // Contact Section
@@ -466,7 +466,7 @@ export const translations = {
     contact_info_email: "contact@maxdrive.com",
 
     // AI Chat
-    ai_chat_title: "المساعد الذكي",
+    ai_chat_title: "مساعد الدعم",
     ai_chat_placeholder: "اسأل عن خدماتنا...",
     ai_chat_welcome: "مرحباً! كيف يمكنني مساعدتك بخصوص سيارتك اليوم؟",
 
@@ -582,5 +582,3 @@ export const translations = {
 
 export type Language = keyof typeof translations;
 export type TranslationKey = keyof typeof translations['en'];
-
-    
