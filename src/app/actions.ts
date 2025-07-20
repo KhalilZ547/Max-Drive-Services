@@ -13,7 +13,11 @@ import type { MessageData, Part } from 'genkit';
 
 export async function invokeGarageAssistant(
   prevState: Part | null,
-  { message, history }: { message: string; history: MessageData[] }
+  formData: FormData
 ): Promise<Part> {
+  const message = formData.get('message') as string;
+  const historyString = formData.get('history') as string;
+  const history = JSON.parse(historyString || '[]') as MessageData[];
+
   return garageAssistant(prevState, { message, history });
 }

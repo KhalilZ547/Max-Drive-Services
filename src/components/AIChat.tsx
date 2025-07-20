@@ -44,6 +44,7 @@ export function AIChat() {
   const [isPending, setIsPending] = useState(false);
   const { t } = useTranslation();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -55,12 +56,13 @@ export function AIChat() {
     e.preventDefault();
     if (!input.trim() || isPending) return;
 
-    const userMessage: Message = { type: 'text', sender: 'user', text: input };
-    setMessages((prev) => [...prev, userMessage]);
     const currentInput = input;
+    const userMessage: Message = { type: 'text', sender: 'user', text: currentInput };
+    setMessages((prev) => [...prev, userMessage]);
+    
     setInput('');
     setIsPending(true);
-
+    
     const history: MessageData[] = messages.map(m => {
         if (m.type === 'text') {
             return {
@@ -68,7 +70,6 @@ export function AIChat() {
                 content: [{ text: m.text }]
             };
         }
-        // Simplified history representation for tool responses
         return {
             role: 'model',
             content: [{ text: `(Tool call: ${m.response.name} for ${m.response.output.serviceName})` }]
@@ -76,7 +77,11 @@ export function AIChat() {
     }).filter(Boolean) as MessageData[];
 
     try {
-      const responsePart = await invokeGarageAssistant({ message: currentInput, history });
+      const formData = new FormData();
+      formData.append('message', currentInput);
+      formData.append('history', JSON.stringify(history));
+      
+      const responsePart = await invokeGarageAssistant(null, formData);
       
       if (responsePart) {
         if (responsePart.text) {
@@ -183,10 +188,12 @@ export function AIChat() {
           </ScrollArea>
           <DialogFooter>
             <form
+              ref={formRef}
               onSubmit={handleSubmit}
               className="flex w-full items-center space-x-2"
             >
               <Input
+                name="message"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={t('ai_chat_placeholder')}
