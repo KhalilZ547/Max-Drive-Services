@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect, FormEvent } from 'react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -13,27 +12,15 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageSquare, Bot, User, CornerDownLeft, Loader2, CalendarCheck } from 'lucide-react';
+import { MessageSquare, Bot, User, CornerDownLeft, Loader2 } from 'lucide-react';
 import { useTranslation } from '@/hooks/use-translation';
 import { invokeGarageAssistant } from '@/app/actions';
 import { MessageData, Part } from 'genkit';
 
-type ToolResponse = {
-  name: 'bookAppointment';
-  output: {
-    serviceId: string;
-    serviceName: string;
-  };
-};
 
 type Message = {
-  type: 'text';
   sender: 'user' | 'bot';
   text: string;
-} | {
-  type: 'tool';
-  sender: 'bot';
-  response: ToolResponse;
 };
 
 
@@ -57,24 +44,16 @@ export function AIChat() {
     if (!input.trim() || isPending) return;
 
     const currentInput = input;
-    const userMessage: Message = { type: 'text', sender: 'user', text: currentInput };
+    const userMessage: Message = { sender: 'user', text: currentInput };
     setMessages((prev) => [...prev, userMessage]);
     
     setInput('');
     setIsPending(true);
     
-    const history: MessageData[] = messages.map(m => {
-        if (m.type === 'text') {
-            return {
-                role: m.sender === 'bot' ? 'model' : 'user',
-                content: [{ text: m.text }]
-            };
-        }
-        return {
-            role: 'model',
-            content: [{ text: `(Tool call: ${m.response.name} for ${m.response.output.serviceName})` }]
-        }
-    }).filter(Boolean) as MessageData[];
+    const history: MessageData[] = messages.map(m => ({
+        role: m.sender === 'bot' ? 'model' : 'user',
+        content: [{ text: m.text }]
+    }));
 
     try {
       const formData = new FormData();
@@ -83,25 +62,15 @@ export function AIChat() {
       
       const responsePart = await invokeGarageAssistant(null, formData);
       
-      if (responsePart) {
-        if (responsePart.text) {
-          const botMessage: Message = { type: 'text', sender: 'bot', text: responsePart.text };
-          setMessages((prev) => [...prev, botMessage]);
-        } else if (responsePart.toolRequest) {
-          const toolResponse: Message = {
-            type: 'tool',
-            sender: 'bot',
-            response: {
-              name: responsePart.toolRequest.name as ToolResponse['name'],
-              output: responsePart.toolRequest.input as ToolResponse['output'],
-            }
-          };
-          setMessages((prev) => [...prev, toolResponse]);
-        }
+      if (responsePart && responsePart.text) {
+        const botMessage: Message = { sender: 'bot', text: responsePart.text };
+        setMessages((prev) => [...prev, botMessage]);
+      } else {
+         throw new Error("No text in response part.");
       }
     } catch (error) {
       console.error("Failed to invoke assistant:", error);
-      const errorMessage: Message = { type: 'text', sender: 'bot', text: "Sorry, I'm having a little trouble right now. Please try again later." };
+      const errorMessage: Message = { sender: 'bot', text: "Sorry, I'm having a little trouble right now. Please try again later." };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsPending(false);
@@ -111,7 +80,7 @@ export function AIChat() {
   const handleOpenChange = useCallback((open: boolean) => {
     setIsOpen(open);
     if(open && messages.length === 0){
-        setMessages([{ type: 'text', sender: 'bot', text: t('ai_chat_welcome') }]);
+        setMessages([{ sender: 'bot', text: t('ai_chat_welcome') }]);
     }
   }, [messages.length, t]);
 
@@ -149,24 +118,12 @@ export function AIChat() {
                   
                   <div
                     className={`rounded-lg px-4 py-2 max-w-[80%] ${
-                      message.type === 'text' && message.sender === 'user'
+                      message.sender === 'user'
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-muted'
                     }`}
                   >
-                    {message.type === 'text' ? (
-                        <p className="text-sm">{message.text}</p>
-                    ) : (
-                        <div className="space-y-3">
-                            <p className="text-sm font-medium">I can help book that for you.</p>
-                             <Button asChild onClick={() => setIsOpen(false)}>
-                                <Link href={`/dashboard/appointment?service=${message.response.output.serviceId}`}>
-                                    <CalendarCheck className="mr-2 h-4 w-4" />
-                                    Book {message.response.output.serviceName}
-                                </Link>
-                            </Button>
-                        </div>
-                    )}
+                    <p className="text-sm">{message.text}</p>
                   </div>
 
                    {message.sender === 'user' && (
