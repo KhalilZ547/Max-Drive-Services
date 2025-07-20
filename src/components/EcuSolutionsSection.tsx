@@ -89,9 +89,16 @@ export function EcuSolutionsSection({ isPageHeader = false }: EcuSolutionsSectio
           {ecuServices.map((service) => (
             <Card 
               key={service.id} 
-              className="text-center p-6 flex flex-col items-center border-2 border-transparent hover:border-primary hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="relative overflow-hidden text-center p-6 flex flex-col items-center border-2 border-transparent hover:border-primary hover:shadow-xl transition-all duration-300 cursor-pointer group"
               onClick={() => handleCardClick(service.id)}
             >
+              {service.id === 'radio_pin' && (
+                <div className="absolute top-0 right-0 h-16 w-16">
+                  <div className="absolute transform rotate-45 bg-destructive text-center text-destructive-foreground font-semibold py-1 right-[-34px] top-[32px] w-[170px]">
+                    Free
+                  </div>
+                </div>
+              )}
               <CardHeader className="p-0 mb-4">
                 <div className="mb-4 transition-transform duration-300 group-hover:scale-110">
                     {service.icon}
