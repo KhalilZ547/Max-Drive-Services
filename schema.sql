@@ -1,9 +1,9 @@
 
--- This file contains the SQL schema for the application's database.
--- You can run this file in your MySQL client (like MySQL Workbench)
--- to set up the necessary tables.
 
--- Create the `clients` table to store user and admin information.
+-- You can run this file in your MySQL client (like MySQL Workbench)
+
+
+
 CREATE TABLE clients (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE clients (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Create the `tuning_requests` table to store ECU tuning submissions.
+
 CREATE TABLE tuning_requests (
     id INT AUTO_INCREMENT PRIMARY KEY,
     client_id INT NULL,

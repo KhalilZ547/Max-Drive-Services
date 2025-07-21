@@ -80,6 +80,6 @@ export async function addAppointment(data: AppointmentData): Promise<{ success: 
     return { success: true };
   } catch (error) {
     console.error("Failed to add appointment:", error);
-    return { success: false, error: 'An unexpected server error occurred.' };
+    return { success: false, error: 'Failed to add appointment .' };
   }
 }
