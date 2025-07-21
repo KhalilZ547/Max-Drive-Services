@@ -7,6 +7,7 @@ import {
   LogOut,
   PanelLeft,
   Cpu,
+  Settings,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -22,6 +23,7 @@ const navItems = [
   { href: '/admin/dashboard', icon: Home, label: 'Dashboard' },
   { href: '/admin/clients', icon: Users, label: 'Clients' },
   { href: '/admin/tuning', icon: Cpu, label: 'Tuning Requests' },
+  { href: '/admin/settings', icon: Settings, label: 'Site Settings' },
 ];
 
 const NavContent = memo(() => {

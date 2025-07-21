@@ -19,7 +19,7 @@ const ContactFormSchema = z.object({
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
 });
 
-export function ContactSection() {
+export function ContactSection({ settings }: { settings: Record<string, string> }) {
   const { t } = useTranslation();
   const { toast } = useToast();
 
@@ -43,9 +43,9 @@ export function ContactSection() {
   
   const address = t('contact_info_address');
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
-  const phone = t('contact_info_phone');
+  const phone = settings?.contact_phone || t('contact_info_phone');
   const telLink = `tel:${phone.replace(/\s/g, '')}`;
-  const email = t('contact_info_email');
+  const email = settings?.contact_email || t('contact_info_email');
   const mailtoLink = `mailto:${email}`;
 
   return (

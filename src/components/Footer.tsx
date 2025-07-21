@@ -4,10 +4,10 @@ import { Instagram, Facebook } from 'lucide-react';
 import { WhatsappIcon } from './WhatsappIcon';
 import React from "react";
 
-const FooterComponent = () => {
-  const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || "#";
-  const facebookUrl = process.env.NEXT_PUBLIC_FACEBOOK_URL || "#";
-  const whatsappUrl = process.env.NEXT_PUBLIC_WHATSAPP_URL || "#";
+const FooterComponent = ({ settings }: { settings: Record<string, string> }) => {
+  const instagramUrl = settings?.social_instagram || "#";
+  const facebookUrl = settings?.social_facebook || "#";
+  const whatsappUrl = settings?.social_whatsapp || "#";
 
   return (
     <footer className="bg-card border-t">

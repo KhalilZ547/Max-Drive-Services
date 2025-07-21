@@ -6,19 +6,19 @@ import { Button } from './ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export function HeroSection() {
+export function HeroSection({ settings }: { settings: Record<string, string> }) {
   const { t } = useTranslation();
+  const heroImage = settings?.hero_section_image || 'https://placehold.co/1920x1080.png';
 
   return (
     <section className="relative bg-card pt-20 md:pt-32 pb-10">
       <div className="absolute inset-0">
         <Image
-          src="https://placehold.co/1920x1080.png"
+          src={heroImage}
           alt="Mechanic working on a car"
           layout="fill"
           objectFit="cover"
           className="opacity-10"
-          data-ai-hint="car repair"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
       </div>
@@ -34,7 +34,6 @@ export function HeroSection() {
             width={150}
             height={150}
             className="rounded-full border-4 border-primary/50 shadow-lg"
-            data-ai-hint="mechanic tools"
           />
         </div>
 

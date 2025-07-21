@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import {
   Carousel,
@@ -13,35 +13,35 @@ import {
 } from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { Skeleton } from './ui/skeleton';
 
-const images = [
-  {
-    src: 'https://placehold.co/800x450.png',
-    alt: 'A modern car garage with several cars being serviced.',
-  },
-  {
-    src: 'https://placehold.co/800x450.png',
-    alt: 'A mechanic using diagnostic tools on a car engine.',
-  },
-  {
-    src: 'https://placehold.co/800x450.png',
-    alt: 'A close-up of a perfectly balanced tire.',
-  },
-  {
-    src: 'https://placehold.co/800x450.png',
-    alt: 'A clean and organized workshop with tools on the wall.',
-  },
-  {
-    src: 'https://placehold.co/800x450.png',
-    alt: 'A shiny red sports car in the garage.',
-  },
-];
-
-export function ImageCarousel() {
+export function ImageCarousel({ settings }: { settings: Record<string, string> }) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
 
+  const images = useMemo(() => {
+    try {
+      if (settings?.carousel_images) {
+        const parsedImages = JSON.parse(settings.carousel_images);
+        if (Array.isArray(parsedImages) && parsedImages.length > 0) {
+          return parsedImages.map((url: string) => ({
+            src: url,
+            alt: 'A showcase of our garage and services.',
+          }));
+        }
+      }
+    } catch (e) {
+      console.error("Failed to parse carousel images from settings:", e);
+    }
+    // Fallback images if settings are not available or invalid
+    return [
+      { src: 'https://placehold.co/800x450.png', alt: 'A modern car garage with several cars being serviced.' },
+      { src: 'https://placehold.co/800x450.png', alt: 'A mechanic using diagnostic tools on a car engine.' },
+      { src: 'https://placehold.co/800x450.png', alt: 'A close-up of a perfectly balanced tire.' },
+    ];
+  }, [settings]);
+  
   useEffect(() => {
     if (!api) {
       return;
@@ -54,6 +54,16 @@ export function ImageCarousel() {
       setCurrent(api.selectedScrollSnap());
     });
   }, [api]);
+  
+  if (!settings) {
+    return (
+        <section className="pt-10 pb-20 bg-background">
+            <div className="container">
+                <Skeleton className="w-full max-w-6xl mx-auto h-[300px] rounded-lg" />
+            </div>
+        </section>
+    );
+  }
 
   return (
     <section className="pt-10 pb-20 bg-background">
